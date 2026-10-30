@@ -379,3 +379,13 @@
     .session-bar { grid-row: span 2; }
     .session-r { grid-column: 2; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; justify-items: start; text-align: left; }
   }
+
+  /* Eddington ladder */
+  .ed-ladder { display: grid; }
+  .ed-step { display: grid; grid-template-columns: 2.6rem minmax(0, 1fr) auto; grid-template-areas: "lvl need have" "lvl track track"; gap: 4px 10px; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--line); }
+  .ed-step:last-child { border-bottom: 0; }
+  .ed-lvl { grid-area: lvl; font: 800 22px/1 var(--display); text-align: center; }
+  .ed-need { grid-area: need; font-size: 13.5px; }
+  .ed-have { grid-area: have; font: 12px var(--mono); color: var(--color-fg-muted); }
+  .ed-track { grid-area: track; height: 6px; border-radius: 3px; background: var(--cds-chart-grid); overflow: hidden; }
+  .ed-track i { display: block; height: 100%; background: var(--acc); border-radius: 3px; }

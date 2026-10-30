@@ -40,6 +40,7 @@
   };
   dash.loader('rides', ridesLoader);
   dash.loader('rides_2025', ridesLoader);
+  dash.loader('rides_all', ridesLoader);
 
   dash.loader('bests', {
     description: 'Strava returns best efforts as one list; this makes one row per effort with its rank within its type (1 = best), value in meters.',
@@ -529,21 +530,20 @@
   });
 
   dash.calc('eddington', {
-    inputs: ['rides', 'rides_2025'],
-    title: 'Eddington number and riding streaks',
-    description: 'Distance per day over 2025–2026; Eddington E is the largest number with at least E days of E km or more (and the same in miles), with how many more such days the next number needs. Also the longest run of consecutive riding days.',
-    fn: (rides, rides_2025) => {
-      const all = rides.concat(rides_2025);
-      const days = d3.rollups(all, (v) => d3.sum(v, (r) => r.miles), (r) => r.date);
+    inputs: ['rides_all', 'rides'],
+    title: 'Eddington number, all time',
+    description: 'Ride distance per day over every Strava ride; Eddington E is the largest number with at least E days of E or more (in miles, and separately in km). For each next level, how many more days of that distance it needs. Also the longest run of consecutive riding days in 2026.',
+    fn: (rides_all, rides) => {
+      const days = d3.rollups(rides_all.filter((r) => /Ride/.test(r.sport_type || 'Ride')), (v) => d3.sum(v, (r) => r.miles), (r) => r.date).map((d) => d[1]);
       const ed = (vals) => {
         const s = vals.slice().sort((a, b) => b - a);
         let e = 0;
         while (e < s.length && s[e] >= e + 1) e++;
-        const need = e + 1 - s.filter((v) => v >= e + 1).length;
-        return [e, need];
+        const have = (n) => s.filter((v) => v >= n).length;
+        const levels = [...new Set([...d3.range(e + 1, e + 6), ...d3.range(Math.ceil((e + 6) / 5) * 5, e + 31, 5)])].sort((a, b) => a - b);
+        return { e, ladder: levels.map((n) => ({ level: n, have: have(n), need: Math.max(0, n - have(n)) })) };
       };
-      const [ek, nk] = ed(days.map((d) => d[1] * 1.609344));
-      const [em, nm] = ed(days.map((d) => d[1]));
+      const mi = ed(days), km = ed(days.map((v) => v * 1.609344));
       const dates = new Set(rides.map((r) => r.date));
       let best = 0, run = 0, bestEnd = null;
       d3.timeDay.range(new Date(2026, 0, 1), d3.timeDay.offset(d3.timeDay.floor(new Date()), 1)).forEach((d) => {
@@ -551,7 +551,7 @@
         run = dates.has(k) ? run + 1 : 0;
         if (run > best) { best = run; bestEnd = k; }
       });
-      return [{ e_km: ek, next_km: nk, e_mi: em, next_mi: nm, ride_days: days.length, longest_run: best, longest_run_end: bestEnd }];
+      return [{ e_mi: mi.e, e_km: km.e, next_mi: mi.ladder[0].need, next_km: km.ladder[0].need, ladder_mi: mi.ladder, ladder_km: km.ladder, ride_days: days.length, longest_run: best, longest_run_end: bestEnd }];
     },
   });
 
@@ -1463,6 +1463,22 @@
   dash.draw('ed-next', oneU('eddington', 'next_km', 'next_mi'));
   dash.draw('ed-days', one('eddington', 'ride_days'));
   dash.draw('ed-run', one('eddington', 'longest_run'));
+  // The ladder: how many more days of each distance the next levels need.
+  dash.draw('ed-ladder', (box) => {
+    const g = dash.data('eddington');
+    box.replaceChildren();
+    if (failed(box, 'eddington') || g.status !== 'ok' || !g.data.length) return;
+    const rows = isImp() ? g.data[0].ladder_mi : g.data[0].ladder_km;
+    box.append(...rows.map((r) => {
+      const row = el('div', 'ed-step');
+      const bar = el('i');
+      bar.style.width = Math.min(100, (r.have / r.level) * 100) + '%';
+      const track = el('span', 'ed-track');
+      track.append(bar);
+      row.append(el('b', 'ed-lvl', String(r.level)), el('span', 'ed-need', fmt(r.need) + ' more ' + (r.need === 1 ? 'day' : 'days') + ' of ' + r.level + '+ ' + distU()), track, el('span', 'ed-have', r.have + ' / ' + r.level));
+      return row;
+    }));
+  });
 
   // Month goal
   dash.draw('mg-month', one('month_goal', 'month', String));

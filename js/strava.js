@@ -151,12 +151,24 @@
   const recent = (n) => once('recent', async () => (await api('/athlete/activities?per_page=' + Math.max(30, n))).map(toSummary))
     .then((rows) => rows.slice(0, n));
 
+  const joinedYear = async () => {
+    const kept = store.get('hub.joined');
+    if (kept) return kept;
+    const me = await api('/athlete');
+    const y = Number(String(me.created_at || '2009').slice(0, 4)) || 2009;
+    store.set('hub.joined', y);
+    return y;
+  };
+
   const listActivities = async (args) => {
     const w = await weather;
     const imperial = !!args.use_preferred_units;
     let rows;
     if (args.range_start) {
-      const y0 = Number(args.range_start.slice(0, 4)), y1 = Number((args.range_end || args.range_start).slice(0, 4));
+      let y0 = Number(args.range_start.slice(0, 4));
+      const y1 = Number((args.range_end || args.range_start).slice(0, 4));
+      // "All time": start from the year the Strava account was made.
+      if (y0 < 2009) y0 = Math.max(y0, await joinedYear());
       rows = [];
       for (let y = y0; y <= y1; y++) rows.push(...(await year(y)));
       rows = rows.filter((a) => a.start_local >= args.range_start && (!args.range_end || a.start_local <= args.range_end));

@@ -7,6 +7,7 @@ window.HUB_CONFIG = {
   datasets: {
     rides: { kind: 'query', tool: 'list_activities', args: { first: 100, range_start: '2026-01-01T00:00:00', range_end: '2026-12-31T23:59:59', use_preferred_units: true } },
     rides_2025: { kind: 'query', tool: 'list_activities', args: { first: 100, range_start: '2025-01-01T00:00:00', range_end: '2025-12-31T23:59:59', use_preferred_units: true } },
+    rides_all: { kind: 'query', tool: 'list_activities', args: { range_start: '2000-01-01T00:00:00', range_end: '2099-12-31T23:59:59', use_preferred_units: true } },
     efforts: { kind: 'query', tool: 'list_activities', args: { first: 10 } },
     efforts30: { kind: 'query', tool: 'list_activities', args: { first: 30 } },
     hr_samples: { kind: 'query', tool: 'list_activities', args: { first: 12 } },

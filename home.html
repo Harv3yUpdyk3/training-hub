@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Home Base</title>
+<meta name="theme-color" content="#0b0d11">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/mountain-192.png">
+<link rel="apple-touch-icon" href="icons/mountain-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Saira+Condensed:ital,wght@0,600;0,700;0,800;1,800&display=swap">
+<link rel="stylesheet" href="theme.css">
+<style>
+  /* Home: one big tile per thing Will checks. Two live in this app; the pool and the contest stay on Claude, where other people share them. */
+  :root { --display: "Saira Condensed", "Arial Narrow", sans-serif; }
+  * { box-sizing: border-box; }
+  body { margin: 0; min-height: 100vh; min-height: 100dvh; background: var(--color-bg); color: var(--color-fg); font: 15px/1.45 var(--font-anthropic-sans); }
+  .mast { background: #0b0d11; color: #fff; padding: calc(14px + env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) 14px max(16px, env(safe-area-inset-left, 0px)); }
+  .mast h1 { margin: 0; font: italic 800 26px/1 var(--display); letter-spacing: .04em; text-transform: uppercase; }
+  .mast p { margin: 4px 0 0; color: rgba(255,255,255,.6); font-size: 13px; }
+  main { max-width: 40rem; margin: 0 auto; padding: 18px max(16px, env(safe-area-inset-right, 0px)) calc(24px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); display: grid; gap: 12px; }
+  .tile { display: grid; grid-template-columns: 56px minmax(0, 1fr) auto; gap: 14px; align-items: center; padding: 16px; border-radius: 14px; background: var(--color-panel); border: 1px solid var(--color-border-line); color: inherit; text-decoration: none; }
+  .tile:active { transform: scale(.99); }
+  .tile:focus-visible { outline: 3px solid var(--c); outline-offset: 2px; }
+  .ic { width: 56px; height: 56px; border-radius: 12px; display: grid; place-items: center; background: var(--c); }
+  .ic svg { width: 30px; height: 30px; }
+  .tile b { display: block; font: 800 22px/1.05 var(--display); letter-spacing: .03em; text-transform: uppercase; }
+  .tile small { display: block; color: var(--color-fg-muted); font-size: 13px; margin-top: 3px; }
+  .go { color: var(--color-fg-muted); font-size: 22px; }
+  .ext { font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--color-fg-muted); }
+</style>
+</head>
+<body>
+<header class="mast"><h1>Home Base</h1><p id="sub">Everything in one place</p></header>
+<main>
+  <a class="tile" href="./" style="--c:#f2542d">
+    <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="5.5" cy="16.5" r="3.5"/><circle cx="18.5" cy="16.5" r="3.5"/><path d="M5.5 16.5 9 9h6l3.5 7.5M9 9l3 7.5h-6.5M15 9l-1.5-3H11"/></svg></span>
+    <span><b>Training</b><small>Rides, plan and the road to France, live from Strava</small></span><span class="go" aria-hidden="true">›</span>
+  </a>
+  <a class="tile" href="road-book/" style="--c:#1c2024">
+    <span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 20 9 7l4 7 2-3 7 9z" fill="#f2c200"/><path d="M9 7 7.6 9.4l.9-.4.6.7.7-.8.9.3z" fill="#fff"/></svg></span>
+    <span><b>Road Book</b><small>Tour de France 2027: days, rides, bookings</small></span><span class="go" aria-hidden="true">›</span>
+  </a>
+  <a class="tile" href="https://claude.ai/artifact/TFU3h82WRzBq9L5pdGXxn7" target="_blank" rel="noopener" style="--c:#15803d">
+    <span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="12" rx="9.5" ry="6" fill="#8b4513" transform="rotate(-35 12 12)"/><path d="M8.5 15.5l7-7M10 11l1.5 1.5M11.5 9.5l1.5 1.5M12.5 12.5 14 14" stroke="#fff" stroke-width="1.4" stroke-linecap="round"/></svg></span>
+    <span><b>Fausel Pool</b><small>NFL pool tracker <span class="ext">· opens in Claude</span></small></span><span class="go" aria-hidden="true">↗</span>
+  </a>
+  <a class="tile" href="https://claude.ai/artifact/VoMGkDpSNNYAQ4SjHFZWQK" target="_blank" rel="noopener" style="--c:#13274f">
+    <span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="#fff"/><path d="M6.2 5.8c2 1.8 2 10.6 0 12.4M17.8 5.8c-2 1.8-2 10.6 0 12.4" fill="none" stroke="#ce1141" stroke-width="1.4" stroke-dasharray="1.6 1.2"/></svg></span>
+    <span><b>Braves Contest</b><small>Prediction contest <span class="ext">· opens in Claude</span></small></span><span class="go" aria-hidden="true">↗</span>
+  </a>
+</main>
+<script>
+  // The France countdown, same date the Training page uses.
+  const d = Math.ceil((Date.UTC(2027, 6, 9) - Date.now()) / 864e5);
+  if (d > 0) document.getElementById("sub").textContent = d + " days to France";
+  if ("serviceWorker" in navigator) addEventListener("load", () => navigator.serviceWorker.register("sw.js"));
+</script>
+</body>
+</html>

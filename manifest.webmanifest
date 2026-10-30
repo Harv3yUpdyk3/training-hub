@@ -1,8 +1,8 @@
 {
-  "name": "Will's Training Hub",
-  "short_name": "Training Hub",
-  "description": "Cycling training hub, live from Strava.",
-  "start_url": "./",
+  "name": "Home Base",
+  "short_name": "Home Base",
+  "description": "Training, the Tour 2027 Road Book, the Fausel pool and the Braves contest in one app.",
+  "start_url": "home.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
@@ -15,7 +15,7 @@
   ],
   "shortcuts": [
     { "name": "Training", "url": "./#training" },
-    { "name": "Rides", "url": "./#rides" },
+    { "name": "Road Book", "url": "road-book/" },
     { "name": "Road to France", "url": "./#france" }
   ]
 }

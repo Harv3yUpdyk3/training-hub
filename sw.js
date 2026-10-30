@@ -16,11 +16,9 @@ self.addEventListener('fetch', (e) => {
     e.respondWith(fetch(e.request).then((r) => { const copy = r.clone(); caches.open(CACHE).then((c) => c.put(e.request, copy)); return r; }).catch(() => caches.match(e.request)));
     return;
   }
-  // Stale-while-revalidate for the app itself (ignore ?code= from Strava sign-in).
+  // Network first, so a new version shows on the next open; the saved copy is for offline.
   const key = url.search ? new Request(url.origin + url.pathname) : e.request;
-  e.respondWith(caches.open(CACHE).then(async (c) => {
-    const hit = await c.match(key);
-    const net = fetch(e.request).then((r) => { if (r.ok) c.put(key, r.clone()); return r; }).catch(() => hit);
-    return hit || net;
-  }));
+  e.respondWith(fetch(e.request, { cache: 'no-cache' })
+    .then((r) => { if (r.ok) { const copy = r.clone(); caches.open(CACHE).then((c) => c.put(key, copy)); } return r; })
+    .catch(() => caches.match(key)));
 });

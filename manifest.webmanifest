@@ -1,6 +1,6 @@
 {
-  "name": "Will's Hub",
-  "short_name": "Will's Hub",
+  "name": "Home Base",
+  "short_name": "Home Base",
   "description": "Training, the Tour 2027 Road Book, the Fausel pool and the Braves contest in one app.",
   "start_url": "home.html",
   "scope": "./",

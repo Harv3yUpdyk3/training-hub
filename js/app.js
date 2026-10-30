@@ -20,7 +20,15 @@
   window.hubStatus = {
     error: (id, err) => {
       errors += 1;
-      if (err && err.code === 'connect') showSetup(err.message);
+      if (!(err && err.code === 'connect')) return;
+      // Keys are saved, so Strava can sign in again without a form: it sends
+      // straight back when the app is already approved. Once per 5 minutes at most.
+      let last = 0;
+      try { last = Number(sessionStorage.getItem('hub.reauth')) || 0; } catch {}
+      if (window.strava.hasKeys() && Date.now() - last > 5 * 6e4) {
+        try { sessionStorage.setItem('hub.reauth', String(Date.now())); } catch {}
+        window.strava.connect();
+      } else showSetup(err.message);
     },
     update: (state) => {
       const busy = [...state.values()].some((s) => s.status === 'loading' || s.refreshing);
@@ -71,8 +79,9 @@
   window.strava.restore()
     .then(() => window.strava.finishSignIn())
     .then(() => {
-      if (!window.strava.ready()) showSetup();
-      else window.dash.reloadAll();
+      if (window.strava.ready()) window.dash.reloadAll();
+      else if (window.strava.hasKeys()) window.hubStatus.error('auth', Object.assign(new Error('Strava sign-in needed'), { code: 'connect' }));
+      else showSetup();
     })
     .catch((err) => showSetup(err.message));
 

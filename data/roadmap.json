@@ -1,0 +1,38 @@
+[
+ {
+  "order": 1,
+  "phase": "Base",
+  "months": "Nov 2026 – Feb 2027",
+  "focus": "Zone 2 volume plus sweet-spot intervals (2 × 20, then 3 × 20 min). Fit the power meter and set a real FTP.",
+  "milestone": "5,000 km for 2026; 20-minute FTP test",
+  "start": "2026-11-01",
+  "end": "2027-02-28"
+ },
+ {
+  "order": 2,
+  "phase": "Climb-specific",
+  "months": "Mar – May 2027",
+  "focus": "Long low-cadence efforts of 30–60 min, Hascall repeats, one North Georgia day a month (Three Gap loop building to the Six Gap loop).",
+  "milestone": "Hogpen Gap twice in one day",
+  "start": "2027-03-01",
+  "end": "2027-05-31"
+ },
+ {
+  "order": 3,
+  "phase": "Sharpen and taper",
+  "months": "Jun 2027",
+  "focus": "One big mountain weekend, then ease off into the trip.",
+  "milestone": "Full Six Gap loop",
+  "start": "2027-06-01",
+  "end": "2027-06-30"
+ },
+ {
+  "order": 4,
+  "phase": "France",
+  "months": "Jul 2027",
+  "focus": "Tour de France trip: ride each climb at a steady pace from the bottom.",
+  "milestone": "Grand Colombier and Col du Tourmalet",
+  "start": "2027-07-01",
+  "end": "2027-07-31"
+ }
+]

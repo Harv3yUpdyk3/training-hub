@@ -1,0 +1,446 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Training Hub</title>
+<meta name="description" content="Will's cycling training hub, live from Strava.">
+<meta name="theme-color" content="#0b0d11">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Saira+Condensed:ital,wght@0,600;0,700;0,800;1,800&display=swap">
+<link rel="stylesheet" href="theme.css">
+<link rel="stylesheet" href="hub.css">
+<script src="js/d3.min.js"></script>
+<script src="js/config.js"></script>
+<script src="js/strava.js"></script>
+<script src="js/runtime.js"></script>
+</head>
+<body>
+<div class="setup" id="setup" hidden>
+  <div class="setup-card">
+    <h1>Training Hub</h1>
+    <p>Connect your Strava once and the hub loads your rides straight from Strava.</p>
+    <ol>
+      <li>Open <a href="https://www.strava.com/settings/api" target="_blank" rel="noopener">strava.com/settings/api</a>.</li>
+      <li>Check that <b>Authorization Callback Domain</b> is <code id="cb-domain"></code></li>
+      <li>Copy your <b>Client ID</b> and <b>Client Secret</b> into the boxes below.</li>
+    </ol>
+    <label for="client-id">Client ID</label>
+    <input id="client-id" inputmode="numeric" autocomplete="off" placeholder="12345">
+    <label for="client-secret">Client Secret</label>
+    <input id="client-secret" type="password" autocomplete="off" placeholder="Paste from Strava">
+    <p class="small">These stay on this phone only. They're never uploaded anywhere except Strava.</p>
+    <p class="msg" id="setup-msg" role="alert"></p>
+    <button class="go" id="setup-go" type="button">Connect with Strava</button>
+  </div>
+</div>
+<div id="dash-root">
+
+<div class="hub">
+  <header class="mast">
+    <div class="mast-in">
+      <div class="logo" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="5.5" cy="16.5" r="3.5"/><circle cx="18.5" cy="16.5" r="3.5"/><path d="M5.5 16.5 9 9h6l3.5 7.5M9 9l3 7.5h-6.5M15 9l-1.5-3H11"/></svg></div>
+      <p class="wm">Training Hub<span>Will H. · Atlanta</span></p>
+      <div class="mast-r">
+        <span class="mchip opt">France in <b data-draw="days-france">—</b> days</span>
+        <button class="sync" id="sync" type="button" aria-label="Sync with Strava"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 4v5h-5"/></svg><span id="sync-text">Sync</span></button>
+        <span class="units" role="group" aria-label="Units"><button type="button" data-units="metric" aria-pressed="true">km</button><button type="button" data-units="imperial" aria-pressed="false">mi</button></span>
+      </div>
+    </div>
+  </header>
+  <div class="ticker" aria-label="Recent rides">
+    <div class="tk-label">Recent<br>rides<span>newest first</span></div>
+    <button class="tk-arrow prev" type="button" aria-label="Earlier rides">‹</button>
+    <div class="rstrip" data-draw="ride-strip" data-source="rides" data-row-key="id"></div>
+    <button class="tk-arrow next" type="button" aria-label="Older rides">›</button>
+  </div>
+  <nav class="tabs" aria-label="Sections">
+    <div class="tabs-in" role="tablist">
+      <button class="hub-tab" role="tab" data-tab="overview" aria-controls="overview" aria-selected="true">Overview</button>
+      <button class="hub-tab" role="tab" data-tab="training" aria-controls="training" aria-selected="false">Training</button>
+      <button class="hub-tab" role="tab" data-tab="rides" aria-controls="rides" aria-selected="false">Rides</button>
+      <button class="hub-tab" role="tab" data-tab="segments" aria-controls="segments" aria-selected="false">Segments</button>
+      <button class="hub-tab" role="tab" data-tab="france" aria-controls="france" aria-selected="false">Road to France</button>
+      <span class="tabs-r"><span class="kbd" title="Press 1–5 to switch tabs, / to search rides">1–5 · /</span></span>
+    </div>
+  </nav>
+
+  <main class="main">
+    <!-- OVERVIEW -->
+    <section class="hub-page" id="overview" role="tabpanel">
+      <div class="hero" id="goal-hero">
+        <div class="hero-body">
+          <span class="kick">2026 season distance</span>
+          <h2 class="hl"><span data-draw="km-done" data-source="ytd" data-row="0" data-field="km">—</span><small> <span class="u-m">km</span><span class="u-i">mi</span> of <span data-draw="goal">—</span></small></h2>
+          <div class="goal-track" data-draw="goal-bar" data-source="ytd"></div>
+        </div>
+        <div class="hstat"><div class="sv"><span data-draw="pct-goal" data-source="ytd" data-row="0" data-field="pct_goal">—</span></div><div class="sl">of season goal</div></div>
+        <div class="hrow">
+          <div><span>To go</span><b><span data-draw="km-left" data-source="ytd" data-row="0" data-field="km_left">—</span> <small><span class="u-m">km</span><span class="u-i">mi</span></small></b></div>
+          <div><span>Needed per week</span><b><span data-draw="per-week" data-source="ytd" data-row="0" data-field="km_per_week">—</span> <small><span class="u-m">km</span><span class="u-i">mi</span></small></b></div>
+          <div><span>Vs even pace</span>
+            <b class="ok" data-pace="ahead" hidden>+<span data-draw="pace-gap" data-source="ytd" data-row="0" data-field="pace_gap_km">—</span> <small><span class="u-m">km</span><span class="u-i">mi</span> ahead</small></b>
+            <b class="bad" data-pace="behind" hidden>−<span data-draw="pace-gap-b" data-source="ytd" data-row="0" data-field="pace_gap_km">—</span> <small><span class="u-m">km</span><span class="u-i">mi</span> behind</small></b>
+          </div>
+          <div><span>Vs 2025, same date</span><b><span data-draw="yoy" data-source="yoy" data-row="0" data-field="diff_km">—</span> <small><span class="u-m">km</span><span class="u-i">mi</span></small></b></div>
+        </div>
+      </div>
+
+      <div class="nextup" id="next-up" data-draw="next-up" data-source="plan"></div>
+
+      <div class="g21">
+        <div class="card" id="last4-card">
+          <div class="card-h"><h2>Last 4 weeks</h2><span class="note">Against the 4 weeks before · <span class="key"><i class="now"></i>now</span> <span class="key"><i class="prev"></i>before</span></span></div>
+          <div class="cmp">
+            <div class="cmp-row">
+              <span class="cmp-l">Distance</span>
+              <span class="cmp-v"><span data-draw="p-mi" data-source="period" data-row="0" data-field="mi_4w">—</span> <small><span class="u-m">km</span><span class="u-i">mi</span></small></span>
+              <span class="delta" data-draw="d-mi" data-source="period" data-row="0" data-field="mi_delta_pct">—</span>
+              <span class="cmp-bars" data-draw="bar-dist" data-source="period"></span>
+              <span class="cmp-p">was <b data-draw="p-mi-prev" data-source="period" data-row="0" data-field="mi_prev">—</b></span>
+            </div>
+            <div class="cmp-row">
+              <span class="cmp-l">Climbing</span>
+              <span class="cmp-v"><span data-draw="p-elev" data-source="period" data-row="0" data-field="elev_4w">—</span> <small><span class="u-m">m</span><span class="u-i">ft</span></small></span>
+              <span class="delta" data-draw="d-elev" data-source="period" data-row="0" data-field="elev_delta_pct">—</span>
+              <span class="cmp-bars" data-draw="bar-elev" data-source="period"></span>
+              <span class="cmp-p">was <b data-draw="p-elev-prev" data-source="period" data-row="0" data-field="elev_prev">—</b></span>
+            </div>
+            <div class="cmp-row">
+              <span class="cmp-l">Moving time</span>
+              <span class="cmp-v"><span data-draw="p-hours" data-source="period" data-row="0" data-field="hours_4w">—</span> <small>h</small></span>
+              <span class="delta" data-draw="d-hours" data-source="period" data-row="0" data-field="hours_delta_pct">—</span>
+              <span class="cmp-bars" data-draw="bar-hours" data-source="period"></span>
+              <span class="cmp-p">was <b data-draw="p-hours-prev" data-source="period" data-row="0" data-field="hours_prev">—</b></span>
+            </div>
+            <div class="cmp-row">
+              <span class="cmp-l">Rides</span>
+              <span class="cmp-v"><span data-draw="p-rides" data-source="period" data-row="0" data-field="rides_4w">—</span></span>
+              <span class="delta" data-draw="d-rides" data-source="period" data-row="0" data-field="rides_delta_pct">—</span>
+              <span class="cmp-bars" data-draw="bar-rides" data-source="period"></span>
+              <span class="cmp-p">was <b data-draw="p-rides-prev" data-source="period" data-row="0" data-field="rides_prev">—</b></span>
+            </div>
+          </div>
+        </div>
+        <div class="card" id="form-card">
+          <div class="card-h"><h2>Form</h2><span class="note"><b data-draw="form-hits" data-source="form_sum" data-row="0" data-field="hits">—</b> of 8 weeks at <span data-draw="week-target">—</span>+ <span class="u-m">km</span><span class="u-i">mi</span></span></div>
+          <div class="form" data-draw="form-chips" data-source="form" data-row-key="week_of"></div>
+          <p class="note">The weekly target is the season goal spread evenly over 52 weeks. H = hit, M = missed.</p>
+        </div>
+      </div>
+
+      <div class="card" id="season-totals">
+        <div class="card-h"><h2>Season totals</h2><span class="note">All 2026 activities</span></div>
+        <div class="facts top">
+          <div class="fact"><span>Distance, <span class="u-m">km</span><span class="u-i">mi</span></span><b data-draw="mi-done" data-source="ytd" data-row="0" data-field="miles">—</b></div>
+          <div class="fact"><span>Climbing, <span class="u-m">m</span><span class="u-i">ft</span></span><b data-draw="ft-done" data-source="ytd" data-row="0" data-field="elev_ft">—</b></div>
+          <div class="fact"><span>Hours moving</span><b data-draw="hours-done" data-source="ytd" data-row="0" data-field="hours">—</b></div>
+          <div class="fact"><span>Rides</span><b data-draw="ride-count" data-source="ytd" data-row="0" data-field="rides">—</b></div>
+          <div class="fact"><span>This week</span><b><span data-draw="wk-mi" data-source="week" data-row="0" data-field="miles">—</span> <span class="u-m">km</span><span class="u-i">mi</span></b></div>
+          <div class="fact"><span>Weekly streak</span><b><span data-draw="streak" data-source="streak" data-row="0" data-field="length">—</span> wks</b></div>
+          <div class="fact"><span>Streak since</span><b data-draw="streak-start" data-source="streak" data-row="0" data-field="start_date">—</b></div>
+          <div class="fact"><span>Rides in the rain</span><b data-draw="rainy" data-source="ytd" data-row="0" data-field="rainy_rides">—</b></div>
+        </div>
+      </div>
+
+      <h3 class="sec" id="trends-h">Trends</h3>
+
+      <div class="g21">
+        <div class="card" id="cumulative-card">
+          <div class="card-h"><h2>Distance through 2026</h2><span class="note">Running total, <span class="u-m">km</span><span class="u-i">mi</span> · gray = 2025 · dashed = even pace</span></div>
+          <div class="chart" data-draw="cum-chart" data-source="cumulative cumulative_2025"></div>
+        </div>
+        <div class="card" id="weekly-card">
+          <div class="card-h"><h2>Weekly volume</h2><span class="note">Last 16 weeks, <span class="u-m">km</span><span class="u-i">mi</span></span></div>
+          <div class="chart" data-draw="weekly-chart" data-source="weekly"></div>
+        </div>
+      </div>
+
+      <div class="card" id="week-strip-card">
+        <div class="card-h"><h2>This week</h2>
+          <div class="legend"><span><i class="lg-rest"></i>Rest</span><span><i class="lg-end"></i>Endurance</span><span><i class="lg-tempo"></i>Tempo</span><span><i class="lg-thr"></i>Threshold</span><span><i class="lg-vo2"></i>VO2</span></div>
+        </div>
+        <p class="note">Mon Oct 26 – Sun Nov 1 · <span data-draw="wk-rides" data-source="week" data-row="0" data-field="rides">—</span> rides so far · planned <b data-draw="pw-lo" data-source="plan_week" data-row="0" data-field="plan_lo_km">—</b>–<b data-draw="pw-hi" data-source="plan_week" data-row="0" data-field="plan_hi_km">—</b> <span class="u-m">km</span><span class="u-i">mi</span>, ridden <b data-draw="pw-done" data-source="plan_week" data-row="0" data-field="ridden_km">—</b> <span class="u-m">km</span><span class="u-i">mi</span></p>
+        <div class="strip" data-draw="plan-strip" data-source="plan plan_actual" data-row-key="order"></div>
+      </div>
+
+      <div class="card" id="calendar-card">
+        <div class="card-h"><h2>Ride calendar</h2><span class="note">Each square is a day in 2026; darker means more distance; a dot marks a ride in the rain</span></div>
+        <div class="scroll"><div class="chart short heat-svg" data-draw="heatmap" data-source="days"></div></div>
+      </div>
+    </section>
+
+    <!-- TRAINING -->
+    <section class="hub-page" id="training" role="tabpanel" hidden>
+      <div class="ph">
+        <div><h1>Training</h1><p>Heart rate first; power targets come once the power meter is on the Diverge. If your legs are heavy Friday, swap it with the weekend ride.</p></div>
+        <span class="pill">Week of <b>Oct 26</b></span>
+      </div>
+      <div class="card" id="load-card">
+        <div class="card-h"><h2>Training load</h2><span class="note">Strava Relative Effort per week, last 16 weeks · rides with the HR strap only</span></div>
+        <div class="chart mid" data-draw="effort-chart" data-source="weekly"></div>
+      </div>
+      <div class="card" id="fitness-card">
+        <div class="card-h"><h2>Fitness and fatigue</h2><span class="note">From Strava Relative Effort · last 120 days</span></div>
+        <div class="facts top">
+          <div class="fact"><span>Fitness (42-day)</span><b data-draw="fit-now" data-source="fitness_now" data-row="0" data-field="fitness">—</b></div>
+          <div class="fact"><span>Fatigue (7-day)</span><b data-draw="fat-now" data-source="fitness_now" data-row="0" data-field="fatigue">—</b></div>
+          <div class="fact"><span>Form</span><b data-draw="form-now" data-source="fitness_now" data-row="0" data-field="form">—</b></div>
+          <div class="fact"><span>Fitness vs 4 wks ago</span><b data-draw="fit-chg" data-source="fitness_now" data-row="0" data-field="fitness_change">—</b></div>
+        </div>
+        <div class="chart" data-draw="fitness-chart" data-source="fitness"></div>
+        <p class="note">Fitness rises with steady weeks; fatigue spikes after hard days. Form below zero means you're carrying fatigue; slightly positive is fresh. Rides without the HR strap have no Relative Effort, so they don't count.</p>
+      </div>
+      <div class="card" id="zone-time-card">
+        <div class="card-h"><h2>Time in zone</h2><span class="note">Recent rides with the HR strap, minutes per zone</span></div>
+        <p class="note"><b data-draw="easy-pct" data-source="zone_sum" data-row="0" data-field="easy_pct">—</b>% easy (Z1–Z2) and <b data-draw="hard-pct" data-source="zone_sum" data-row="0" data-field="hard_pct">—</b>% hard across <span data-draw="zone-rides" data-source="zone_sum" data-row="0" data-field="rides">—</span> rides. The dashed line is the <span data-draw="easy-target">—</span>% easy target of polarized training.</p>
+        <div class="legend"><span><i class="lg-rest"></i>Z1</span><span><i class="lg-end"></i>Z2</span><span><i class="lg-tempo"></i>Z3</span><span><i class="lg-thr"></i>Z4</span><span><i class="lg-vo2"></i>Z5</span></div>
+        <div class="chart" data-draw="zone-chart" data-source="zone_time"></div>
+      </div>
+      <div class="card" id="hour-card">
+        <div class="card-h"><h2>Time of day</h2><span class="note">2026 rides by start hour · label = rides</span></div>
+        <div class="chart mid" data-draw="hour-chart" data-source="by_hour"></div>
+      </div>
+      <div class="card" id="speed-card">
+        <div class="card-h"><h2>Speed trend</h2><span class="note">Average moving speed per week, last 16 weeks, <span class="u-m">km/h</span><span class="u-i">mph</span> · dashed = 16-week average</span></div>
+        <div class="chart mid" data-draw="speed-chart" data-source="weekly"></div>
+      </div>
+      <div class="card" id="dow-card">
+        <div class="card-h"><h2>When you ride</h2><span class="note">2026 rides by weekday · bar = rides, label = average <span class="u-m">km</span><span class="u-i">mi</span></span></div>
+        <div class="chart mid" data-draw="dow-chart" data-source="dow"></div>
+      </div>
+      <div class="card" id="sessions-card">
+        <h2>Sessions</h2>
+        <div class="sessions" data-draw="plan-sessions" data-source="plan" data-row-key="order"></div>
+      </div>
+      <div class="g2">
+        <div class="card" id="zones-card">
+          <div class="card-h"><h2>Heart rate zones</h2><span class="note">bpm, from max heart rate</span></div>
+          <div class="chart tiny" data-draw="zone-bar" data-source="zones"></div>
+          <div class="scroll">
+            <table class="tbl" data-source="zones" data-row-key="zone">
+              <thead><tr><th data-field="zone">Zone</th><th data-field="name">Name</th><th data-field="bpm" class="num">bpm</th><th data-field="use" class="wide-only">When to use it</th></tr></thead>
+              <tbody data-draw="zone-rows"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card" id="todo-card">
+          <div class="card-h"><h2>Gear and to-do</h2><span class="note">Power meter for the Diverge, then what's next</span></div>
+          <ul class="todo" data-draw="todo-list" data-source="todo" data-row-key="order"></ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- RIDES -->
+    <section class="hub-page" id="rides" role="tabpanel" hidden>
+      <div class="ph">
+        <div><h1>Rides</h1><p>Every 2026 activity from Strava. Sort any column or search by name or weather.</p></div>
+      </div>
+      <div class="card" id="ride-detail-card">
+        <div class="card-h"><h2>Ride detail</h2><span class="note">Click any ride in the ticker or the log</span></div>
+        <div class="rd-head" data-draw="rd-head" data-source="ride_log"></div>
+        <div class="rd-notes" data-draw="rd-notes" data-source="ride_detail"></div>
+        <div class="tall short-tall">
+          <table class="tbl" data-source="ride_segs" data-row-key="effort_id">
+            <thead><tr><th data-field="medal">PR</th><th data-field="segment">Segment</th><th data-field="km" data-mf="km" data-if="miles" class="num"><span class="u-m">km</span><span class="u-i">mi</span></th><th data-field="time_s" class="num">Time</th><th data-field="avg_hr" class="num wide-only">Avg HR</th></tr></thead>
+            <tbody data-draw="rd-segs"></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="kpis" id="records">
+        <div class="kpi"><div class="kpi-h"><span>Longest ride</span></div><div class="kpi-v"><span data-draw="rec-long" data-source="records" data-row="0" data-field="long_mi">—</span><small><span class="u-m">km</span><span class="u-i">mi</span></small></div><div class="kpi-s" data-draw="rec-long-name" data-source="records" data-row="0" data-field="long_name">—</div></div>
+        <div class="kpi"><div class="kpi-h"><span>Most climbing</span></div><div class="kpi-v"><span data-draw="rec-climb" data-source="records" data-row="0" data-field="climb_ft">—</span><small><span class="u-m">m</span><span class="u-i">ft</span></small></div><div class="kpi-s" data-draw="rec-climb-name" data-source="records" data-row="0" data-field="climb_name">—</div></div>
+        <div class="kpi"><div class="kpi-h"><span>Biggest week</span></div><div class="kpi-v"><span data-draw="rec-week" data-source="records" data-row="0" data-field="week_km">—</span><small><span class="u-m">km</span><span class="u-i">mi</span></small></div><div class="kpi-s" data-draw="rec-week-of" data-source="records" data-row="0" data-field="week_of">—</div></div>
+        <div class="kpi"><div class="kpi-h"><span>Biggest month</span></div><div class="kpi-v"><span data-draw="rec-month" data-source="records" data-row="0" data-field="month_km">—</span><small><span class="u-m">km</span><span class="u-i">mi</span></small></div><div class="kpi-s" data-draw="rec-month-name" data-source="records" data-row="0" data-field="month">—</div></div>
+      </div>
+      <div class="card" id="month-report-card">
+        <div class="card-h"><h2>Month report</h2><span class="note"><span data-draw="mr-month" data-source="month_report" data-row="0" data-field="month">—</span> 1–<span data-draw="mr-day" data-source="month_report" data-row="0" data-field="day">—</span> vs the same days of <span data-draw="mr-prev" data-source="month_report" data-row="0" data-field="prev_month">—</span></span></div>
+        <div class="mreport" data-draw="mr-tiles" data-source="month_report" data-row-key="metric"></div>
+        <div class="mgoal">
+          <div class="mgoal-h"><span><b data-draw="mg-month" data-source="month_goal" data-row="0" data-field="month">—</b> goal: <b data-draw="mg-done" data-source="month_goal" data-row="0" data-field="km">—</b> of <b data-draw="mg-target" data-source="month_goal" data-row="0" data-field="target_km">—</b> <span class="u-m">km</span><span class="u-i">mi</span>, the monthly share of the season goal</span><span class="delta" data-draw="mg-pct" data-source="month_goal" data-row="0" data-field="pct">—</span></div>
+          <div class="goal-track" data-draw="mg-bar" data-source="month_goal"></div>
+        </div>
+      </div>
+      <div class="card" id="eddington-card">
+        <div class="card-h"><h2>Eddington number</h2><span class="note">2025–2026 rides</span></div>
+        <div class="facts top">
+          <div class="fact"><span>Eddington, <span class="u-m">km</span><span class="u-i">mi</span></span><b data-draw="ed-e" data-source="eddington" data-row="0" data-field="e_km">—</b></div>
+          <div class="fact"><span>Days short of the next</span><b data-draw="ed-next" data-source="eddington" data-row="0" data-field="next_km">—</b></div>
+          <div class="fact"><span>Riding days</span><b data-draw="ed-days" data-source="eddington" data-row="0" data-field="ride_days">—</b></div>
+          <div class="fact"><span>Longest daily streak, 2026</span><b><span data-draw="ed-run" data-source="eddington" data-row="0" data-field="longest_run">—</span> days</b></div>
+        </div>
+        <p class="note">Your Eddington number E is the largest number of days you've ridden at least E <span class="u-m">km</span><span class="u-i">miles</span>. Each step up gets harder: the next one needs that many more days at the new distance.</p>
+      </div>
+      <div class="card" id="bests-card">
+        <div class="card-h"><h2>2026 bests vs 2025</h2><span class="note">From Strava best efforts · green = better this year</span></div>
+        <div class="scroll">
+          <table class="tbl" data-source="bests_cmp" data-row-key="order">
+            <thead><tr><th data-field="effort">Effort</th><th data-field="v2026" class="num">2026</th><th data-field="d2026" class="wide-only">Set</th><th data-field="v2025" class="num">2025</th><th data-field="change_pct" class="num">Change</th></tr></thead>
+            <tbody data-draw="bests-rows"></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="card" id="monthly-card">
+        <div class="card-h"><h2>Distance by month</h2><span class="note">Distance per month, 2026, <span class="u-m">km</span><span class="u-i">mi</span></span></div>
+        <div class="chart mid" data-draw="month-chart" data-source="monthly"></div>
+      </div>
+      <div class="card" id="garage-card">
+        <div class="card-h"><h2>Garage</h2><span class="note">ATLien is the Diverge; Bombs over Baghdad is the Arise</span></div>
+        <div class="scroll">
+          <table class="tbl" data-source="garage" data-row-key="gear_id">
+            <thead><tr><th data-field="name">Bike</th><th data-field="frame_type">Type</th><th data-field="km" data-mf="km" data-if="miles" class="num">All-time <span class="u-m">km</span><span class="u-i">mi</span></th><th data-field="share_pct" class="num">Share</th><th data-field="status">Status</th></tr></thead>
+            <tbody data-draw="garage-rows"></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="card" id="recent-card">
+        <div class="card-h"><h2>Ride log</h2><input class="search" type="search" placeholder="Search rides" aria-label="Search rides"></div>
+        <div class="tall">
+          <table class="tbl" data-source="ride_log" data-row-key="id">
+            <thead><tr>
+              <th data-field="date" aria-sort="descending"><button class="sort" data-sort="date">Date</button></th>
+              <th data-field="name"><button class="sort" data-sort="name">Ride</button></th>
+              <th data-field="km" data-mf="km" data-if="miles" class="num"><button class="sort" data-sort="miles"><span class="u-m">km</span><span class="u-i">mi</span></button></th>
+              <th data-field="moving_s" class="num"><button class="sort" data-sort="moving_s">Time</button></th>
+              <th data-field="elev_m" data-mf="elev_m" data-if="elev_ft" class="num wide-only"><button class="sort" data-sort="elev_ft">Climb <span class="u-m">m</span><span class="u-i">ft</span></button></th>
+              <th data-field="kmh" data-mf="kmh" data-if="mph" class="num wide-only"><button class="sort" data-sort="mph"><span class="u-m">km/h</span><span class="u-i">mph</span></button></th>
+              <th data-field="relative_effort" class="num"><button class="sort" data-sort="relative_effort">Effort</button></th>
+              <th data-field="weather" class="wide-only"><button class="sort" data-sort="weather">Weather</button></th>
+            </tr></thead>
+            <tbody data-draw="ride-rows"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- SEGMENTS -->
+    <section class="hub-page" id="segments" role="tabpanel" hidden>
+      <div class="ph">
+        <div><h1>Segments</h1><p>Local Legends and top 10s come from your Strava profile (read Oct 28, 2026); Strava doesn't share them with apps. PR medals and repeat counts are live from your last 10 activities.</p></div>
+      </div>
+      <div class="g21">
+        <div class="card" id="legends-card">
+          <div class="card-h"><h2>Your crowns</h2><span class="note">Efforts are your count in Strava's 90-day window</span></div>
+          <div class="scroll">
+            <table class="tbl" data-source="crowns" data-row-key="order">
+              <thead><tr><th data-field="title">Title</th><th data-field="segment">Segment</th><th data-field="ll_efforts_90d" class="num">90-day efforts</th><th data-field="pr" class="num">PR</th><th data-field="km" data-mf="km" data-if="miles" class="num wide-only"><span class="u-m">km</span><span class="u-i">mi</span></th><th data-field="climb_m" data-mf="climb_m" data-if="climb_ft" class="num wide-only">Climb <span class="u-m">m</span><span class="u-i">ft</span></th></tr></thead>
+              <tbody data-draw="legend-rows"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card" id="defense-card">
+          <div class="card-h"><h2>Crowns at risk</h2></div>
+          <p class="note">A Local Legend goes to whoever rides a segment most in 90 days. Red bars rest on a single effort and are the easiest to lose.</p>
+          <div class="chart mid" data-draw="legend-chart" data-source="legends"></div>
+        </div>
+      </div>
+        <div class="card" id="upkeep-card">
+          <div class="card-h"><h2>Keep your crowns</h2><span class="note">Live from your last 30 activities · weakest first</span></div>
+          <p class="note">A Local Legend counts your efforts in the last 90 days, so each effort stops counting 90 days after you ride it. "Next drop" is when your oldest effort in the window falls out; ride the segment before then to stay level.</p>
+          <div class="scroll">
+            <table class="tbl" data-source="ll_status" data-row-key="order">
+              <thead><tr><th data-field="segment">Segment</th><th data-field="efforts_90d" class="num">Efforts, 90 days</th><th data-field="last_date">Last ridden</th><th data-field="days_since" class="num">Days ago</th><th data-field="next_expiry">Next drop</th></tr></thead>
+              <tbody data-draw="ll-rows"></tbody>
+            </table>
+          </div>
+        </div>
+      <div class="g2">
+        <div class="card" id="hascall-card" style="grid-column: 1 / -1">
+          <div class="card-h"><h2>Hascall hill repeats</h2><span class="note">Full Hascall Hill, last 30 activities</span></div>
+          <div class="facts top">
+            <div class="fact"><span>Efforts</span><b data-draw="hc-n" data-source="hascall_sum" data-row="0" data-field="efforts">—</b></div>
+            <div class="fact"><span>Best</span><b data-draw="hc-best" data-source="hascall_sum" data-row="0" data-field="best_s">—</b></div>
+            <div class="fact"><span>Recent average</span><b data-draw="hc-recent" data-source="hascall_sum" data-row="0" data-field="recent_avg_s">—</b></div>
+            <div class="fact"><span>Vs earlier efforts</span><b data-draw="hc-trend" data-source="hascall_sum" data-row="0" data-field="trend_s">—</b></div>
+          </div>
+          <div class="g2 tight">
+            <div><p class="note">Time per effort, oldest to newest. Gold dots are PRs.</p><div class="chart short" data-draw="hascall-chart" data-source="hascall"></div></div>
+            <div><p class="note">Time against average heart rate. Down and left is fitter: quicker at a lower heart rate.</p><div class="chart short" data-draw="hascall-scatter" data-source="hascall"></div></div>
+          </div>
+          <div class="tall short-tall">
+            <table class="tbl" data-source="hascall" data-row-key="effort_id">
+              <thead><tr><th data-field="date">Date</th><th data-field="time_s" class="num">Time</th><th data-field="avg_hr" class="num">Avg HR</th><th data-field="medal">Medal</th></tr></thead>
+              <tbody data-draw="hascall-rows"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="g2">
+        <div class="card" id="most-ridden-card">
+          <div class="card-h"><h2>Most ridden lately</h2><span class="note">Last 10 activities</span></div>
+          <div class="scroll">
+            <table class="tbl" data-source="seg_counts" data-row-key="segment_id">
+              <thead><tr><th data-field="segment">Segment</th><th data-field="efforts" class="num">Rides</th><th data-field="best_s" class="num">Best</th><th data-field="km" data-mf="km" data-if="miles" class="num wide-only"><span class="u-m">km</span><span class="u-i">mi</span></th></tr></thead>
+              <tbody data-draw="most-rows"></tbody>
+            </table>
+          </div>
+        </div>
+      <div class="card" id="prs-card">
+        <div class="card-h"><h2>Recent PR medals</h2>
+          <div class="legend"><span><span class="medal m1">1</span> Fastest</span><span><span class="medal m2">2</span> 2nd</span><span><span class="medal m3">3</span> 3rd</span></div>
+        </div>
+        <div class="tall">
+          <table class="tbl" data-source="prs" data-row-key="effort_id">
+            <thead><tr><th data-field="medal">Medal</th><th data-field="segment">Segment</th><th data-field="date">Date</th><th data-field="time_s" class="num">Time</th><th data-field="km" data-mf="km" data-if="miles" class="num wide-only"><span class="u-m">km</span><span class="u-i">mi</span></th><th data-field="avg_hr" class="num wide-only">Avg HR</th></tr></thead>
+            <tbody data-draw="pr-rows"></tbody>
+          </table>
+        </div>
+      </div>
+      </div>
+    </section>
+
+    <!-- FRANCE -->
+    <section class="hub-page" id="france" role="tabpanel" hidden>
+      <div class="ph">
+        <div><h1>Road to the Tourmalet</h1><p>Each climb is about 1,300 m in one go, so the work is long, steady climbing.</p></div>
+        <span class="pill"><b data-draw="days-france-2">—</b> days to go</span>
+      </div>
+      <div class="g2">
+        <div class="card" id="colombier-card">
+          <span class="eyebrow">Jura</span>
+          <h2>Grand Colombier, from Culoz</h2>
+          <div class="climb-facts"><div><strong><span class="u-m">18 km</span><span class="u-i">11 mi</span></strong><span>length</span></div><div><strong><span class="u-m">~1,250 m</span><span class="u-i">~4,100 ft</span></strong><span>climbing</span></div><div><strong>~7%</strong><span>average, ramps over 10%</span></div></div>
+        </div>
+        <div class="card" id="tourmalet-card">
+          <span class="eyebrow">Pyrenees</span>
+          <h2>Col du Tourmalet, from Luz-Saint-Sauveur</h2>
+          <div class="climb-facts"><div><strong><span class="u-m">19 km</span><span class="u-i">12 mi</span></strong><span>length</span></div><div><strong><span class="u-m">~1,400 m</span><span class="u-i">~4,600 ft</span></strong><span>climbing</span></div><div><strong>~7.4%</strong><span>average, to <span class="u-m">2,115 m</span><span class="u-i">6,939 ft</span></span></div></div>
+        </div>
+      </div>
+      <div class="card" id="climb-ready-card">
+        <div class="card-h"><h2>Climb readiness</h2><span class="note">All-time Strava bests, climbing in <span class="u-m">m</span><span class="u-i">ft</span></span></div>
+        <p class="note">Your biggest single climb is <b data-draw="climb-pct" data-source="climbs" data-row="0" data-field="pct_colombier">—</b>% of the Colombier. Compare it with your biggest climbing day: the gap is doing that climbing in one go.</p>
+        <div class="chart short" data-draw="climb-chart" data-source="climbs"></div>
+      </div>
+      <div class="card" id="climb-weeks-card">
+        <div class="card-h"><h2>Climbing per week</h2><span class="note">Last 16 weeks, <span class="u-m">m</span><span class="u-i">ft</span> · dashed = one Tourmalet</span></div>
+        <p class="note">A week with a full climb's worth of vertical is a building block; the goal by spring is doing it in one ride.</p>
+        <div class="chart mid" data-draw="climb-weeks-chart" data-source="climb_weeks"></div>
+      </div>
+      <div class="card" id="timeline-card">
+        <div class="card-h"><h2>Training phases</h2><span class="note">Now to the trip · marker is today</span></div>
+        <div class="chart short" data-draw="timeline" data-source="roadmap"></div>
+      </div>
+      <div class="card" id="phases-card">
+        <h2>Phase by phase</h2>
+        <div class="scroll">
+          <table class="tbl" data-source="roadmap" data-row-key="order">
+            <thead><tr><th data-field="phase">Phase</th><th data-field="months">When</th><th data-field="focus">Focus</th><th data-field="milestone">Milestone</th></tr></thead>
+            <tbody data-draw="roadmap-rows"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <footer class="app-foot">Live from Strava for <span data-who>you</span> · weekly plan and Local Legends updated by Claude · <button type="button" data-signout>Disconnect Strava</button></footer>
+  </main>
+</div>
+</div>
+<script src="js/hub.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

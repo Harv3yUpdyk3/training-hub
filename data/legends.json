@@ -1,0 +1,11 @@
+[
+ {"order":1,"segment":"Westbound and down and up","segment_id":"40455246","title":"Local Legend","miles":0.56,"climb_ft":67,"ll_efforts_90d":18,"total_efforts":63,"pr":"2:13","pr_date":"2025-11-06"},
+ {"order":2,"segment":"Huff 'n Puff","segment_id":"41168023","title":"Local Legend","miles":0.42,"climb_ft":38,"ll_efforts_90d":18,"total_efforts":null,"pr":null,"pr_date":null},
+ {"order":3,"segment":"Full Hascall Hill","segment_id":"2596552","title":"Local Legend","miles":0.42,"climb_ft":140,"ll_efforts_90d":6,"total_efforts":null,"pr":null,"pr_date":null},
+ {"order":4,"segment":"Hascall Climb","segment_id":"8050560","title":"Local Legend","miles":0.45,"climb_ft":133,"ll_efforts_90d":6,"total_efforts":null,"pr":null,"pr_date":null},
+ {"order":5,"segment":"Lower Hascall","segment_id":"5948607","title":"Local Legend","miles":0.22,"climb_ft":80,"ll_efforts_90d":6,"total_efforts":null,"pr":null,"pr_date":null},
+ {"order":6,"segment":"Crystal Point Apartments to Panthersville Rd","segment_id":"6794679","title":"Local Legend","miles":1.07,"climb_ft":57,"ll_efforts_90d":1,"total_efforts":null,"pr":null,"pr_date":null},
+ {"order":7,"segment":"Ramsey Close to Club House","segment_id":"25890463","title":"Local Legend","miles":0.39,"climb_ft":31,"ll_efforts_90d":1,"total_efforts":null,"pr":null,"pr_date":null},
+ {"order":8,"segment":"Dendera TT out","segment_id":"2254737","title":"Top 10","miles":12.24,"climb_ft":94,"ll_efforts_90d":null,"total_efforts":null,"pr":"1:31:47","pr_date":"2024-10-30"},
+ {"order":9,"segment":"Climbing Millerfied","segment_id":"12851802","title":"Top 10","miles":1.33,"climb_ft":138,"ll_efforts_90d":null,"total_efforts":null,"pr":"9:22","pr_date":"2024-10-28"}
+]

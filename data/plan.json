@@ -1,0 +1,9 @@
+[
+ {"order":1,"day":"Mon","date":"2026-10-26","session":"Beltline loop","details":"Rode 24.2 mi at avg HR 157 (tempo). Harder than planned; that's why Tuesday was rest.","target_hr":"avg 157 (actual)","target_miles":"24.2","status":"Done","intensity":"Tempo"},
+ {"order":2,"day":"Tue","date":"2026-10-27","session":"Rest","details":"Off.","target_hr":"—","target_miles":"0","status":"Done","intensity":"Rest"},
+ {"order":3,"day":"Wed","date":"2026-10-28","session":"Zone 2 endurance","details":"Edgewood: 18.3 mi at avg HR 137. Right on target.","target_hr":"130–150, cap 153","target_miles":"18.3","status":"Done","intensity":"Endurance"},
+ {"order":4,"day":"Thu","date":"2026-10-29","session":"Rest","details":"Off, or a 30-minute spin.","target_hr":"under 125","target_miles":"0–6","status":"Planned","intensity":"Rest"},
+ {"order":5,"day":"Fri","date":"2026-10-30","session":"Hascall hill repeats","details":"4–5 mi easy warm-up, 3 × Full Hascall Hill at 8/10 effort, 4–5 min easy between, easy spin home. Stop if a rep is 15+ s slower than the first.","target_hr":"175–183 by end of each rep","target_miles":"12–15","status":"Planned","intensity":"VO2"},
+ {"order":6,"day":"Sat","date":"2026-10-31","session":"Long Zone 2","details":"2–2.5 hours, flat (Silver Comet). Eat every 30–45 min. Swap with Sunday if the weather is better.","target_hr":"130–150, cap 153","target_miles":"26–33","status":"Planned","intensity":"Endurance"},
+ {"order":7,"day":"Sun","date":"2026-11-01","session":"Easy spin or rest","details":"Optional 30–45 min spin, or off. Threshold 3 × 10 min moves to Tue Nov 3 next week.","target_hr":"under 125","target_miles":"0–10","status":"Planned","intensity":"Rest"}
+]

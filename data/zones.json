@@ -1,0 +1,42 @@
+[
+ {
+  "zone": "Z1",
+  "name": "Recovery",
+  "bpm": "up to 123",
+  "use": "Rest-day spins",
+  "lo": 100,
+  "hi": 123
+ },
+ {
+  "zone": "Z2",
+  "name": "Endurance",
+  "bpm": "124–153",
+  "use": "Most riding; long rides",
+  "lo": 124,
+  "hi": 153
+ },
+ {
+  "zone": "Z3",
+  "name": "Tempo",
+  "bpm": "154–168",
+  "use": "Your old default; use on purpose only",
+  "lo": 154,
+  "hi": 168
+ },
+ {
+  "zone": "Z4",
+  "name": "Threshold",
+  "bpm": "169–183",
+  "use": "3 × 10 min, end of hill reps",
+  "lo": 169,
+  "hi": 183
+ },
+ {
+  "zone": "Z5",
+  "name": "VO2 max",
+  "bpm": "184+",
+  "use": "Short, hard climbs",
+  "lo": 184,
+  "hi": 197
+ }
+]

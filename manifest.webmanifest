@@ -1,0 +1,21 @@
+{
+  "name": "Will's Training Hub",
+  "short_name": "Training Hub",
+  "description": "Cycling training hub, live from Strava.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0b0d11",
+  "theme_color": "#0b0d11",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Training", "url": "./#training" },
+    { "name": "Rides", "url": "./#rides" },
+    { "name": "Road to France", "url": "./#france" }
+  ]
+}

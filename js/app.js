@@ -49,6 +49,8 @@
     $('#setup-msg').textContent = msg || '';
     const keys = window.strava.hasKeys();
     $('#client-id').value = keys ? (JSON.parse(localStorage.getItem('hub.strava') || '{}').clientId || '') : '';
+    $('#client-secret').placeholder = keys ? 'Saved on this phone' : 'Paste from Strava';
+    $('#setup-go').textContent = keys ? 'Reconnect Strava' : 'Connect with Strava';
     setup.hidden = false;
   };
   $('#setup-go').addEventListener('click', () => {
@@ -66,7 +68,8 @@
   const who = window.strava.athlete();
   document.querySelectorAll('[data-who]').forEach((e) => { e.textContent = who && who.firstname ? who.firstname : 'you'; });
 
-  window.strava.finishSignIn()
+  window.strava.restore()
+    .then(() => window.strava.finishSignIn())
     .then(() => {
       if (!window.strava.ready()) showSetup();
       else window.dash.reloadAll();

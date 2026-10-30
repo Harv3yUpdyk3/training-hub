@@ -1,6 +1,6 @@
 // Offline support: the app's own files load from cache and update in the
 // background; data files and Strava always try the network first.
-const CACHE = 'hub-v3';
+const CACHE = 'hub-v4';
 const SHELL = ['./', 'index.html', 'theme.css', 'hub.css', 'manifest.webmanifest', 'js/d3.min.js', 'js/config.js', 'js/strava.js', 'js/runtime.js', 'js/hub.js', 'js/app.js', 'icons/icon-192.png'];
 
 self.addEventListener('install', (e) => {

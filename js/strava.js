@@ -23,6 +23,24 @@
   };
 
   const auth = () => store.get(AUTH_KEY, {});
+
+  // A second copy of the sign-in in IndexedDB, so the phone clearing one store
+  // doesn't mean typing the Client ID and Secret again.
+  const idb = (mode, fn) => new Promise((res) => {
+    try {
+      const open = indexedDB.open('hub', 1);
+      open.onupgradeneeded = () => open.result.createObjectStore('kv');
+      open.onerror = () => res(null);
+      open.onsuccess = () => {
+        const tx = open.result.transaction('kv', mode);
+        const req = fn(tx.objectStore('kv'));
+        tx.oncomplete = () => res(req && req.result);
+        tx.onerror = () => res(null);
+      };
+    } catch { res(null); }
+  });
+  const backup = () => idb('readwrite', (os) => os.put(auth(), AUTH_KEY));
+  const setAuth = (v) => { store.set(AUTH_KEY, v); backup(); };
   const redirectUri = () => location.origin + location.pathname;
 
   const connectErr = (msg) => Object.assign(new Error(msg), { code: 'connect' });
@@ -37,7 +55,7 @@
     });
     const j = await r.json().catch(() => ({}));
     if (!r.ok || !j.access_token) throw connectErr('Strava sign-in failed: ' + (j.message || r.status));
-    store.set(AUTH_KEY, { ...auth(), access_token: j.access_token, refresh_token: j.refresh_token, expires_at: j.expires_at, athlete: j.athlete ? { id: j.athlete.id, firstname: j.athlete.firstname } : a.athlete });
+    setAuth({ ...auth(), access_token: j.access_token, refresh_token: j.refresh_token, expires_at: j.expires_at, athlete: j.athlete ? { id: j.athlete.id, firstname: j.athlete.firstname } : a.athlete });
   };
 
   let refreshing = null;
@@ -242,6 +260,16 @@
 
   window.strava = {
     ready: () => !!auth().refresh_token,
+    // On open: bring back the sign-in from IndexedDB if this browser's storage lost it,
+    // and ask the phone to keep this app's storage.
+    restore: async () => {
+      try { if (navigator.storage && navigator.storage.persist) await navigator.storage.persist(); } catch {}
+      const kept = await idb('readonly', (os) => os.get(AUTH_KEY));
+      const now = auth();
+      if (kept && kept.refresh_token && !now.refresh_token) store.set(AUTH_KEY, { ...kept, ...now, refresh_token: kept.refresh_token, access_token: kept.access_token, expires_at: kept.expires_at });
+      else if (kept && kept.clientId && !now.clientId) store.set(AUTH_KEY, { ...kept, ...now });
+      else if (now.clientId) backup();
+    },
     hasKeys: () => !!(auth().clientId && auth().clientSecret),
     athlete: () => auth().athlete || null,
     calls: () => calls,
@@ -250,7 +278,7 @@
       if (!tools[tool]) throw new Error('No such Strava call: ' + tool);
       return tools[tool](args);
     },
-    saveKeys: (clientId, clientSecret) => store.set(AUTH_KEY, { ...auth(), clientId: String(clientId).trim(), clientSecret: String(clientSecret).trim() }),
+    saveKeys: (clientId, clientSecret) => setAuth({ ...auth(), clientId: String(clientId).trim(), clientSecret: String(clientSecret).trim() }),
     connect: () => {
       const a = auth();
       location.href = 'https://www.strava.com/oauth/authorize?' + new URLSearchParams({
@@ -270,6 +298,7 @@
     // Fresh numbers: forget this session's answers and the current year's list.
     resetSession: () => { memo.clear(); },
     signOut: () => {
+      idb('readwrite', (os) => os.delete(AUTH_KEY));
       Object.keys(localStorage).filter((k) => k.startsWith('hub.')).forEach((k) => localStorage.removeItem(k));
       memo.clear();
     },

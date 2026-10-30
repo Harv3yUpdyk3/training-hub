@@ -22,7 +22,7 @@
   .mast-r { margin-left: auto; display: flex; align-items: center; gap: 8px; min-width: 0; }
   .mchip { display: inline-flex; align-items: center; gap: 6px; height: 26px; padding: 0 10px; border-radius: 999px; background: rgba(255,255,255,.1); font: 700 12px var(--display); letter-spacing: .08em; text-transform: uppercase; color: rgba(255,255,255,.75); white-space: nowrap; }
   .mchip b { color: #fff; font-weight: 800; }
-  .mchip.rb { text-decoration: none; color: #fff; background: rgba(242,194,0,.18); }
+  .mchip.rb { text-decoration: none; color: #fff; background: rgba(255,255,255,.16); }
   .mchip.rb svg { width: 14px; height: 14px; }
   @media (max-width: 34rem) { .mast-in { gap: 8px; } .wm { font-size: 16px; } .units button { padding: 0 7px; } .mast-r { gap: 5px; } .mchip.rb { flex: none; width: 30px; height: 30px; padding: 0; justify-content: center; } .mchip.rb span { display: none; } .mchip.rb svg { width: 18px; height: 18px; } }
   .live { width: 7px; height: 7px; border-radius: 50%; background: #3ccf7e; box-shadow: 0 0 0 3px rgba(60,207,126,.25); flex: none; }

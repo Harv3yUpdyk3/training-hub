@@ -1041,7 +1041,9 @@
       const top = el('div', 'day-top');
       top.append(el('span', 'day-d', r.day + ' · ' + dayFmt(asDate(r.date))));
       if (done) top.append(el('span', 'tick', '✓'));
-      c.append(top, el('span', 'day-s', r.session), el('span', 'day-i', r.intensity), el('span', 'day-m', 'Plan ' + rangeU(r.target_miles) + ' ' + distU() + ' · ' + r.target_hr), actual);
+      c.append(top, el('span', 'day-s', r.session), el('span', 'day-i', r.intensity));
+      if (done && r.actual_short) c.append(el('span', 'day-did', 'Did: ' + r.actual_short));
+      c.append(el('span', 'day-m', 'Plan ' + rangeU(r.target_miles) + ' ' + distU() + ' · ' + r.target_hr), actual);
       return c;
     }));
   });
@@ -1055,7 +1057,9 @@
       c.dataset.key = String(r.order);
       c.style.setProperty('--int', css(INT[r.intensity] || '--cds-chart-muted'));
       const mid = el('div');
-      mid.append(el('span', 'day-d', r.day + ' · ' + dayFmt(asDate(r.date)) + ' · ' + r.intensity), el('h3', null, r.session), el('p', null, r.details));
+      mid.append(el('span', 'day-d', r.day + ' · ' + dayFmt(asDate(r.date)) + ' · ' + r.intensity), el('h3', null, r.session));
+      if (done && r.actual) mid.append(el('p', 'did', 'Did: ' + r.actual), el('p', 'was', 'Planned: ' + r.details));
+      else mid.append(el('p', null, r.details));
       const right = el('div', 'session-r');
       right.append(el('b', null, rangeU(r.target_miles) + ' ' + distU()), el('span', null, 'HR ' + r.target_hr), el('span', 'tag ' + (done ? 'ok' : ''), r.status));
       c.append(el('div', 'session-bar'), mid, right);

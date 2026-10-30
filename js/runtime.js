@@ -126,9 +126,24 @@
     try {
       onDataFns.forEach((fn) => { try { fn(); } catch (err) { console.error(err); } });
       document.querySelectorAll('[data-draw]').forEach((el) => { if (visible(el)) runDraw(el.dataset.draw, el); });
+      labelTables();
+      watchCharts();
     } finally { rendering = false; }
     window.hubStatus && window.hubStatus.update(state);
   };
+
+  // On phones, wide tables become stacked cards: each cell is labelled with its column.
+  const labelTables = () => document.querySelectorAll('table.stack').forEach((t) => {
+    const heads = [...t.querySelectorAll('thead th')].map((th) => th.textContent.trim());
+    t.querySelectorAll('tbody tr').forEach((tr) => [...tr.children].forEach((td, i) => { if (td.dataset.label !== heads[i]) td.dataset.label = heads[i] || ''; }));
+  });
+
+  // Rerun a chart when its own box changes width (a card going full screen, a rotation).
+  const widths = new WeakMap();
+  const ro = new ResizeObserver((entries) => {
+    if (entries.some((e) => { const w = Math.round(e.contentRect.width), was = widths.get(e.target); widths.set(e.target, w); return was != null && was !== w; })) changed();
+  });
+  const watchCharts = () => document.querySelectorAll('.chart[data-draw]').forEach((el) => { if (!widths.has(el)) { widths.set(el, null); ro.observe(el); } });
 
   // Rerun drawings when the width changes, and when a hidden tab is shown.
   let lastW = window.innerWidth;

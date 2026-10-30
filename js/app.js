@@ -73,5 +73,40 @@
     })
     .catch((err) => showSetup(err.message));
 
+  // Landscape: a chart card goes full screen and turns sideways.
+  const ICON_OPEN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 10v4M18 10v4"/></svg>';
+  const ICON_CLOSE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>';
+  let fullCard = null;
+  const setBtn = (b, open) => { b.innerHTML = (open ? ICON_CLOSE + 'Close' : ICON_OPEN + 'Landscape'); b.setAttribute('aria-label', open ? 'Close landscape view' : 'Show this chart in landscape'); };
+  const closeFull = () => {
+    if (!fullCard) return;
+    fullCard.classList.remove('full');
+    fullCard.querySelectorAll('.land').forEach((b) => setBtn(b, false));
+    fullCard = null;
+    try { screen.orientation.unlock(); } catch {}
+    if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+  };
+  const openFull = async (card) => {
+    closeFull();
+    fullCard = card;
+    card.classList.add('full');
+    card.querySelectorAll('.land').forEach((b) => setBtn(b, true));
+    try {
+      if (card.requestFullscreen) await card.requestFullscreen({ navigationUI: 'hide' });
+      if (screen.orientation && screen.orientation.lock) await screen.orientation.lock('landscape');
+    } catch {}
+  };
+  document.addEventListener('fullscreenchange', () => { if (!document.fullscreenElement && fullCard) closeFull(); });
+  document.querySelectorAll('.card').forEach((card) => {
+    const head = card.querySelector('.card-h');
+    if (!head || !card.querySelector('.chart') || card.querySelector('.land')) return;
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'land';
+    setBtn(b, false);
+    b.addEventListener('click', () => (fullCard === card ? closeFull() : openFull(card)));
+    head.append(b);
+  });
+
   if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
 })();

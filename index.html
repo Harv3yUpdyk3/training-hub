@@ -296,7 +296,7 @@
       <div class="card" id="garage-card">
         <div class="card-h"><h2>Garage</h2><span class="note">ATLien is the Diverge; Bombs over Baghdad is the Arise</span></div>
         <div class="scroll">
-          <table class="tbl" data-source="garage" data-row-key="gear_id">
+          <table class="tbl stack" data-source="garage" data-row-key="gear_id">
             <thead><tr><th data-field="name">Bike</th><th data-field="frame_type">Type</th><th data-field="km" data-mf="km" data-if="miles" class="num">All-time <span class="u-m">km</span><span class="u-i">mi</span></th><th data-field="share_pct" class="num">Share</th><th data-field="status">Status</th></tr></thead>
             <tbody data-draw="garage-rows"></tbody>
           </table>
@@ -331,7 +331,7 @@
         <div class="card" id="legends-card">
           <div class="card-h"><h2>Your crowns</h2><span class="note">Efforts are your count in Strava's 90-day window</span></div>
           <div class="scroll">
-            <table class="tbl" data-source="crowns" data-row-key="order">
+            <table class="tbl stack" data-source="crowns" data-row-key="order">
               <thead><tr><th data-field="title">Title</th><th data-field="segment">Segment</th><th data-field="ll_efforts_90d" class="num">90-day efforts</th><th data-field="pr" class="num">PR</th><th data-field="km" data-mf="km" data-if="miles" class="num wide-only"><span class="u-m">km</span><span class="u-i">mi</span></th><th data-field="climb_m" data-mf="climb_m" data-if="climb_ft" class="num wide-only">Climb <span class="u-m">m</span><span class="u-i">ft</span></th></tr></thead>
               <tbody data-draw="legend-rows"></tbody>
             </table>
@@ -347,7 +347,7 @@
           <div class="card-h"><h2>Keep your crowns</h2><span class="note">Live from your last 30 activities · weakest first</span></div>
           <p class="note">A Local Legend counts your efforts in the last 90 days, so each effort stops counting 90 days after you ride it. "Next drop" is when your oldest effort in the window falls out; ride the segment before then to stay level.</p>
           <div class="scroll">
-            <table class="tbl" data-source="ll_status" data-row-key="order">
+            <table class="tbl stack" data-source="ll_status" data-row-key="order">
               <thead><tr><th data-field="segment">Segment</th><th data-field="efforts_90d" class="num">Efforts, 90 days</th><th data-field="last_date">Last ridden</th><th data-field="days_since" class="num">Days ago</th><th data-field="next_expiry">Next drop</th></tr></thead>
               <tbody data-draw="ll-rows"></tbody>
             </table>
@@ -433,7 +433,7 @@
       <div class="card" id="phases-card">
         <h2>Phase by phase</h2>
         <div class="scroll">
-          <table class="tbl" data-source="roadmap" data-row-key="order">
+          <table class="tbl stack" data-source="roadmap" data-row-key="order">
             <thead><tr><th data-field="phase">Phase</th><th data-field="months">When</th><th data-field="focus">Focus</th><th data-field="milestone">Milestone</th></tr></thead>
             <tbody data-draw="roadmap-rows"></tbody>
           </table>

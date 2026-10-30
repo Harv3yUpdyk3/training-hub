@@ -931,6 +931,96 @@
     box.append(left, right);
   });
 
+  // Today's recap: once a ride is logged on a plan day, compare it with what was planned.
+  const todayStr = () => d3.timeFormat('%Y-%m-%d')(new Date());
+  const recapDay = () => {
+    const rows = planRows(), g = dash.data('rides');
+    if (!rows || g.status !== 'ok') return null;
+    const today = todayStr();
+    const plan = rows.find((p) => p.date === today);
+    const rides = g.data.filter((r) => r.date === today && /Ride/.test(r.sport_type || 'Ride'));
+    return plan && rides.length ? { plan, rides, main: d3.greatest(rides, (r) => r.miles) } : null;
+  };
+  dash.onData(() => {
+    const d = recapDay();
+    document.querySelectorAll('#recap-card').forEach((c) => { c.hidden = !d; });
+    if (d && dash.params().recap_ride !== d.main.id) dash.setParams({ recap_ride: d.main.id });
+  });
+  // "130–150, cap 153" → {lo:130, hi:150, cap:153}; "under 125" → {hi:125}; "175–183 by end…" → {lo:175, hi:183}
+  const hrTarget = (t) => {
+    const s = String(t || '');
+    const r = s.match(/(\d+)\s*[–-]\s*(\d+)/), u = s.match(/under\s*(\d+)/i), c = s.match(/cap\s*(\d+)/i);
+    if (r) return { lo: +r[1], hi: +r[2], cap: c ? +c[1] : null };
+    if (u) return { lo: null, hi: +u[1], cap: null };
+    return null;
+  };
+  const verdictOf = (v, lo, hi) => (v == null || (lo == null && hi == null) ? null : lo != null && v < lo ? 'under' : hi != null && v > hi ? 'over' : 'on');
+  const VERDICT = { under: ['Under', 'warn'], on: ['On target', 'ok'], over: ['Over', 'bad'] };
+  dash.draw('recap-when', (e) => {
+    const d = recapDay();
+    e.textContent = d ? d.plan.day + ' · ' + d.plan.session + ' · ' + d.plan.intensity : '—';
+  });
+  dash.draw('recap', (box) => {
+    box.replaceChildren();
+    const d = recapDay();
+    if (!d) return;
+    const { plan, rides } = d;
+    const hard = /VO2|Threshold/i.test(plan.intensity);
+    const det = dash.data('recap_detail');
+    const p = det.status === 'ok' ? det.data : null;
+    const mi = d3.sum(rides, (r) => r.miles), secs = d3.sum(rides, (r) => r.moving_s), ft = d3.sum(rides, (r) => r.elev_ft);
+    const nums = String(plan.target_miles ?? '').split('–').map(Number).filter(Number.isFinite);
+    const distV = nums.length ? verdictOf(mi, nums[0] * 0.9, nums[nums.length - 1] * 1.1) : null;
+    const hrT = hrTarget(plan.target_hr);
+    const hrVal = p && p.has_heartrate ? Math.round(hard ? p.max_heartrate : p.average_heartrate) : null;
+    const hrV = hrT ? verdictOf(hrVal, hrT.lo, hrT.cap || hrT.hi) : null;
+
+    const rowsEl = el('div', 'rc-rows');
+    const line = (label, planned, actual, v) => {
+      const r = el('div', 'rc-row');
+      const tag = v ? el('span', 'tag ' + VERDICT[v][1], VERDICT[v][0]) : el('span');
+      r.append(el('span', 'rc-l', label), el('span', 'rc-p', planned), el('b', 'rc-a', actual), tag);
+      return r;
+    };
+    rowsEl.append(
+      line('Distance', 'Plan ' + rangeU(plan.target_miles) + ' ' + distU(), f1(fromMi(mi)) + ' ' + distU(), distV),
+      line(hard ? 'Max HR' : 'Avg HR', 'Plan ' + plan.target_hr, hrVal == null ? (p ? 'No HR' : '…') : hrVal + ' bpm', hrV),
+      line('Moving time', '', hm(secs), null),
+      line('Climbing', '', fmt(Math.round(elevFt(ft))) + ' ' + elevU(), null),
+    );
+    box.append(rowsEl);
+
+    // Repeats: any segment ridden more than once today, rep by rep.
+    if (p && Array.isArray(p.segment_efforts)) {
+      const by = d3.group(p.segment_efforts, (e) => e.segment_id);
+      const reps = [...by.values()].filter((v) => v.length > 1).sort((a, b) => b.length - a.length || b[0].distance - a[0].distance)[0];
+      if (reps) {
+        const times = reps.map((e) => e.elapsed_time), best = d3.min(times), first = times[0];
+        const w = el('div', 'rc-reps');
+        const planned = String(plan.details || '').match(/(\d+)\s*×/);
+        w.append(el('span', 'rc-l', reps.length + ' × ' + String(reps[0].segment_name).trim() + (planned ? ' · plan ' + planned[1] : '')));
+        const list = el('div', 'rc-replist');
+        reps.forEach((e, i) => {
+          const c = el('span', 'rc-rep' + (e.elapsed_time === best ? ' best' : ''));
+          c.append(el('b', null, mmss(e.elapsed_time)), el('small', null, e.avg_hr ? Math.round(e.avg_hr) + ' bpm' : 'rep ' + (i + 1)));
+          list.append(c);
+        });
+        w.append(list);
+        const fade = times.filter((t) => t - first >= 15).length;
+        if (/stop if a rep is 15\+ s slower/i.test(plan.details || '')) w.append(el('span', 'rc-note', fade ? fade + ' rep' + (fade > 1 ? 's were' : ' was') + ' 15+ s slower than the first.' : 'No rep faded 15+ s from the first.'));
+        box.append(w);
+      }
+    }
+
+    // One-line summary
+    const bits = [];
+    if (distV === 'under') bits.push('shorter than planned'); else if (distV === 'over') bits.push('longer than planned'); else if (distV === 'on') bits.push('distance on plan');
+    if (hrV === 'under') bits.push(hard ? 'heart rate didn\'t reach the target zone, so push harder next time' : 'easier than planned');
+    else if (hrV === 'over') bits.push(hard ? 'heart rate above the target' : 'heart rate above the cap, so ease off next time');
+    else if (hrV === 'on') bits.push('heart rate on target');
+    if (bits.length) { const s = bits.join(', '); box.append(el('p', 'rc-sum', s[0].toUpperCase() + s.slice(1) + '.')); }
+  });
+
   dash.draw('plan-strip', (box) => {
     const rows = planRows();
     const pa = dash.data('plan_actual');

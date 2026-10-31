@@ -1,54 +1,55 @@
 /* Centennial look in Will's six colours: Blue Stone #005B55 is the base (the
    page is a darker shade of it), with Deep Sky Blue #00B1EA, Amethyst #9557A9,
-   Copper #B37E2C, Cerise #EA2C78 and International Orange #F4462F as patchwork, with bold block
+   Copper #B37E2C, Cerise #EA2C78 and International Orange #F4462F as patchwork.
+   Blue Stone and Copper lead (Will, Oct 31); the other four support, with bold block
    type and solid cycling and mountain pictograms. Loaded after hub.css. */
 :root, :root[data-theme] {
   color-scheme: dark;
   --stone: #005B55; --sky: #00B1EA; --amethyst: #9557A9; --copper: #B37E2C; --cerise: #EA2C78; --orange: #F4462F; --cream: #f6eedb;
-  --g96: var(--stone); --clay: var(--orange); --gold: var(--copper); --teal: var(--sky); --plum: var(--amethyst);
+  --stone-hi: #2fa497; --copper-hi: #d39a45; --g96: var(--stone); --clay: var(--orange); --gold: var(--copper); --teal: var(--sky); --plum: var(--amethyst);
   --page: #002a27; --panel96: #003d39; --deep: #001c1a;
   --color-bg: var(--page); --color-panel: var(--panel96); --color-fg: var(--cream); --color-fg-muted: #a3c2bd;
   --color-border-line: #0b5a53; --color-ok: #5fe0a8; --color-warn: #d9a24a; --color-bad: #ff6a52;
-  --series-1: #00B1EA; --series-2: #F4462F; --series-3: #B37E2C; --series-4: #9557A9;
-  --series-5: #EA2C78; --series-6: #3fbfa8; --series-7: #a3c2bd; --series-8: #d9a24a;
+  --series-1: #d39a45; --series-2: #2fa497; --series-3: #00B1EA; --series-4: #9557A9;
+  --series-5: #EA2C78; --series-6: #F4462F; --series-7: #a3c2bd; --series-8: #d9a24a;
   --cds-border: #0b5a53; --cds-chart-axis: #5f918b; --cds-chart-grid: #0a4a45; --cds-chart-muted: #1f6b64;
   --cds-chart-reference: #a3c2bd; --cds-chart-categorical-1: #00B1EA; --cds-chart-categorical-3: #b07cc2;
   --cds-chart-status-warning: #d9a24a; --cds-chart-status-critical: #F4462F;
   --cds-text-secondary: #a3c2bd; --cds-surface-popover: #004842; --cds-shadow-popover: 0 8px 24px rgba(0,0,0,.5);
-  --quilt: linear-gradient(90deg, var(--sky) 0 20%, var(--amethyst) 20% 40%, var(--copper) 40% 60%, var(--cerise) 60% 80%, var(--orange) 80%);
+  --quilt: linear-gradient(90deg, var(--stone) 0 34%, var(--copper) 34% 68%, var(--sky) 68% 76%, var(--amethyst) 76% 84%, var(--cerise) 84% 92%, var(--orange) 92%);
   --pattern: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cg transform='translate%2814 18%29' opacity='.07'%3E%3Cpath d='M0 32 17 4l8 12 6-8 17 24z' fill='%23f4ead2'/%3E%3Cpath d='M12.6 11.2 17 4l4.6 7-2.6 2.4-2-2.6-2.2 2.6z' fill='%23f4ead2'/%3E%3Cpath d='M27.6 12.6 31 8l3.6 5.2-1.8 1.4-1.6-1.6-1.6 1.6z' fill='%23f4ead2'/%3E%3C/g%3E%3Cg transform='translate%2896 100%29' opacity='.07'%3E%3Cg fill='%23f4ead2' stroke='%23f4ead2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='10' cy='28' r='7.5' fill='none' stroke-width='3.6'/%3E%3Ccircle cx='38' cy='28' r='7.5' fill='none' stroke-width='3.6'/%3E%3Cpath d='M10 28 19 17h13l6 11M19 17l4 11 9-11' fill='none' stroke-width='2.4'/%3E%3Ccircle cx='35' cy='5.5' r='4' stroke='none'/%3E%3Cpath d='M16 15c3-6 9-9 16-8l1 4c-6 0-10 2-13 6z' stroke='none'/%3E%3Cpath d='M31 9l5 7' fill='none' stroke-width='3.4'/%3E%3Cpath d='M18 15l8 5-3 7' fill='none' stroke-width='4.2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
   --picto-bike: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 38'%3E%3Cg fill='%23000' stroke='%23000' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='10' cy='28' r='7.5' fill='none' stroke-width='3.6'/%3E%3Ccircle cx='38' cy='28' r='7.5' fill='none' stroke-width='3.6'/%3E%3Cpath d='M10 28 19 17h13l6 11M19 17l4 11 9-11' fill='none' stroke-width='2.4'/%3E%3Ccircle cx='35' cy='5.5' r='4' stroke='none'/%3E%3Cpath d='M16 15c3-6 9-9 16-8l1 4c-6 0-10 2-13 6z' stroke='none'/%3E%3Cpath d='M31 9l5 7' fill='none' stroke-width='3.4'/%3E%3Cpath d='M18 15l8 5-3 7' fill='none' stroke-width='4.2'/%3E%3C/g%3E%3C/svg%3E");
   --picto-mtn: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 32'%3E%3Cpath d='M0 32 17 4l8 12 6-8 17 24z' fill='%23000'/%3E%3Cpath d='M12.6 11.2 17 4l4.6 7-2.6 2.4-2-2.6-2.2 2.6z' fill='%23000'/%3E%3Cpath d='M27.6 12.6 31 8l3.6 5.2-1.8 1.4-1.6-1.6-1.6 1.6z' fill='%23000'/%3E%3C/svg%3E");
 }
 html, body { background: var(--page); }
 body { background-image: var(--pattern); }
-.hub, #plan-sheet { --acc: var(--clay); --line: var(--color-border-line); --r: 2px; }
-.hub { background: transparent; --tone: var(--orange); }
-#training { --tone: var(--cerise); } #rides { --tone: var(--sky); } #segments { --tone: var(--copper); } #france { --tone: var(--amethyst); }
+.hub, #plan-sheet { --acc: var(--copper); --line: var(--color-border-line); --r: 2px; }
+.hub { background: transparent; --tone: var(--copper-hi); }
+#training { --tone: var(--stone-hi); } #rides { --tone: var(--sky); } #segments { --tone: var(--orange); } #france { --tone: var(--amethyst); }
 
 /* Masthead: dark band over a patchwork strip */
-.mast { background: var(--deep); color: var(--cream); position: relative; border-bottom: 0; }
-.mast::after { content: ""; position: absolute; left: 0; right: 0; bottom: -6px; height: 6px; background: var(--quilt); }
-.mast .logo { background: var(--orange); border-radius: 2px; }
+.mast { background: var(--stone); color: var(--cream); position: relative; border-bottom: 0; }
+.mast::after { content: ""; position: absolute; left: 0; right: 0; bottom: -6px; height: 6px; background: linear-gradient(90deg, var(--copper) 0 64%, var(--sky) 64% 73%, var(--amethyst) 73% 82%, var(--cerise) 82% 91%, var(--orange) 91%); }
+.mast .logo { background: var(--copper); border-radius: 2px; }
 .mast .logo svg { stroke: #fff; }
 .wm { font-style: normal; font-weight: 800; letter-spacing: .08em; }
 .wm span { color: rgba(246,238,219,.55); }
 .mchip { background: rgba(246,238,219,.1); color: var(--cream); border-radius: 2px; }
-.mchip b { color: var(--sky); }
-.mchip.rb { background: var(--sky); color: var(--deep); }
+.mchip b { color: var(--copper-hi); }
+.mchip.rb { background: var(--copper); color: #fff; }
 .units, .sync { background: rgba(246,238,219,.1); border-radius: 2px; }
 .units button { color: rgba(246,238,219,.75); border-radius: 1px; }
-.units button[aria-pressed=true] { background: var(--sky); color: var(--deep); }
-.live { background: var(--sky); box-shadow: 0 0 0 3px rgba(0,177,234,.3); }
+.units button[aria-pressed=true] { background: var(--copper); color: #fff; }
+.live { background: var(--copper-hi); box-shadow: 0 0 0 3px rgba(179,126,44,.35); }
 
 /* Tabs: the open one is a solid quilt patch in its event colour */
-.tabs { background: var(--deep); border-bottom: 0; margin-top: 6px; box-shadow: 0 2px 8px rgba(0,0,0,.35); }
+.tabs { background: #004a45; border-bottom: 0; margin-top: 6px; box-shadow: 0 2px 8px rgba(0,0,0,.35); }
 .hub-tab { color: #a3c2bd; font-style: normal; font-weight: 800; letter-spacing: .08em; border: 0; border-radius: 2px; height: 40px; margin: 7px 3px; padding: 0 14px; }
 .hub-tab:hover { color: var(--cream); background: rgba(246,238,219,.06); }
-.hub-tab[aria-selected=true] { background: var(--orange); color: #fff; }
-.hub-tab[data-tab=training][aria-selected=true] { background: var(--cerise); color: #fff; }
+.hub-tab[aria-selected=true] { background: var(--copper); color: #fff; }
+.hub-tab[data-tab=training][aria-selected=true] { background: var(--page); color: #fff; box-shadow: inset 0 -4px 0 var(--stone-hi); }
 .hub-tab[data-tab=rides][aria-selected=true] { background: var(--sky); color: var(--deep); }
-.hub-tab[data-tab=segments][aria-selected=true] { background: var(--copper); color: #fff; }
+.hub-tab[data-tab=segments][aria-selected=true] { background: var(--orange); color: #fff; }
 .hub-tab[data-tab=france][aria-selected=true] { background: var(--amethyst); color: #fff; }
 .kbd { display: none; }
 
@@ -67,24 +68,24 @@ body { background-image: var(--pattern); }
   color: var(--cream); border: 0; border-radius: var(--r); padding-bottom: 28px;
   background:
     linear-gradient(90deg, var(--deep) 0%, var(--deep) 46%, rgba(0,28,26,.55) 70%, rgba(0,28,26,.2) 100%),
-    conic-gradient(from 90deg at 50% 50%, var(--orange) 0 25%, var(--sky) 0 50%, var(--copper) 0 75%, var(--amethyst) 0) 0 0 / 72px 72px,
+    conic-gradient(from 90deg at 50% 50%, var(--copper) 0 25%, var(--stone) 0 50%, var(--copper-hi) 0 75%, #00796f 0) 0 0 / 72px 72px,
     var(--stone); }
 .hero::before { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 6px; background: var(--quilt); z-index: 2; }
 .hero::after { background: none; }
-.kick { color: var(--sky); }
+.kick { color: var(--copper-hi); }
 .dek { color: #dfe8e2; } .dek b { color: #fff; }
-.hstat { background: rgba(0,28,26,.88); border-top: 4px solid var(--cerise); border-radius: 2px; }
-.hstat b, .hero .hl { color: var(--sky); }
+.hstat { background: rgba(0,28,26,.88); border-top: 4px solid var(--copper); border-radius: 2px; }
+.hstat b, .hero .hl { color: var(--copper-hi); }
 .sl, .hl small, .hrow span, .hrow b small, .hrow b small span { color: #a3c2bd; }
 .hrow { background: rgba(246,238,219,.08); border-top: 0; }
 .hrow > div { background: var(--deep); }
 .hero .tag.ok, .hrow b.ok { color: #5fe0a8; } .hero .tag.bad, .hrow b.bad { color: #ff8a73; }
 
 /* Plan, next up, buttons */
-.nextup { border-radius: var(--r); background: var(--panel96); box-shadow: inset 6px 0 0 var(--sky); }
-.pw-save, .pw-start, .gk-btns .gk-save, .ps-btns .ps-done, .go { background: var(--orange); color: #fff; border-radius: 2px; }
+.nextup { border-radius: var(--r); background: var(--panel96); }
+.pw-save, .pw-start, .gk-btns .gk-save, .ps-btns .ps-done, .go { background: var(--copper); color: #fff; border-radius: 2px; }
 .pw-nav button { background: var(--deep); color: var(--cream); border-radius: 2px; }
-.badge { color: var(--sky); background: rgba(0,177,234,.14); }
+.badge { color: var(--copper-hi); background: rgba(179,126,44,.18); }
 .tag.warn { color: #d9a24a; background: rgba(179,126,44,.2); }
 .rc-rep.best, .ed-step.goal { border-color: var(--copper); background: rgba(179,126,44,.18); }
 

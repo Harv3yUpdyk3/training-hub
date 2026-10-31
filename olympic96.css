@@ -1,0 +1,95 @@
+/* Atlanta '96: the hub in the colours of the Centennial Games' "Quilt of
+   Leaves" look. Warm cream paper, deep olympic green, terracotta clay, torch
+   gold, Chattahoochee teal and plum, with a patchwork band and a leaf quilt.
+   Loaded after hub.css; only overrides looks. */
+:root, :root[data-theme] {
+  color-scheme: light;
+  --g96: #1f6b3a; --g96-deep: #123f24; --clay: #b5402c; --gold: #d9a21b;
+  --teal: #1d6f8f; --plum: #6b3d74; --olive: #7d8b2d; --cream: #f4ead2; --paper: #fbf5e6; --ink96: #2a2416;
+  --color-bg: var(--cream); --color-panel: var(--paper); --color-fg: var(--ink96); --color-fg-muted: #6f6450;
+  --color-border-line: #e2d4b2; --color-ok: #1f7a3f; --color-warn: #a86f00; --color-bad: #b5402c;
+  --series-1: #1f6b3a; --series-2: #b5402c; --series-3: #d9a21b; --series-4: #1d6f8f;
+  --series-5: #6b3d74; --series-6: #7d8b2d; --series-7: #8c7f66; --series-8: #e07a2f;
+  --cds-border: #e2d4b2; --cds-chart-axis: #a8997a; --cds-chart-grid: #ebe0c6; --cds-chart-muted: #cfc2a3;
+  --cds-chart-reference: #6f6450; --cds-chart-categorical-1: #1d6f8f; --cds-chart-categorical-3: #6b3d74;
+  --cds-chart-status-warning: #d9a21b; --cds-chart-status-critical: #b5402c;
+  --cds-text-secondary: #6f6450; --cds-surface-popover: #fffaf0; --cds-shadow-popover: 0 8px 24px rgba(42,36,22,.22);
+  --serif96: "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+  --quilt: linear-gradient(90deg, var(--g96) 0 20%, var(--clay) 20% 40%, var(--gold) 40% 60%, var(--teal) 60% 80%, var(--plum) 80%);
+  --leaves: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'%3E%3Cg fill='none' stroke-width='1.4' stroke-linecap='round'%3E%3Cpath d='M8 26c0-10 8-18 18-18 0 10-8 18-18 18zM8 26 22 12' stroke='%231f6b3a' opacity='.11'/%3E%3Cpath d='M40 58c0-10 8-18 18-18 0 10-8 18-18 18zM40 58l14-14' stroke='%23b5402c' opacity='.09'/%3E%3Cpath d='M44 22c6-6 14-6 16 0-6 6-14 6-16 0zM44 22h16' stroke='%23d9a21b' opacity='.14'/%3E%3Cpath d='M6 50c6-6 14-6 16 0-6 6-14 6-16 0zM6 50h16' stroke='%231d6f8f' opacity='.09'/%3E%3C/g%3E%3C/svg%3E");
+}
+html, body { background: var(--cream); }
+body { background-image: var(--leaves); }
+.hub, #plan-sheet { --acc: var(--clay); --line: var(--color-border-line); --r: 6px; }
+.hub { background: transparent; }
+
+/* Masthead: deep green with the patchwork band under it */
+.mast { background: var(--g96-deep) var(--leaves); color: var(--cream); position: relative; border-bottom: 0; }
+.mast::after { content: ""; position: absolute; left: 0; right: 0; bottom: -5px; height: 5px; background: var(--quilt); }
+.mast .logo { background: var(--gold); border-radius: 50%; }
+.mast .logo svg { stroke: var(--g96-deep); }
+.wm { font-family: var(--serif96); font-style: italic; font-weight: 700; letter-spacing: .01em; text-transform: none; }
+.wm::after { content: " '96"; color: var(--gold); font-style: italic; }
+.wm span { color: rgba(244,234,210,.6); font-family: var(--font-anthropic-sans); font-style: normal; }
+.mchip { background: rgba(244,234,210,.12); color: var(--cream); }
+.mchip b { color: var(--gold); }
+.mchip.rb { background: var(--gold); color: var(--g96-deep); }
+.units, .sync { background: rgba(244,234,210,.12); }
+.units button { color: rgba(244,234,210,.75); }
+.units button[aria-pressed=true] { background: var(--gold); color: var(--g96-deep); }
+.live { background: var(--gold); box-shadow: 0 0 0 3px rgba(217,162,27,.3); }
+
+/* Tabs: each event gets a quilt colour */
+.tabs { background: var(--paper); border-bottom: 1px solid var(--line); margin-top: 5px; box-shadow: 0 2px 6px rgba(42,36,22,.06); }
+.hub-tab { color: var(--color-fg-muted); font-family: var(--serif96); font-style: italic; font-weight: 700; text-transform: none; letter-spacing: .01em; border-bottom: 3px solid transparent; }
+.hub-tab:hover { color: var(--ink96); }
+.hub-tab[aria-selected=true] { color: var(--g96); border-bottom-color: var(--g96); }
+.hub-tab[data-tab=training][aria-selected=true] { color: var(--clay); border-bottom-color: var(--clay); }
+.hub-tab[data-tab=rides][aria-selected=true] { color: var(--teal); border-bottom-color: var(--teal); }
+.hub-tab[data-tab=segments][aria-selected=true] { color: #9a7300; border-bottom-color: var(--gold); }
+.hub-tab[data-tab=france][aria-selected=true] { color: var(--plum); border-bottom-color: var(--plum); }
+.kbd { display: none; }
+
+/* Page headers: serif italic with a leaf */
+.hub { --tone: var(--g96); }
+#training { --tone: var(--clay); } #rides { --tone: var(--teal); } #segments { --tone: var(--gold); } #france { --tone: var(--plum); }
+.ph h1 { font-family: var(--serif96); font-style: italic; font-weight: 700; text-transform: none; letter-spacing: 0; font-size: 34px; color: var(--ink96); }
+.ph h1::before { width: 20px; height: 20px; background: var(--tone); border-radius: 0 60% 0 60%; }
+
+/* Cards: paper squares, stitched like a quilt block */
+.card { background: var(--paper); border: 1px solid var(--line); border-radius: var(--r); box-shadow: 0 1px 0 #e9dcbc, 0 2px 8px rgba(42,36,22,.05); position: relative; outline: 1px dashed rgba(42,36,22,.12); outline-offset: -6px; }
+.card::before { content: ""; position: absolute; left: -1px; right: -1px; top: -1px; height: 4px; background: var(--tone); border-radius: var(--r) var(--r) 0 0; }
+.card h2 { font-family: var(--serif96); font-style: italic; text-transform: none; letter-spacing: 0; font-size: 18px; font-weight: 700; color: var(--ink96); }
+.card h2::before { width: 10px; height: 10px; border-radius: 0 60% 0 60%; background: var(--tone); }
+.card.full { outline: 0; }
+.card.full::before { display: none; }
+
+/* Season goal: the torch panel */
+.hero { --color-fg: var(--cream); --color-fg-muted: #d6cba8; --cds-chart-grid: rgba(244,234,210,.16);
+  color: var(--cream); border: 0; padding-bottom: 27px;
+  background: radial-gradient(110% 130% at 100% 0%, rgba(217,162,27,.42) 0%, transparent 55%), linear-gradient(160deg, #1f6b3a 0%, #123f24 75%); }
+.hero::before { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 5px; background: var(--quilt); z-index: 2; }
+.hero::after { background: none; }
+.kick { color: var(--gold); }
+.dek { color: #e8dfc4; } .dek b { color: #fff; }
+.hstat { background: rgba(18,63,36,.75); border-top-color: var(--gold); }
+.hstat b, .hero .hl { color: var(--gold); }
+.sl, .hl small, .hrow span, .hrow b small, .hrow b small span { color: #cfc4a2; }
+.hrow { background: rgba(244,234,210,.1); border-top-color: rgba(244,234,210,.12); }
+.hrow > div { background: rgba(18,63,36,.55); }
+.hero .tag.ok, .hrow b.ok { color: #9fe0a8; } .hero .tag.bad, .hrow b.bad { color: #ffb19f; }
+
+/* Plan, next up, buttons */
+.nextup { background: linear-gradient(90deg, rgba(181,64,44,.08), transparent 60%), var(--paper); }
+.nu-s, .pw-rel, .ps-title { font-family: var(--serif96); font-style: italic; }
+.pw-save, .pw-start, .gk-btns .gk-save, .ps-btns .ps-done, .go { background: var(--g96); color: var(--cream); }
+.pw-nav button { background: var(--cream); }
+.badge { color: var(--g96); background: rgba(31,107,58,.1); }
+.tag.warn { color: #8a5d00; background: rgba(217,162,27,.18); }
+.rc-rep.best { border-color: var(--gold); background: rgba(217,162,27,.14); }
+.ed-step.goal { border-color: var(--gold); background: rgba(217,162,27,.14); }
+.sheet > * { background: var(--paper); }
+
+/* Closing ceremony footer */
+.app-foot { border-top: 0; padding-top: 18px; position: relative; }
+.app-foot::before { content: "Atlanta, Georgia"; display: block; font: italic 700 15px var(--serif96); color: var(--g96); margin-bottom: 6px; padding-top: 10px; background: var(--quilt) top / 100% 4px no-repeat; }

@@ -95,6 +95,20 @@
 
       <div class="nextup" id="next-up" data-draw="next-up" data-source="plan"></div>
 
+      <div class="card" id="weather-card">
+        <div class="card-h"><h2>Weather</h2><span class="note">Atlanta · this week and next · Open-Meteo forecast</span></div>
+        <div class="wx" data-draw="wx" data-source="weather plan"></div>
+      </div>
+
+      <div class="card" id="cumulative-card">
+        <div class="card-h"><h2>Distance through 2026</h2><span class="note">Running total, <span class="u-m">km</span><span class="u-i">mi</span> · gray = 2025 · dashed = even pace</span></div>
+        <div class="chart" data-draw="cum-chart" data-source="cumulative cumulative_2025"></div>
+      </div>
+      <div class="card" id="calendar-card">
+        <div class="card-h"><h2>Ride calendar</h2><span class="note">Each square is a day in 2026, coloured by distance; orange and pink are Eddington 55 days</span></div>
+        <div class="scroll"><div class="chart short heat-svg" data-draw="heatmap" data-source="days"></div></div>
+      </div>
+
       <div class="g21">
         <div class="card" id="last4-card">
           <div class="card-h"><h2>Last 4 weeks</h2><span class="note">Against the 4 weeks before · <span class="key"><i class="now"></i>now</span> <span class="key"><i class="prev"></i>before</span></span></div>
@@ -282,10 +296,6 @@
       </div>
       <h3 class="sec">Trends</h3>
       <div class="g21">
-          <div class="card" id="cumulative-card">
-            <div class="card-h"><h2>Distance through 2026</h2><span class="note">Running total, <span class="u-m">km</span><span class="u-i">mi</span> · gray = 2025 · dashed = even pace</span></div>
-            <div class="chart" data-draw="cum-chart" data-source="cumulative cumulative_2025"></div>
-          </div>
           <div class="card" id="weekly-card">
             <div class="card-h"><h2>Weekly volume</h2><span class="note">Last 16 weeks, <span class="u-m">km</span><span class="u-i">mi</span></span></div>
             <div class="chart" data-draw="weekly-chart" data-source="weekly"></div>
@@ -305,10 +315,6 @@
         </div>
       </div>
       <h3 class="sec">Habits</h3>
-      <div class="card" id="calendar-card">
-        <div class="card-h"><h2>Ride calendar</h2><span class="note">Each square is a day in 2026, coloured by distance; orange and pink are Eddington 55 days</span></div>
-        <div class="scroll"><div class="chart short heat-svg" data-draw="heatmap" data-source="days"></div></div>
-      </div>
       <div class="card" id="dow-card">
         <div class="card-h"><h2>When you ride</h2><span class="note">2026 rides by weekday · bar = rides, label = average <span class="u-m">km</span><span class="u-i">mi</span></span></div>
         <div class="chart mid" data-draw="dow-chart" data-source="dow"></div>

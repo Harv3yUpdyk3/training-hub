@@ -15,6 +15,7 @@ window.HUB_CONFIG = {
     recap_detail: { kind: 'query', tool: 'get_activity_performance', args: { activity_id: '{{recap_ride}}' } },
     gear: { kind: 'query', tool: 'get_gear', args: { gear_types: ['Bike'] } },
     streak: { kind: 'query', tool: 'get_active_streak', args: {} },
+    weather: { kind: 'weather' },
     bests: { kind: 'file', url: 'data/bests.json' },
     bests_yoy: { kind: 'file', url: 'data/bests_yoy.json' },
     plan: { kind: 'week', fallback: 'data/plan.json' },

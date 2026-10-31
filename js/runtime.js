@@ -60,6 +60,8 @@
           if (!r.ok) throw new Error('No plan for this week yet');
           answer = await r.json();
         }
+      } else if (ds.kind === 'weather') {
+        answer = await window.planner.weather();
       } else if (ds.kind === 'file') {
         const r = await fetch(ds.url, { cache: 'no-cache' });
         if (!r.ok) throw new Error('Could not read ' + ds.url + ' (' + r.status + ')');

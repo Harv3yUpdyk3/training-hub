@@ -113,3 +113,29 @@ button.land:not(.pw-gh) { position: absolute; top: 12px; right: 12px; width: 34p
 /* Ride detail and fact grids: an odd last tile spans the row instead of leaving a hole */
 @media (max-width: 40rem) { .rd-stats > div:last-child:nth-child(odd), .facts > .fact:last-child:nth-child(odd) { grid-column: 1 / -1; } }
 h3.sec { color: var(--copper-hi); letter-spacing: .14em; }
+
+/* Weather: two rows of seven days */
+.wx-h { font: 800 12px var(--display); letter-spacing: .12em; text-transform: uppercase; color: var(--color-fg-muted); margin: 6px 0 6px; }
+.wx-row { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; margin-bottom: 8px; }
+.wx-d { display: grid; justify-items: center; gap: 1px; padding: 7px 2px 6px; border-radius: 3px; background: rgba(0,0,0,.18); border: 1px solid transparent; text-align: center; min-width: 0; }
+.wx-d.today { border-color: var(--copper); background: rgba(179,126,44,.16); }
+.wx-d.past { opacity: .5; }
+.wx-d.wet { background: rgba(0,177,234,.16); border-color: rgba(0,177,234,.55); }
+.wx-d.today.wet { border-color: var(--copper); }
+.wx-dow { font: 800 11px var(--display); letter-spacing: .08em; text-transform: uppercase; }
+.wx-date { font-size: 11px; color: var(--color-fg-muted); }
+.wx-ic { width: 24px; height: 24px; color: var(--copper-hi); margin: 3px 0 2px; }
+.wx-d.wet .wx-ic { color: var(--sky); }
+.wx-ic svg { width: 100%; height: 100%; display: block; }
+.wx-t { font: 800 16px/1 var(--display); }
+.wx-lo { font-size: 11px; color: var(--color-fg-muted); }
+.wx-pop { font: 700 11px var(--mono, monospace); color: var(--color-fg-muted); }
+.wx-d.wet .wx-pop { color: var(--sky); }
+.wx-plan { margin-top: 3px; font: 800 10.5px var(--display); letter-spacing: .04em; color: var(--copper-hi); white-space: nowrap; }
+/* Weather on plan days */
+.pw-wx { color: var(--color-fg-muted); white-space: nowrap; }
+.pw-wx.wet { color: var(--sky); font-weight: 700; }
+/* Ride calendar key: name and range */
+.heat-key { margin-top: 10px; gap: 6px 14px; }
+.heat-key b { color: var(--cream); margin-right: 3px; }
+.heat-key i { width: 10px; height: 10px; }

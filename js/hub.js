@@ -1798,7 +1798,7 @@ const ED_GOAL_MI = 55; // Will's Eddington goal, in miles
     const svg = d3.select(box).append('svg').attr('viewBox', `0 0 ${w} ${h}`).attr('width', '100%').attr('role', 'img').attr('aria-label', 'Calendar of 2026 ride days, shaded by km');
     const today = f(new Date());
     // Each day takes a colour from the palette by distance (bands in miles); 55+ is an Eddington day.
-    const BANDS = [[0, '#2fa497'], [15, '#00B1EA'], [25, '#9557A9'], [40, '#B37E2C'], [ED_GOAL_MI, '#F4462F'], [80, '#EA2C78']];
+    const BANDS = [[0, '#2fa497', 'Spin'], [15, '#00B1EA', 'Ride'], [30, '#9557A9', 'Long'], [45, '#B37E2C', 'Big'], [ED_GOAL_MI, '#F4462F', 'Eddington'], [100, '#EA2C78', 'Century']];
     const band = (km) => { const mi = km / 1.609344; let c = BANDS[0][1]; BANDS.forEach(([m, col]) => { if (mi >= m) c = col; }); return c; };
     const tip = el('div', 'tip'); tip.hidden = true; box.append(tip);
     svg.append('g').selectAll('rect').data(days).join('rect')
@@ -1825,10 +1825,12 @@ const ED_GOAL_MI = 55; // Will's Eddington goal, in miles
     svg.append('g').selectAll('text').data([['Mon', 0], ['Wed', 2], ['Fri', 4]]).join('text')
       .attr('x', 0).attr('y', (d) => t + d[1] * step + cell - 2).attr('fill', css('--color-fg-muted')).style('font-size', '10px').text((d) => d[0]);
     const key = el('div', 'legend heat-key');
-    BANDS.forEach(([m, col], i) => {
+    BANDS.forEach(([m, col, name], i) => {
       const next = BANDS[i + 1];
-      const lab = isImp() ? (next ? m + '–' + next[0] : m + '+') + ' mi' : (next ? Math.round(m * 1.609344) + '–' + Math.round(next[0] * 1.609344) : Math.round(m * 1.609344) + '+') + ' km';
-      const s = el('span'); const sw = el('i'); sw.style.background = col; s.append(sw, document.createTextNode(lab)); key.append(s);
+      const u = (v) => (isImp() ? v : Math.round(v * 1.609344));
+      const range = !m ? 'under ' + u(next[0]) : next ? u(m) + '–' + u(next[0]) : u(m) + '+';
+      const s = el('span'); const sw = el('i'); sw.style.background = col;
+      s.append(sw, el('b', null, name), document.createTextNode(' ' + range + ' ' + distU())); key.append(s);
     });
     box.closest('.card').querySelectorAll('.heat-key').forEach((k) => k.remove());
     box.closest('.scroll').after(key);
@@ -1965,6 +1967,50 @@ const ED_GOAL_MI = 55; // Will's Eddington goal, in miles
       ring(wk && wHi ? wDone / wHi : null, 'var(--stone-hi)', wk ? fmt(Math.round(wDone)) : '—', wk ? 'of ' + fmt(wHi) + ' ' + distU() : 'planned', 'This week'),
       ring(goal ? goal.have / ED_GOAL_MI : null, 'var(--sky)', goal ? String(goal.have) : (ed ? String(ED_GOAL_MI) : '—'), 'of ' + ED_GOAL_MI + ' days', 'Eddington ' + ED_GOAL_MI),
     );
+  });
+
+
+  // Weather: this week and next, Monday to Sunday, with the planned ride under each day.
+  const WX_ICON = {
+    Sunny: '<circle cx="12" cy="12" r="4.5" fill="currentColor"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1 7 17M17 7l2.1-2.1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>',
+    'Partly cloudy': '<circle cx="9" cy="9" r="4" fill="currentColor"/><path d="M7 19h10a4 4 0 0 0 0-8 5 5 0 0 0-9.6 1.5A3.3 3.3 0 0 0 7 19z" fill="currentColor" opacity=".7"/>',
+    Cloudy: '<path d="M6 19h12a4.5 4.5 0 0 0 0-9 6 6 0 0 0-11.5 1.8A3.7 3.7 0 0 0 6 19z" fill="currentColor"/>',
+    Fog: '<path d="M4 9h16M3 13h18M5 17h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>',
+    Rain: '<path d="M6 14h12a4 4 0 0 0 0-8 5.5 5.5 0 0 0-10.6 1.6A3.3 3.3 0 0 0 6 14z" fill="currentColor"/><path d="M8 17l-1 3M12 17l-1 3M16 17l-1 3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>',
+    Storms: '<path d="M6 13h12a4 4 0 0 0 0-8 5.5 5.5 0 0 0-10.6 1.6A3.3 3.3 0 0 0 6 13z" fill="currentColor"/><path d="M12.5 14 10 18h3l-2 4" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>',
+    Snow: '<path d="M6 13h12a4 4 0 0 0 0-8 5.5 5.5 0 0 0-10.6 1.6A3.3 3.3 0 0 0 6 13z" fill="currentColor"/><circle cx="8" cy="18" r="1.3" fill="currentColor"/><circle cx="12" cy="20" r="1.3" fill="currentColor"/><circle cx="16" cy="18" r="1.3" fill="currentColor"/>',
+  };
+  dash.draw('wx', (box) => {
+    const g = dash.data('weather');
+    box.replaceChildren();
+    if (failed(box, 'weather') || g.status !== 'ok') return;
+    const by = new Map(g.data.map((d) => [d.date, d]));
+    const plan = new Map((planRows() || []).map((p) => [p.date, p]));
+    const f = d3.timeFormat('%Y-%m-%d'), today = f(new Date());
+    const mon = d3.timeMonday.floor(new Date());
+    [['This week', 0], ['Next week', 7]].forEach(([label, off]) => {
+      box.append(el('div', 'wx-h', label));
+      const row = el('div', 'wx-row');
+      d3.range(7).forEach((i) => {
+        const day = d3.timeDay.offset(mon, off + i), k = f(day), w = by.get(k), p = plan.get(k);
+        const kind = w ? window.planner.wxKind(w.code) : null;
+        const wet = w && (w.pop >= 50 || /Rain|Storms/.test(kind) && w.pop >= 30);
+        const c = el('div', 'wx-d' + (k === today ? ' today' : '') + (k < today ? ' past' : '') + (wet ? ' wet' : ''));
+        c.append(el('span', 'wx-dow', d3.timeFormat('%a')(day)), el('span', 'wx-date', d3.timeFormat('%-d')(day)));
+        const ic = el('span', 'wx-ic');
+        ic.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true">' + (WX_ICON[kind] || '') + '</svg>';
+        ic.title = kind || 'No forecast';
+        c.append(ic);
+        const t = (v) => Math.round(isImp() ? v : (v - 32) * 5 / 9) + '°';
+        c.append(el('b', 'wx-t', w ? t(w.hi_f) : '—'), el('span', 'wx-lo', w ? t(w.lo_f) : ''));
+        c.append(el('span', 'wx-pop', w && w.pop != null ? w.pop + '%' : ''));
+        if (p && p.intensity !== 'Rest' && p.target_miles && p.target_miles !== '0') c.append(el('span', 'wx-plan', p.target_miles + ' mi'));
+        c.title = d3.timeFormat('%A %b %-d')(day) + (w ? ': ' + kind + ', ' + w.pop + '% chance of rain, wind ' + Math.round(isImp() ? w.wind_mph : w.wind_mph * 1.609344) + (isImp() ? ' mph' : ' km/h') : '') + (p ? ' · Plan: ' + p.session : '');
+        row.append(c);
+      });
+      box.append(row);
+    });
+    box.append(el('p', 'note', 'Percent is the chance of rain. Rainy days are marked blue; the plan’s miles show under each riding day.'));
   });
 
 }

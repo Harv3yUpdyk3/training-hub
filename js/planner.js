@@ -74,7 +74,20 @@
     return { where: 'github', doc: { ...doc, _sha: j.content && j.content.sha } };
   };
 
-  window.planner = { monday, addDays, loadWeek, saveWeek, blankWeek, INTENSITIES, hasGitHub: () => !!token(), setGitHub: (t) => (t ? put(GH_KEY, { token: t.trim() }) : del(GH_KEY)) };
+  // Weather for Atlanta from Open-Meteo (free, no key): this week from Monday through next Sunday.
+  let wx = null;
+  const weather = () => (wx = wx || fetch('https://api.open-meteo.com/v1/forecast?latitude=33.75&longitude=-84.39'
+    + '&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,precipitation_sum,wind_speed_10m_max'
+    + '&timezone=America%2FNew_York&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch&past_days=7&forecast_days=16')
+    .then((r) => { if (!r.ok) throw new Error('Weather service said ' + r.status); return r.json(); })
+    .then((j) => j.daily.time.map((date, i) => ({
+      date, code: j.daily.weather_code[i], hi_f: j.daily.temperature_2m_max[i], lo_f: j.daily.temperature_2m_min[i],
+      pop: j.daily.precipitation_probability_max[i], rain_in: j.daily.precipitation_sum[i], wind_mph: j.daily.wind_speed_10m_max[i],
+    })))
+    .catch((e) => { wx = null; throw e; }));
+  const wxKind = (c) => (c >= 95 ? 'Storms' : (c >= 71 && c <= 77) || c === 85 || c === 86 ? 'Snow' : (c >= 51 && c <= 67) || (c >= 80 && c <= 82) ? 'Rain' : c === 45 || c === 48 ? 'Fog' : c === 3 ? 'Cloudy' : c === 2 ? 'Partly cloudy' : 'Sunny');
+
+  window.planner = { monday, addDays, loadWeek, saveWeek, blankWeek, INTENSITIES, weather, wxKind, hasGitHub: () => !!token(), setGitHub: (t) => (t ? put(GH_KEY, { token: t.trim() }) : del(GH_KEY)) };
 
   // ---- The Training tab's plan card -----------------------------------
   const card = document.querySelector('#plan-card');
@@ -86,6 +99,8 @@
   const INT_COLOR = { Rest: '--cds-chart-muted', Endurance: '--cds-chart-categorical-1', Tempo: '--cds-chart-categorical-3', Threshold: '--cds-chart-status-warning', VO2: '--cds-chart-status-critical' };
 
   let start = monday();
+  let wxBy = new Map();
+  weather().then((rows) => { wxBy = new Map(rows.map((r) => [r.date, r])); if (week) render(); }).catch(() => {});
   let week = null;
   let dirty = false;
 
@@ -116,6 +131,8 @@
       mid.append(el('span', 'pw-s', d.session || '—'), el('span', 'pw-d', d.details || ''));
       const right = el('span', 'pw-r');
       right.append(el('b', null, d.target_miles && d.target_miles !== '0' ? d.target_miles + ' mi' : '—'), el('small', null, d.intensity));
+      const w = wxBy.get(d.date);
+      if (w) { const c = el('small', 'pw-wx' + (w.pop >= 50 ? ' wet' : ''), (w.pop >= 30 ? (/Rain|Storms|Snow/.test(wxKind(w.code)) ? wxKind(w.code) : 'Rain') + ' ' + w.pop + '%' : wxKind(w.code)) + ' · ' + Math.round(w.hi_f) + '°'); right.append(c); }
       row.append(left, mid, right);
       row.addEventListener('click', () => openEditor(i));
       list.append(row);

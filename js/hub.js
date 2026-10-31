@@ -763,7 +763,14 @@
 
   const failed = (box, id) => {
     const st = dash.data(id).status;
-    if (st === 'error' || st === 'connect' || st === 'declined') { box.replaceChildren(el('div', 'fail', 'Failed to load')); return true; }
+    if (st === 'error' || st === 'connect' || st === 'declined') {
+      // Say why, so a screenshot tells Claude what went wrong.
+      const msg = dash.data(id).message;
+      const f = el('div', 'fail');
+      f.append(el('span', null, 'Failed to load' + (msg ? ': ' + msg : '')));
+      box.replaceChildren(f);
+      return true;
+    }
     return false;
   };
   const one = (id, field, f) => (e) => {

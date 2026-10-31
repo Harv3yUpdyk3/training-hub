@@ -166,7 +166,7 @@
     let rows;
     if (args.range_start) {
       let y0 = Number(args.range_start.slice(0, 4));
-      const y1 = Number((args.range_end || args.range_start).slice(0, 4));
+      const y1 = Math.min(Number((args.range_end || args.range_start).slice(0, 4)), new Date().getFullYear());
       // "All time": start from the year the Strava account was made.
       if (y0 < 2009) y0 = Math.max(y0, await joinedYear());
       rows = [];

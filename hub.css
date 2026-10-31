@@ -318,7 +318,7 @@
 
   [data-dash-source-state=empty] { color: transparent; }
   [data-dash-source-state=refreshing] { opacity: .5; transition: opacity var(--cds-dur-slow); }
-  .fail { display: flex; align-items: center; justify-content: center; gap: 6px; min-height: inherit; color: var(--color-fg-muted); font-size: 12px; }
+  .fail { display: flex; align-items: center; justify-content: center; gap: 6px; min-height: inherit; color: var(--color-fg-muted); font-size: 12px; text-align: center; padding: 8px; }
   .fail::before { content: ""; width: .375rem; height: .375rem; border-radius: 50%; background: var(--color-bad); }
   @media (prefers-reduced-motion: no-preference) {
     .hub-page:not([hidden]) { animation: hub-in var(--cds-dur-slow) var(--cds-ease-out); }

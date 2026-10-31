@@ -2027,16 +2027,23 @@ const ED_GOAL_MI = 55; // Will's Eddington goal, in miles
     wrap.title = label + ': ' + big + ' ' + small;
     return wrap;
   };
+  // The season ring is the big one, beside the distance total.
+  dash.draw('ring-main', (box) => {
+    const g = dash.data('ytd');
+    const yr = g.status === 'ok' && g.data.length ? g.data[0] : null;
+    box.replaceChildren(ring(yr ? yr.pct_goal / 100 : null, 'var(--copper)', yr ? yr.pct_goal + '%' : '—', 'of ' + (isImp() ? '3,107 mi' : '5,000 km'), 'Season goal'));
+  });
   dash.draw('rings', (box) => {
     const row = (id) => { const g = dash.data(id); return g.status === 'ok' && g.data.length ? g.data[0] : null; };
     const yr = row('ytd'), wk = row('plan_week'), ed = row('eddington'), mo = row('month_goal');
     const cl = (() => { const g = dash.data('climbs'); return g.status === 'ok' ? g.data.find((d) => d && /single/.test(d.what)) : null; })();
     const goal = ed && (ed.ladder_mi || []).find((l) => l.level === ED_GOAL_MI);
-    const wHi = wk ? (isImp() ? wk.plan_hi_mi : wk.plan_hi_km) : 0, wDone = wk ? (isImp() ? wk.ridden_mi : wk.ridden_km) : 0;
+    const wDone = wk ? (isImp() ? wk.ridden_mi : wk.ridden_km) : 0;
+    const need = yr ? dist(Math.max(yr.km_per_week, GOAL_KM / 52)) : 0;
     box.replaceChildren(
-      ring(yr ? yr.pct_goal / 100 : null, 'var(--copper)', yr ? yr.pct_goal + '%' : '—', 'of ' + (isImp() ? '3,107 mi' : '5,000 km'), 'Season'),
       ring(mo ? mo.pct / 100 : null, 'var(--amethyst)', mo ? fmt(isImp() ? mo.mi : mo.km) : '—', mo ? 'of ' + fmt(isImp() ? mo.target_mi : mo.target_km) + ' ' + distU() : '', mo ? mo.month : 'This month'),
-      ring(wk && wHi ? wDone / wHi : null, 'var(--stone-hi)', wk ? fmt(Math.round(wDone)) : '—', wk ? 'of ' + fmt(wHi) + ' ' + distU() : 'planned', 'Week'),
+      // Week: miles so far against what the season goal needs per week (never below an even 1/52 share).
+      ring(wk && need ? wDone / need : null, 'var(--stone-hi)', wk ? fmt(Math.round(wDone)) : '—', 'of ' + fmt(Math.round(need)) + ' ' + distU() + ' needed', 'Week'),
       ring(ed ? ed.e_mi / ED_GOAL_MI : null, 'var(--sky)', ed ? String(ed.e_mi) : '—', 'of ' + ED_GOAL_MI + ' mi', 'Eddington'),
       ring(goal ? goal.have / ED_GOAL_MI : null, 'var(--cerise)', goal ? String(goal.have) : '—', 'of ' + ED_GOAL_MI + ' days', ED_GOAL_MI + '-mi days'),
       ring(cl ? cl.pct_colombier / 100 : null, 'var(--orange)', cl ? cl.pct_colombier + '%' : '—', 'of the Colombier', 'Climb'),

@@ -70,8 +70,13 @@
     <section class="hub-page" id="overview" role="tabpanel">
       <div class="hero" id="goal-hero">
         <div class="hero-body">
-          <span class="kick">2026 season distance</span>
-          <h2 class="hl"><span data-draw="km-done" data-source="ytd" data-row="0" data-field="km">—</span><small> <span class="u-m">km</span><span class="u-i">mi</span> of <span data-draw="goal">—</span></small></h2>
+<div class="hl-row">
+            <div>
+            <span class="kick">2026 season distance</span>
+            <h2 class="hl"><span data-draw="km-done" data-source="ytd" data-row="0" data-field="km">—</span><small> <span class="u-m">km</span><span class="u-i">mi</span> of <span data-draw="goal">—</span></small></h2>
+            </div>
+            <div class="ring-main" data-draw="ring-main" data-source="ytd"></div>
+          </div>
           <div class="goal-track" data-draw="goal-bar" data-source="ytd"></div>
         </div>
         <div class="rings" data-draw="rings" data-source="ytd plan_week eddington month_goal climbs"></div>
@@ -144,11 +149,6 @@
               <span class="cmp-p">was <b data-draw="p-rides-prev" data-source="period" data-row="0" data-field="rides_prev">—</b></span>
             </div>
           </div>
-        </div>
-        <div class="card" id="form-card">
-          <div class="card-h"><h2>Form</h2><span class="note"><b data-draw="form-hits" data-source="form_sum" data-row="0" data-field="hits">—</b> of 8 weeks at <span data-draw="week-target">—</span>+ <span class="u-m">km</span><span class="u-i">mi</span></span></div>
-          <div class="form" data-draw="form-chips" data-source="form" data-row-key="week_of"></div>
-          <p class="note">The weekly target is the season goal spread evenly over 52 weeks. H = hit, M = missed.</p>
         </div>
       </div>
 

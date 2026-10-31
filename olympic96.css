@@ -155,3 +155,20 @@ h3.sec { color: var(--copper-hi); letter-spacing: .14em; }
 .ring-mid small { display: none; }
 .ring-l { font-size: 9px; letter-spacing: .06em; line-height: 1.15; }
 @media (min-width: 40rem) { .ring-face { max-width: 84px; } .ring-mid b { font-size: 19px; } .ring-l { font-size: 10.5px; } }
+
+/* PR medals: Olympic gold, silver and bronze */
+.medal { color: #1b1405; font-weight: 800; box-shadow: inset 0 -2px 0 rgba(0,0,0,.25), inset 0 2px 0 rgba(255,255,255,.35); }
+.medal.m1 { background: radial-gradient(circle at 35% 30%, #fff1b0, #e4b521 45%, #a9800f); }
+.medal.m2 { background: radial-gradient(circle at 35% 30%, #ffffff, #c9cfd4 45%, #8a9399); }
+.medal.m3 { background: radial-gradient(circle at 35% 30%, #ffd2a6, #c4793a 45%, #8a4e1d); color: #fff; }
+
+/* Season ring: big, level with the distance total; the other five sit in a row below */
+.hl-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.ring-main { flex: none; width: 128px; }
+.ring-main .ring-face { max-width: 128px; }
+.ring-main .ring circle { stroke-width: 10; }
+.ring-main .ring-mid b { font-size: 30px; }
+.ring-main .ring-mid small { display: block; font-size: 10.5px; }
+.ring-main .ring-l { font-size: 11px; }
+.rings { grid-template-columns: repeat(5, minmax(0, 1fr)); order: 0; margin: 4px 0 2px; }
+@media (max-width: 40rem) { .rings { order: 0; } .ring-main { width: 112px; } .ring-main .ring-mid b { font-size: 26px; } }

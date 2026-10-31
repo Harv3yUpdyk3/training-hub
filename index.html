@@ -44,7 +44,7 @@
 <div class="hub">
   <header class="mast">
     <div class="mast-in">
-      <a class="logo" href="home.html" aria-label="Home: all your apps"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="5.5" cy="16.5" r="3.5"/><circle cx="18.5" cy="16.5" r="3.5"/><path d="M5.5 16.5 9 9h6l3.5 7.5M9 9l3 7.5h-6.5M15 9l-1.5-3H11"/></svg></a>
+      <a class="logo" href="home.html" aria-label="Home: all your apps"><svg viewBox="0 0 48 38" aria-hidden="true"><g fill="#fff" stroke="#fff" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="28" r="7.5" fill="none" stroke-width="3.6"/><circle cx="38" cy="28" r="7.5" fill="none" stroke-width="3.6"/><path d="M10 28 19 17h13l6 11M19 17l4 11 9-11" fill="none" stroke-width="2.6"/><circle cx="35" cy="5.5" r="4" stroke="none"/><path d="M16 15c3-6 9-9 16-8l1 4c-6 0-10 2-13 6z" stroke="none"/><path d="M31 9l5 7" fill="none" stroke-width="3.4"/><path d="M18 15l8 5-3 7" fill="none" stroke-width="4.2"/></g></svg></a>
       <p class="wm">Training Hub<span>Will H. · Atlanta</span></p>
       <div class="mast-r">
         <span class="mchip opt">France in <b data-draw="days-france">—</b> days</span>
@@ -56,11 +56,11 @@
   </header>
   <nav class="tabs" aria-label="Sections">
     <div class="tabs-in" role="tablist">
-      <button class="hub-tab" role="tab" data-tab="overview" aria-controls="overview" aria-selected="true">Overview</button>
-      <button class="hub-tab" role="tab" data-tab="training" aria-controls="training" aria-selected="false">Training</button>
+      <button class="hub-tab" role="tab" data-tab="overview" aria-controls="overview" aria-selected="true">Today</button>
+      <button class="hub-tab" role="tab" data-tab="training" aria-controls="training" aria-selected="false">Plan</button>
       <button class="hub-tab" role="tab" data-tab="rides" aria-controls="rides" aria-selected="false">Rides</button>
       <button class="hub-tab" role="tab" data-tab="segments" aria-controls="segments" aria-selected="false">Segments</button>
-      <button class="hub-tab" role="tab" data-tab="france" aria-controls="france" aria-selected="false">Road to France</button>
+      <button class="hub-tab" role="tab" data-tab="france" aria-controls="france" aria-selected="false">France</button>
       <span class="tabs-r"><span class="kbd" title="Press 1–5 to switch tabs, / to search rides">1–5 · /</span></span>
     </div>
   </nav>
@@ -74,10 +74,12 @@
           <h2 class="hl"><span data-draw="km-done" data-source="ytd" data-row="0" data-field="km">—</span><small> <span class="u-m">km</span><span class="u-i">mi</span> of <span data-draw="goal">—</span></small></h2>
           <div class="goal-track" data-draw="goal-bar" data-source="ytd"></div>
         </div>
-        <div class="hstat"><div class="sv"><span data-draw="pct-goal" data-source="ytd" data-row="0" data-field="pct_goal">—</span></div><div class="sl">of season goal</div></div>
+        <div class="rings" data-draw="rings" data-source="ytd plan_week eddington"></div>
         <div class="hrow">
-          <div><span>To go</span><b><span data-draw="km-left" data-source="ytd" data-row="0" data-field="km_left">—</span> <small><span class="u-m">km</span><span class="u-i">mi</span></small></b></div>
-          <div><span>Needed per week</span><b><span data-draw="per-week" data-source="ytd" data-row="0" data-field="km_per_week">—</span> <small><span class="u-m">km</span><span class="u-i">mi</span></small></b></div>
+          <div data-goal="open"><span>To go</span><b><span data-draw="km-left" data-source="ytd" data-row="0" data-field="km_left">—</span> <small><span class="u-m">km</span><span class="u-i">mi</span></small></b></div>
+          <div data-goal="open"><span>Needed per week</span><b><span data-draw="per-week" data-source="ytd" data-row="0" data-field="km_per_week">—</span> <small><span class="u-m">km</span><span class="u-i">mi</span></small></b></div>
+          <div data-goal="done" hidden><span>Weeks left in 2026</span><b data-draw="weeks-left" data-source="ytd" data-row="0" data-field="weeks_left">—</b></div>
+          <div data-goal="done" hidden><span>Past goal</span><b>+<span data-draw="km-over" data-source="ytd" data-row="0" data-field="km_over">—</span> <small><span class="u-m">km</span><span class="u-i">mi</span></small></b></div>
           <div><span>Vs even pace</span>
             <b class="ok" data-pace="ahead" hidden>+<span data-draw="pace-gap" data-source="ytd" data-row="0" data-field="pace_gap_km">—</span> <small><span class="u-m">km</span><span class="u-i">mi</span> ahead</small></b>
             <b class="bad" data-pace="behind" hidden>−<span data-draw="pace-gap-b" data-source="ytd" data-row="0" data-field="pace_gap_km">—</span> <small><span class="u-m">km</span><span class="u-i">mi</span> behind</small></b>
@@ -134,6 +136,24 @@
         </div>
       </div>
 
+      <div class="card" id="week-strip-card">
+        <div class="card-h"><h2>This week</h2>
+          <div class="legend"><span><i class="lg-rest"></i>Rest</span><span><i class="lg-end"></i>Endurance</span><span><i class="lg-tempo"></i>Tempo</span><span><i class="lg-thr"></i>Threshold</span><span><i class="lg-vo2"></i>VO2</span></div>
+        </div>
+        <p class="note"><span data-draw="wk-dates">—</span> · <span data-draw="wk-rides" data-source="week" data-row="0" data-field="rides">—</span> rides so far · planned <b data-draw="pw-lo" data-source="plan_week" data-row="0" data-field="plan_lo_km">—</b>–<b data-draw="pw-hi" data-source="plan_week" data-row="0" data-field="plan_hi_km">—</b> <span class="u-m">km</span><span class="u-i">mi</span>, ridden <b data-draw="pw-done" data-source="plan_week" data-row="0" data-field="ridden_km">—</b> <span class="u-m">km</span><span class="u-i">mi</span></p>
+        <div class="strip" data-draw="plan-strip" data-source="plan plan_actual" data-row-key="order"></div>
+      </div>
+      <div class="card" id="eddington-card">
+        <div class="card-h"><h2>Eddington number</h2><span class="note">All-time Strava rides</span></div>
+        <div class="facts top">
+          <div class="fact"><span>Eddington, <span class="u-m">km</span><span class="u-i">mi</span></span><b data-draw="ed-e" data-source="eddington" data-row="0" data-field="e_km">—</b></div>
+          <div class="fact"><span>Goal: 55 mi</span><b data-draw="ed-goal" data-source="eddington">—</b></div>
+          <div class="fact"><span>Riding days, all time</span><b data-draw="ed-days" data-source="eddington" data-row="0" data-field="ride_days">—</b></div>
+          <div class="fact"><span>Longest daily streak</span><b data-draw="ed-run" data-source="eddington" data-row="0" data-field="longest_run">—</b></div>
+        </div>
+        <div class="ed-ladder" data-draw="ed-ladder" data-source="eddington"></div>
+        <p class="note">Your Eddington number E is the largest number of days you've ridden at least E <span class="u-m">km</span><span class="u-i">miles</span>. Each row is a level above yours: how many more days of that distance it needs.</p>
+      </div>
       <div class="card" id="season-totals">
         <div class="card-h"><h2>Season totals</h2><span class="note">All 2026 activities</span></div>
         <div class="facts top">
@@ -141,45 +161,53 @@
           <div class="fact"><span>Climbing, <span class="u-m">m</span><span class="u-i">ft</span></span><b data-draw="ft-done" data-source="ytd" data-row="0" data-field="elev_ft">—</b></div>
           <div class="fact"><span>Hours moving</span><b data-draw="hours-done" data-source="ytd" data-row="0" data-field="hours">—</b></div>
           <div class="fact"><span>Rides</span><b data-draw="ride-count" data-source="ytd" data-row="0" data-field="rides">—</b></div>
-          <div class="fact"><span>This week</span><b><span data-draw="wk-mi" data-source="week" data-row="0" data-field="miles">—</span> <span class="u-m">km</span><span class="u-i">mi</span></b></div>
           <div class="fact"><span>Weekly streak</span><b><span data-draw="streak" data-source="streak" data-row="0" data-field="length">—</span> wks</b></div>
           <div class="fact"><span>Streak since</span><b data-draw="streak-start" data-source="streak" data-row="0" data-field="start_date">—</b></div>
-          <div class="fact"><span>Rides in the rain</span><b data-draw="rainy" data-source="ytd" data-row="0" data-field="rainy_rides">—</b></div>
         </div>
       </div>
 
-      <h3 class="sec" id="trends-h">Trends</h3>
 
-      <div class="g21">
-        <div class="card" id="cumulative-card">
-          <div class="card-h"><h2>Distance through 2026</h2><span class="note">Running total, <span class="u-m">km</span><span class="u-i">mi</span> · gray = 2025 · dashed = even pace</span></div>
-          <div class="chart" data-draw="cum-chart" data-source="cumulative cumulative_2025"></div>
-        </div>
-        <div class="card" id="weekly-card">
-          <div class="card-h"><h2>Weekly volume</h2><span class="note">Last 16 weeks, <span class="u-m">km</span><span class="u-i">mi</span></span></div>
-          <div class="chart" data-draw="weekly-chart" data-source="weekly"></div>
-        </div>
-      </div>
 
-      <div class="card" id="week-strip-card">
-        <div class="card-h"><h2>This week</h2>
-          <div class="legend"><span><i class="lg-rest"></i>Rest</span><span><i class="lg-end"></i>Endurance</span><span><i class="lg-tempo"></i>Tempo</span><span><i class="lg-thr"></i>Threshold</span><span><i class="lg-vo2"></i>VO2</span></div>
-        </div>
-        <p class="note">Mon Oct 26 – Sun Nov 1 · <span data-draw="wk-rides" data-source="week" data-row="0" data-field="rides">—</span> rides so far · planned <b data-draw="pw-lo" data-source="plan_week" data-row="0" data-field="plan_lo_km">—</b>–<b data-draw="pw-hi" data-source="plan_week" data-row="0" data-field="plan_hi_km">—</b> <span class="u-m">km</span><span class="u-i">mi</span>, ridden <b data-draw="pw-done" data-source="plan_week" data-row="0" data-field="ridden_km">—</b> <span class="u-m">km</span><span class="u-i">mi</span></p>
-        <div class="strip" data-draw="plan-strip" data-source="plan plan_actual" data-row-key="order"></div>
-      </div>
-
-      <div class="card" id="calendar-card">
-        <div class="card-h"><h2>Ride calendar</h2><span class="note">Each square is a day in 2026; darker means more distance; a dot marks a ride in the rain</span></div>
-        <div class="scroll"><div class="chart short heat-svg" data-draw="heatmap" data-source="days"></div></div>
-      </div>
     </section>
 
     <!-- TRAINING -->
     <section class="hub-page" id="training" role="tabpanel" hidden>
       <div class="ph">
-        <div><h1>Training</h1><p>Heart rate first; power targets come once the power meter is on the Diverge. If your legs are heavy Friday, swap it with the weekend ride.</p></div>
-        <span class="pill">Week of <b>Oct 26</b></span>
+        <div><h1>Plan</h1><p>Tap a day to change it. Heart rate targets until the power meter is on.</p></div>
+      </div>
+      <div class="card" id="plan-card">
+        <div class="card-h"><h2>Training plan</h2><button type="button" class="pw-gh land">GitHub</button></div>
+        <div class="pw-nav">
+          <button type="button" class="pw-prev" aria-label="Previous week">‹</button>
+          <div class="pw-label"><b class="pw-rel">This week</b><span class="pw-dates">—</span></div>
+          <button type="button" class="pw-next" aria-label="Next week">›</button>
+        </div>
+        <div class="gh-key" id="gh-key" hidden>
+          <p>To share plans you edit here with your computer and with Claude, paste a GitHub key that can edit the <b>training-hub</b> repo. Make one at github.com › Settings › Developer settings › Fine-grained tokens: pick only the training-hub repository and set <b>Contents</b> to <b>Read and write</b>. It stays on this device.</p>
+          <input type="password" autocomplete="off" placeholder="github_pat_…" aria-label="GitHub key">
+          <div class="gk-btns"><button type="button" class="gk-save">Save key</button><button type="button" class="gk-clear">Remove key</button></div>
+        </div>
+        <p class="pw-status" role="status"></p>
+        <div class="pw-days"></div>
+        <button type="button" class="pw-start" hidden>Start a plan for this week</button>
+        <button type="button" class="pw-save" hidden>Save week</button>
+        <p class="note">Claude also writes and adjusts plans here.</p>
+      </div>
+      <div class="g2">
+        <div class="card" id="zones-card">
+          <div class="card-h"><h2>Heart rate zones</h2><span class="note">bpm, from max heart rate</span></div>
+          <div class="chart tiny" data-draw="zone-bar" data-source="zones"></div>
+          <div class="scroll">
+            <table class="tbl" data-source="zones" data-row-key="zone">
+              <thead><tr><th data-field="zone">Zone</th><th data-field="name">Name</th><th data-field="bpm" class="num">bpm</th><th data-field="use" class="wide-only">When to use it</th></tr></thead>
+              <tbody data-draw="zone-rows"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card" id="todo-card">
+          <div class="card-h"><h2>Gear and to-do</h2><span class="note">Power meter for the Diverge, then what's next</span></div>
+          <ul class="todo" data-draw="todo-list" data-source="todo" data-row-key="order"></ul>
+        </div>
       </div>
       <div class="card" id="load-card">
         <div class="card-h"><h2>Training load</h2><span class="note">Strava Relative Effort per week, last 16 weeks · rides with the HR strap only</span></div>
@@ -202,58 +230,12 @@
         <div class="legend"><span><i class="lg-rest"></i>Z1</span><span><i class="lg-end"></i>Z2</span><span><i class="lg-tempo"></i>Z3</span><span><i class="lg-thr"></i>Z4</span><span><i class="lg-vo2"></i>Z5</span></div>
         <div class="chart" data-draw="zone-chart" data-source="zone_time"></div>
       </div>
-      <div class="card" id="hour-card">
-        <div class="card-h"><h2>Time of day</h2><span class="note">2026 rides by start hour · label = rides</span></div>
-        <div class="chart mid" data-draw="hour-chart" data-source="by_hour"></div>
-      </div>
-      <div class="card" id="speed-card">
-        <div class="card-h"><h2>Speed trend</h2><span class="note">Average moving speed per week, last 16 weeks, <span class="u-m">km/h</span><span class="u-i">mph</span> · dashed = 16-week average</span></div>
-        <div class="chart mid" data-draw="speed-chart" data-source="weekly"></div>
-      </div>
-      <div class="card" id="dow-card">
-        <div class="card-h"><h2>When you ride</h2><span class="note">2026 rides by weekday · bar = rides, label = average <span class="u-m">km</span><span class="u-i">mi</span></span></div>
-        <div class="chart mid" data-draw="dow-chart" data-source="dow"></div>
-      </div>
-      <div class="card" id="plan-card">
-        <div class="card-h"><h2>Training plan</h2><button type="button" class="pw-gh land">GitHub</button></div>
-        <div class="pw-nav">
-          <button type="button" class="pw-prev" aria-label="Previous week">‹</button>
-          <div class="pw-label"><b class="pw-rel">This week</b><span class="pw-dates">—</span></div>
-          <button type="button" class="pw-next" aria-label="Next week">›</button>
-        </div>
-        <div class="gh-key" id="gh-key" hidden>
-          <p>To share plans you edit here with your computer and with Claude, paste a GitHub key that can edit the <b>training-hub</b> repo. Make one at github.com › Settings › Developer settings › Fine-grained tokens: pick only the training-hub repository and set <b>Contents</b> to <b>Read and write</b>. It stays on this device.</p>
-          <input type="password" autocomplete="off" placeholder="github_pat_…" aria-label="GitHub key">
-          <div class="gk-btns"><button type="button" class="gk-save">Save key</button><button type="button" class="gk-clear">Remove key</button></div>
-        </div>
-        <p class="pw-status" role="status"></p>
-        <div class="pw-days"></div>
-        <button type="button" class="pw-start" hidden>Start a plan for this week</button>
-        <button type="button" class="pw-save" hidden>Save week</button>
-        <p class="note">Tap a day to change it. Claude also writes and adjusts plans here.</p>
-      </div>
-      <div class="g2">
-        <div class="card" id="zones-card">
-          <div class="card-h"><h2>Heart rate zones</h2><span class="note">bpm, from max heart rate</span></div>
-          <div class="chart tiny" data-draw="zone-bar" data-source="zones"></div>
-          <div class="scroll">
-            <table class="tbl" data-source="zones" data-row-key="zone">
-              <thead><tr><th data-field="zone">Zone</th><th data-field="name">Name</th><th data-field="bpm" class="num">bpm</th><th data-field="use" class="wide-only">When to use it</th></tr></thead>
-              <tbody data-draw="zone-rows"></tbody>
-            </table>
-          </div>
-        </div>
-        <div class="card" id="todo-card">
-          <div class="card-h"><h2>Gear and to-do</h2><span class="note">Power meter for the Diverge, then what's next</span></div>
-          <ul class="todo" data-draw="todo-list" data-source="todo" data-row-key="order"></ul>
-        </div>
-      </div>
     </section>
 
     <!-- RIDES -->
     <section class="hub-page" id="rides" role="tabpanel" hidden>
       <div class="ph">
-        <div><h1>Rides</h1><p>Every 2026 activity from Strava. Sort any column or search by name or weather.</p></div>
+        <div><h1>Rides</h1><p>Every 2026 ride. Tap one in the log to see it above.</p></div>
       </div>
       <div class="card" id="ride-detail-card">
         <div class="card-h"><h2>Ride detail</h2><span class="note">Tap any ride in the ride log</span></div>
@@ -263,53 +245,6 @@
           <table class="tbl" data-source="ride_segs" data-row-key="effort_id">
             <thead><tr><th data-field="medal">PR</th><th data-field="segment">Segment</th><th data-field="km" data-mf="km" data-if="miles" class="num"><span class="u-m">km</span><span class="u-i">mi</span></th><th data-field="time_s" class="num">Time</th><th data-field="avg_hr" class="num wide-only">Avg HR</th></tr></thead>
             <tbody data-draw="rd-segs"></tbody>
-          </table>
-        </div>
-      </div>
-      <div class="kpis" id="records">
-        <div class="kpi"><div class="kpi-h"><span>Longest ride</span></div><div class="kpi-v"><span data-draw="rec-long" data-source="records" data-row="0" data-field="long_mi">—</span><small><span class="u-m">km</span><span class="u-i">mi</span></small></div><div class="kpi-s" data-draw="rec-long-name" data-source="records" data-row="0" data-field="long_name">—</div></div>
-        <div class="kpi"><div class="kpi-h"><span>Most climbing</span></div><div class="kpi-v"><span data-draw="rec-climb" data-source="records" data-row="0" data-field="climb_ft">—</span><small><span class="u-m">m</span><span class="u-i">ft</span></small></div><div class="kpi-s" data-draw="rec-climb-name" data-source="records" data-row="0" data-field="climb_name">—</div></div>
-        <div class="kpi"><div class="kpi-h"><span>Biggest week</span></div><div class="kpi-v"><span data-draw="rec-week" data-source="records" data-row="0" data-field="week_km">—</span><small><span class="u-m">km</span><span class="u-i">mi</span></small></div><div class="kpi-s" data-draw="rec-week-of" data-source="records" data-row="0" data-field="week_of">—</div></div>
-        <div class="kpi"><div class="kpi-h"><span>Biggest month</span></div><div class="kpi-v"><span data-draw="rec-month" data-source="records" data-row="0" data-field="month_km">—</span><small><span class="u-m">km</span><span class="u-i">mi</span></small></div><div class="kpi-s" data-draw="rec-month-name" data-source="records" data-row="0" data-field="month">—</div></div>
-      </div>
-      <div class="card" id="month-report-card">
-        <div class="card-h"><h2>Month report</h2><span class="note"><span data-draw="mr-month" data-source="month_report" data-row="0" data-field="month">—</span> 1–<span data-draw="mr-day" data-source="month_report" data-row="0" data-field="day">—</span> vs the same days of <span data-draw="mr-prev" data-source="month_report" data-row="0" data-field="prev_month">—</span></span></div>
-        <div class="mreport" data-draw="mr-tiles" data-source="month_report" data-row-key="metric"></div>
-        <div class="mgoal">
-          <div class="mgoal-h"><span><b data-draw="mg-month" data-source="month_goal" data-row="0" data-field="month">—</b> goal: <b data-draw="mg-done" data-source="month_goal" data-row="0" data-field="km">—</b> of <b data-draw="mg-target" data-source="month_goal" data-row="0" data-field="target_km">—</b> <span class="u-m">km</span><span class="u-i">mi</span>, the monthly share of the season goal</span><span class="delta" data-draw="mg-pct" data-source="month_goal" data-row="0" data-field="pct">—</span></div>
-          <div class="goal-track" data-draw="mg-bar" data-source="month_goal"></div>
-        </div>
-      </div>
-      <div class="card" id="eddington-card">
-        <div class="card-h"><h2>Eddington number</h2><span class="note">All-time Strava rides</span></div>
-        <div class="facts top">
-          <div class="fact"><span>Eddington, <span class="u-m">km</span><span class="u-i">mi</span></span><b data-draw="ed-e" data-source="eddington" data-row="0" data-field="e_km">—</b></div>
-          <div class="fact"><span>Goal: 55 mi</span><b data-draw="ed-goal" data-source="eddington">—</b></div>
-          <div class="fact"><span>Riding days, all time</span><b data-draw="ed-days" data-source="eddington" data-row="0" data-field="ride_days">—</b></div>
-          <div class="fact"><span>Longest daily streak, 2026</span><b><span data-draw="ed-run" data-source="eddington" data-row="0" data-field="longest_run">—</span> days</b></div>
-        </div>
-        <div class="ed-ladder" data-draw="ed-ladder" data-source="eddington"></div>
-        <p class="note">Your Eddington number E is the largest number of days you've ridden at least E <span class="u-m">km</span><span class="u-i">miles</span>. Each row is a level above yours: how many more days of that distance it needs.</p>
-      </div>
-      <div class="card" id="bests-card">
-        <div class="card-h"><h2>2026 bests vs 2025</h2><span class="note">From Strava best efforts · green = better this year</span></div>
-        <div class="scroll">
-          <table class="tbl" data-source="bests_cmp" data-row-key="order">
-            <thead><tr><th data-field="effort">Effort</th><th data-field="v2026" class="num">2026</th><th data-field="d2026" class="wide-only">Set</th><th data-field="v2025" class="num">2025</th><th data-field="change_pct" class="num">Change</th></tr></thead>
-            <tbody data-draw="bests-rows"></tbody>
-          </table>
-        </div>
-      </div>
-      <div class="card" id="monthly-card">
-        <div class="card-h"><h2>Distance by month</h2><span class="note">Distance per month, 2026, <span class="u-m">km</span><span class="u-i">mi</span></span></div>
-        <div class="chart mid" data-draw="month-chart" data-source="monthly"></div>
-      </div>
-      <div class="card" id="garage-card">
-        <div class="card-h"><h2>Garage</h2><span class="note">ATLien is the Diverge; Bombs over Baghdad is the Arise</span></div>
-        <div class="scroll">
-          <table class="tbl stack" data-source="garage" data-row-key="gear_id">
-            <thead><tr><th data-field="name">Bike</th><th data-field="frame_type">Type</th><th data-field="km" data-mf="km" data-if="miles" class="num">All-time <span class="u-m">km</span><span class="u-i">mi</span></th><th data-field="share_pct" class="num">Share</th><th data-field="status">Status</th></tr></thead>
-            <tbody data-draw="garage-rows"></tbody>
           </table>
         </div>
       </div>
@@ -331,12 +266,86 @@
           </table>
         </div>
       </div>
+      <div class="kpis" id="records">
+        <div class="kpi"><div class="kpi-h"><span>Longest ride</span></div><div class="kpi-v"><span data-draw="rec-long" data-source="records" data-row="0" data-field="long_mi">—</span><small><span class="u-m">km</span><span class="u-i">mi</span></small></div><div class="kpi-s" data-draw="rec-long-name" data-source="records" data-row="0" data-field="long_name">—</div></div>
+        <div class="kpi"><div class="kpi-h"><span>Most climbing</span></div><div class="kpi-v"><span data-draw="rec-climb" data-source="records" data-row="0" data-field="climb_ft">—</span><small><span class="u-m">m</span><span class="u-i">ft</span></small></div><div class="kpi-s" data-draw="rec-climb-name" data-source="records" data-row="0" data-field="climb_name">—</div></div>
+        <div class="kpi"><div class="kpi-h"><span>Biggest week</span></div><div class="kpi-v"><span data-draw="rec-week" data-source="records" data-row="0" data-field="week_km">—</span><small><span class="u-m">km</span><span class="u-i">mi</span></small></div><div class="kpi-s" data-draw="rec-week-of" data-source="records" data-row="0" data-field="week_of">—</div></div>
+        <div class="kpi"><div class="kpi-h"><span>Biggest month</span></div><div class="kpi-v"><span data-draw="rec-month" data-source="records" data-row="0" data-field="month_km">—</span><small><span class="u-m">km</span><span class="u-i">mi</span></small></div><div class="kpi-s" data-draw="rec-month-name" data-source="records" data-row="0" data-field="month">—</div></div>
+      </div>
+      <div class="card" id="month-report-card">
+        <div class="card-h"><h2>Month report</h2><span class="note"><span data-draw="mr-month" data-source="month_report" data-row="0" data-field="month">—</span> 1–<span data-draw="mr-day" data-source="month_report" data-row="0" data-field="day">—</span> vs the same days of <span data-draw="mr-prev" data-source="month_report" data-row="0" data-field="prev_month">—</span></span></div>
+        <div class="mreport" data-draw="mr-tiles" data-source="month_report" data-row-key="metric"></div>
+        <div class="mgoal">
+          <div class="mgoal-h"><span><b data-draw="mg-month" data-source="month_goal" data-row="0" data-field="month">—</b> goal: <b data-draw="mg-done" data-source="month_goal" data-row="0" data-field="km">—</b> of <b data-draw="mg-target" data-source="month_goal" data-row="0" data-field="target_km">—</b> <span class="u-m">km</span><span class="u-i">mi</span>, the monthly share of the season goal</span><span class="delta" data-draw="mg-pct" data-source="month_goal" data-row="0" data-field="pct">—</span></div>
+          <div class="goal-track" data-draw="mg-bar" data-source="month_goal"></div>
+        </div>
+      </div>
+      <h3 class="sec">Trends</h3>
+      <div class="g21">
+          <div class="card" id="cumulative-card">
+            <div class="card-h"><h2>Distance through 2026</h2><span class="note">Running total, <span class="u-m">km</span><span class="u-i">mi</span> · gray = 2025 · dashed = even pace</span></div>
+            <div class="chart" data-draw="cum-chart" data-source="cumulative cumulative_2025"></div>
+          </div>
+          <div class="card" id="weekly-card">
+            <div class="card-h"><h2>Weekly volume</h2><span class="note">Last 16 weeks, <span class="u-m">km</span><span class="u-i">mi</span></span></div>
+            <div class="chart" data-draw="weekly-chart" data-source="weekly"></div>
+          </div>
+      </div>
+      <div class="card" id="monthly-card">
+        <div class="card-h"><h2>Distance by month</h2><span class="note">Distance per month, 2026, <span class="u-m">km</span><span class="u-i">mi</span></span></div>
+        <div class="chart mid" data-draw="month-chart" data-source="monthly"></div>
+      </div>
+      <div class="card" id="bests-card">
+        <div class="card-h"><h2>2026 bests vs 2025</h2><span class="note">From Strava best efforts · green = better this year</span></div>
+        <div class="scroll">
+          <table class="tbl" data-source="bests_cmp" data-row-key="order">
+            <thead><tr><th data-field="effort">Effort</th><th data-field="v2026" class="num">2026</th><th data-field="d2026" class="wide-only">Set</th><th data-field="v2025" class="num">2025</th><th data-field="change_pct" class="num">Change</th></tr></thead>
+            <tbody data-draw="bests-rows"></tbody>
+          </table>
+        </div>
+      </div>
+      <h3 class="sec">Habits</h3>
+      <div class="card" id="calendar-card">
+        <div class="card-h"><h2>Ride calendar</h2><span class="note">Each square is a day in 2026; darker means more distance</span></div>
+        <div class="scroll"><div class="chart short heat-svg" data-draw="heatmap" data-source="days"></div></div>
+      </div>
+      <div class="card" id="dow-card">
+        <div class="card-h"><h2>When you ride</h2><span class="note">2026 rides by weekday · bar = rides, label = average <span class="u-m">km</span><span class="u-i">mi</span></span></div>
+        <div class="chart mid" data-draw="dow-chart" data-source="dow"></div>
+      </div>
+      <div class="card" id="hour-card">
+        <div class="card-h"><h2>Time of day</h2><span class="note">2026 rides by start hour · label = rides</span></div>
+        <div class="chart mid" data-draw="hour-chart" data-source="by_hour"></div>
+      </div>
+      <div class="card" id="speed-card">
+        <div class="card-h"><h2>Speed trend</h2><span class="note">Average moving speed per week, last 16 weeks, <span class="u-m">km/h</span><span class="u-i">mph</span> · dashed = 16-week average</span></div>
+        <div class="chart mid" data-draw="speed-chart" data-source="weekly"></div>
+      </div>
+      <div class="card" id="garage-card">
+        <div class="card-h"><h2>Garage</h2><span class="note">ATLien is the Diverge; Bombs over Baghdad is the Arise</span></div>
+        <div class="scroll">
+          <table class="tbl stack" data-source="garage" data-row-key="gear_id">
+            <thead><tr><th data-field="name">Bike</th><th data-field="frame_type">Type</th><th data-field="km" data-mf="km" data-if="miles" class="num">All-time <span class="u-m">km</span><span class="u-i">mi</span></th><th data-field="share_pct" class="num">Share</th><th data-field="status">Status</th></tr></thead>
+            <tbody data-draw="garage-rows"></tbody>
+          </table>
+        </div>
+      </div>
     </section>
 
     <!-- SEGMENTS -->
     <section class="hub-page" id="segments" role="tabpanel" hidden>
       <div class="ph">
-        <div><h1>Segments</h1><p>Local Legends and top 10s come from your Strava profile (read Oct 28, 2026); Strava doesn't share them with apps. PR medals and repeat counts are live from your last 10 activities.</p></div>
+        <div><h1>Segments</h1><p>Crowns from your Strava profile (Oct 28); PRs and repeats are live.</p></div>
+      </div>
+      <div class="card" id="upkeep-card">
+        <div class="card-h"><h2>Keep your crowns</h2><span class="note">Live from your last 30 activities · weakest first</span></div>
+        <p class="note">A Local Legend counts your efforts in the last 90 days, so each effort stops counting 90 days after you ride it. "Next drop" is when your oldest effort in the window falls out; ride the segment before then to stay level.</p>
+        <div class="scroll">
+          <table class="tbl stack" data-source="ll_status" data-row-key="order">
+            <thead><tr><th data-field="segment">Segment</th><th data-field="efforts_90d" class="num">Efforts, 90 days</th><th data-field="last_date">Last ridden</th><th data-field="days_since" class="num">Days ago</th><th data-field="next_expiry">Next drop</th></tr></thead>
+            <tbody data-draw="ll-rows"></tbody>
+          </table>
+        </div>
       </div>
       <div class="g21">
         <div class="card" id="legends-card">
@@ -354,16 +363,6 @@
           <div class="chart mid" data-draw="legend-chart" data-source="legends"></div>
         </div>
       </div>
-        <div class="card" id="upkeep-card">
-          <div class="card-h"><h2>Keep your crowns</h2><span class="note">Live from your last 30 activities · weakest first</span></div>
-          <p class="note">A Local Legend counts your efforts in the last 90 days, so each effort stops counting 90 days after you ride it. "Next drop" is when your oldest effort in the window falls out; ride the segment before then to stay level.</p>
-          <div class="scroll">
-            <table class="tbl stack" data-source="ll_status" data-row-key="order">
-              <thead><tr><th data-field="segment">Segment</th><th data-field="efforts_90d" class="num">Efforts, 90 days</th><th data-field="last_date">Last ridden</th><th data-field="days_since" class="num">Days ago</th><th data-field="next_expiry">Next drop</th></tr></thead>
-              <tbody data-draw="ll-rows"></tbody>
-            </table>
-          </div>
-        </div>
       <div class="g2">
         <div class="card" id="hascall-card" style="grid-column: 1 / -1">
           <div class="card-h"><h2>Hascall hill repeats</h2><span class="note">Full Hascall Hill, last 30 activities</span></div>

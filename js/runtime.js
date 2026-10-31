@@ -142,7 +142,7 @@
 
   // On phones, wide tables become stacked cards: each cell is labelled with its column.
   const labelTables = () => document.querySelectorAll('table.stack').forEach((t) => {
-    const heads = [...t.querySelectorAll('thead th')].map((th) => th.textContent.trim());
+    const heads = [...t.querySelectorAll('thead th')].map((th) => [...th.childNodes].filter((n) => n.nodeType === 3 || getComputedStyle(n).display !== 'none').map((n) => n.textContent).join('').trim());
     t.querySelectorAll('tbody tr').forEach((tr) => [...tr.children].forEach((td, i) => { if (td.dataset.label !== heads[i]) td.dataset.label = heads[i] || ''; }));
   });
 

@@ -133,8 +133,8 @@ h3.sec { color: var(--copper-hi); letter-spacing: .14em; }
 .wx-d.wet .wx-pop { color: var(--sky); }
 .wx-plan { margin-top: 3px; font: 800 10.5px var(--display); letter-spacing: .04em; color: var(--copper-hi); white-space: nowrap; }
 /* Weather on plan days */
-.pw-wx { color: var(--color-fg-muted); white-space: nowrap; }
-.pw-wx.wet { color: var(--sky); font-weight: 700; }
+.pw-r small.pw-wx { color: var(--color-fg-muted); white-space: nowrap; letter-spacing: .02em; text-transform: none; }
+.pw-r small.pw-wx.wet { color: var(--sky); font-weight: 700; }
 /* Ride calendar key: name and range */
 .heat-key { margin-top: 10px; gap: 6px 14px; }
 .heat-key b { color: var(--cream); margin-right: 3px; }

@@ -1,6 +1,6 @@
 {
  "week_start": "2026-10-26",
- "updated_at": "2026-10-31T00:42:24Z",
+ "updated_at": "2026-10-31T15:24:42Z",
  "updated_by": "Claude",
  "days": [
   {
@@ -70,23 +70,23 @@
    "order": 6,
    "day": "Sat",
    "date": "2026-10-31",
-   "session": "Long Zone 2, Silver Comet",
-   "details": "55+ mi (Eddington 55 goal: every 55-mile day counts), about 4 hours on the Silver Comet. Moved up from Sunday because rain is forecast Sunday. Steady Zone 2 the whole way; ease off on the climbs to stay under the cap. Eat every 30–45 min and drink about a bottle an hour.",
-   "target_hr": "130–150, cap 153",
-   "target_miles": "55",
+   "session": "Rest",
+   "details": "Rest day so your legs are fresh for Sunday's long ride.",
+   "target_hr": "—",
+   "target_miles": "0",
    "status": "Planned",
-   "intensity": "Endurance"
+   "intensity": "Rest"
   },
   {
    "order": 7,
    "day": "Sun",
    "date": "2026-11-01",
-   "session": "Rest (rain)",
-   "details": "Rain forecast, and your legs will want it after Saturday's long ride. If it's dry, an optional easy 30-minute spin.",
-   "target_hr": "under 125",
-   "target_miles": "0–10",
+   "session": "Long Zone 2, Silver Comet",
+   "details": "55+ mi (Eddington 55 goal: every 55-mile day counts), about 4 hours on the Silver Comet. Steady Zone 2 the whole way; ease off on the climbs to stay under the cap. Eat every 30–45 min and drink about a bottle an hour. If it's raining, bring a rain shell or take it to Monday.",
+   "target_hr": "130–150, cap 153",
+   "target_miles": "55",
    "status": "Planned",
-   "intensity": "Rest"
+   "intensity": "Endurance"
   }
  ]
 }

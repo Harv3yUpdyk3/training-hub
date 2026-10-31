@@ -1,24 +1,26 @@
 /* Atlanta '96: the hub in the colours of the Centennial Games' "Quilt of
-   Leaves" look. Warm cream paper, deep olympic green, terracotta clay, torch
+   Leaves" look, with cycling and mountain pictograms. Deep olympic green page with cream type, terracotta clay, torch
    gold, Chattahoochee teal and plum, with a patchwork band and a leaf quilt.
    Loaded after hub.css; only overrides looks. */
 :root, :root[data-theme] {
-  color-scheme: light;
+  color-scheme: dark;
   --g96: #1f6b3a; --g96-deep: #123f24; --clay: #b5402c; --gold: #d9a21b;
-  --teal: #1d6f8f; --plum: #6b3d74; --olive: #7d8b2d; --cream: #f4ead2; --paper: #fbf5e6; --ink96: #2a2416;
-  --color-bg: var(--cream); --color-panel: var(--paper); --color-fg: var(--ink96); --color-fg-muted: #6f6450;
-  --color-border-line: #e2d4b2; --color-ok: #1f7a3f; --color-warn: #a86f00; --color-bad: #b5402c;
-  --series-1: #1f6b3a; --series-2: #b5402c; --series-3: #d9a21b; --series-4: #1d6f8f;
-  --series-5: #6b3d74; --series-6: #7d8b2d; --series-7: #8c7f66; --series-8: #e07a2f;
-  --cds-border: #e2d4b2; --cds-chart-axis: #a8997a; --cds-chart-grid: #ebe0c6; --cds-chart-muted: #cfc2a3;
-  --cds-chart-reference: #6f6450; --cds-chart-categorical-1: #1d6f8f; --cds-chart-categorical-3: #6b3d74;
-  --cds-chart-status-warning: #d9a21b; --cds-chart-status-critical: #b5402c;
-  --cds-text-secondary: #6f6450; --cds-surface-popover: #fffaf0; --cds-shadow-popover: 0 8px 24px rgba(42,36,22,.22);
+  --teal: #1d6f8f; --plum: #6b3d74; --olive: #7d8b2d; --cream: #f4ead2; --paper: #17402a; --ink96: #f4ead2; --page: #0e2a1a;
+  --color-bg: var(--page); --color-panel: var(--paper); --color-fg: var(--cream); --color-fg-muted: #b8b294;
+  --color-border-line: #2a5a3c; --color-ok: #7fd68f; --color-warn: #e8b730; --color-bad: #f07a5f;
+  --series-1: #e8b730; --series-2: #e0664a; --series-3: #7fd68f; --series-4: #4fb0d6;
+  --series-5: #c08ad0; --series-6: #b7c45a; --series-7: #b8b294; --series-8: #f39a4d;
+  --cds-border: #2a5a3c; --cds-chart-axis: #7d9a80; --cds-chart-grid: #234d33; --cds-chart-muted: #3f6b4c;
+  --cds-chart-reference: #b8b294; --cds-chart-categorical-1: #4fb0d6; --cds-chart-categorical-3: #c08ad0;
+  --cds-chart-status-warning: #e8b730; --cds-chart-status-critical: #e0664a;
+  --cds-text-secondary: #b8b294; --cds-surface-popover: #1d4a30; --cds-shadow-popover: 0 8px 24px rgba(0,0,0,.5);
   --serif96: "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
   --quilt: linear-gradient(90deg, var(--g96) 0 20%, var(--clay) 20% 40%, var(--gold) 40% 60%, var(--teal) 60% 80%, var(--plum) 80%);
-  --leaves: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'%3E%3Cg fill='none' stroke-width='1.4' stroke-linecap='round'%3E%3Cpath d='M8 26c0-10 8-18 18-18 0 10-8 18-18 18zM8 26 22 12' stroke='%231f6b3a' opacity='.11'/%3E%3Cpath d='M40 58c0-10 8-18 18-18 0 10-8 18-18 18zM40 58l14-14' stroke='%23b5402c' opacity='.09'/%3E%3Cpath d='M44 22c6-6 14-6 16 0-6 6-14 6-16 0zM44 22h16' stroke='%23d9a21b' opacity='.14'/%3E%3Cpath d='M6 50c6-6 14-6 16 0-6 6-14 6-16 0zM6 50h16' stroke='%231d6f8f' opacity='.09'/%3E%3C/g%3E%3C/svg%3E");
+  --leaves: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cg transform='translate%2810 14%29' opacity='.13'%3E%3Cpath d='M1 24 12 6l5 8 4-5 10 15z' fill='%237fd68f'/%3E%3Cpath d='M9.6 10 12 6l2.9 4.6-1.6 1.4-1.3-1.6-1.3 1.6z' fill='%23f4ead2'/%3E%3C/g%3E%3Cg transform='translate%2870 72%29' opacity='.12'%3E%3Cg fill='%23e8b730'%3E%3Ccircle cx='9' cy='19' r='5.2' fill='none' stroke='%23e8b730' stroke-width='2.6'/%3E%3Ccircle cx='27' cy='19' r='5.2' fill='none' stroke='%23e8b730' stroke-width='2.6'/%3E%3Ccircle cx='22.5' cy='4' r='2.8'/%3E%3Cpath d='M9 19 15.5 11h8.5L27 19M15.5 11l3 8' fill='none' stroke='%23e8b730' stroke-width='2.2' stroke-linejoin='round'/%3E%3Cpath d='M13 10.5 19.5 6.5l5 4.5' fill='none' stroke='%23e8b730' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M14 10.5l4.5 4-0 4.5' fill='none' stroke='%23e8b730' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/g%3E%3C/g%3E%3Cg transform='translate%2872 18%29 scale%28.7%29' opacity='.1'%3E%3Cpath d='M1 24 12 6l5 8 4-5 10 15z' fill='%234fb0d6'/%3E%3Cpath d='M9.6 10 12 6l2.9 4.6-1.6 1.4-1.3-1.6-1.3 1.6z' fill='%23f4ead2'/%3E%3C/g%3E%3Cg transform='translate%2812 76%29 scale%28.8%29' opacity='.1'%3E%3Cg fill='%23e0664a'%3E%3Ccircle cx='9' cy='19' r='5.2' fill='none' stroke='%23e0664a' stroke-width='2.6'/%3E%3Ccircle cx='27' cy='19' r='5.2' fill='none' stroke='%23e0664a' stroke-width='2.6'/%3E%3Ccircle cx='22.5' cy='4' r='2.8'/%3E%3Cpath d='M9 19 15.5 11h8.5L27 19M15.5 11l3 8' fill='none' stroke='%23e0664a' stroke-width='2.2' stroke-linejoin='round'/%3E%3Cpath d='M13 10.5 19.5 6.5l5 4.5' fill='none' stroke='%23e0664a' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M14 10.5l4.5 4-0 4.5' fill='none' stroke='%23e0664a' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  --picto-bike: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 -2 36 28'%3E%3Cg fill='%23000'%3E%3Ccircle cx='9' cy='19' r='5.2' fill='none' stroke='%23000' stroke-width='2.6'/%3E%3Ccircle cx='27' cy='19' r='5.2' fill='none' stroke='%23000' stroke-width='2.6'/%3E%3Ccircle cx='22.5' cy='4' r='2.8'/%3E%3Cpath d='M9 19 15.5 11h8.5L27 19M15.5 11l3 8' fill='none' stroke='%23000' stroke-width='2.2' stroke-linejoin='round'/%3E%3Cpath d='M13 10.5 19.5 6.5l5 4.5' fill='none' stroke='%23000' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M14 10.5l4.5 4-0 4.5' fill='none' stroke='%23000' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/g%3E%3C/svg%3E");
+  --picto-mtn: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 26'%3E%3Cpath d='M1 24 12 6l5 8 4-5 10 15z' fill='%23000'/%3E%3Cpath d='M9.6 10 12 6l2.9 4.6-1.6 1.4-1.3-1.6-1.3 1.6z' fill='%23000'/%3E%3C/svg%3E");
 }
-html, body { background: var(--cream); }
+html, body { background: var(--page); }
 body { background-image: var(--leaves); }
 .hub, #plan-sheet { --acc: var(--clay); --line: var(--color-border-line); --r: 6px; }
 .hub { background: transparent; }
@@ -40,34 +42,34 @@ body { background-image: var(--leaves); }
 .live { background: var(--gold); box-shadow: 0 0 0 3px rgba(217,162,27,.3); }
 
 /* Tabs: each event gets a quilt colour */
-.tabs { background: var(--paper); border-bottom: 1px solid var(--line); margin-top: 5px; box-shadow: 0 2px 6px rgba(42,36,22,.06); }
+.tabs { background: #0b2316; border-bottom: 1px solid var(--line); margin-top: 5px; box-shadow: 0 2px 6px rgba(0,0,0,.3); }
 .hub-tab { color: var(--color-fg-muted); font-family: var(--serif96); font-style: italic; font-weight: 700; text-transform: none; letter-spacing: .01em; border-bottom: 3px solid transparent; }
-.hub-tab:hover { color: var(--ink96); }
-.hub-tab[aria-selected=true] { color: var(--g96); border-bottom-color: var(--g96); }
-.hub-tab[data-tab=training][aria-selected=true] { color: var(--clay); border-bottom-color: var(--clay); }
-.hub-tab[data-tab=rides][aria-selected=true] { color: var(--teal); border-bottom-color: var(--teal); }
-.hub-tab[data-tab=segments][aria-selected=true] { color: #9a7300; border-bottom-color: var(--gold); }
-.hub-tab[data-tab=france][aria-selected=true] { color: var(--plum); border-bottom-color: var(--plum); }
+.hub-tab:hover { color: var(--cream); }
+.hub-tab[aria-selected=true] { color: var(--cream); border-bottom-color: var(--cream); }
+.hub-tab[data-tab=training][aria-selected=true] { color: #f08a6e; border-bottom-color: var(--clay); }
+.hub-tab[data-tab=rides][aria-selected=true] { color: #6cc3e6; border-bottom-color: #4fb0d6; }
+.hub-tab[data-tab=segments][aria-selected=true] { color: var(--gold); border-bottom-color: var(--gold); }
+.hub-tab[data-tab=france][aria-selected=true] { color: #d6a3e3; border-bottom-color: #c08ad0; }
 .kbd { display: none; }
 
-/* Page headers: serif italic with a leaf */
-.hub { --tone: var(--g96); }
-#training { --tone: var(--clay); } #rides { --tone: var(--teal); } #segments { --tone: var(--gold); } #france { --tone: var(--plum); }
+/* Page headers: serif italic with the cycling pictogram; cards get the mountain */
+.hub { --tone: var(--gold); }
+#training { --tone: var(--clay); } #rides { --tone: #4fb0d6; } #segments { --tone: var(--gold); } #france { --tone: #c08ad0; }
 .ph h1 { font-family: var(--serif96); font-style: italic; font-weight: 700; text-transform: none; letter-spacing: 0; font-size: 34px; color: var(--ink96); }
-.ph h1::before { width: 20px; height: 20px; background: var(--tone); border-radius: 0 60% 0 60%; }
+.ph h1::before { width: 40px; height: 31px; background: var(--tone); border-radius: 0; -webkit-mask: var(--picto-bike) center / contain no-repeat; mask: var(--picto-bike) center / contain no-repeat; }
 
 /* Cards: paper squares, stitched like a quilt block */
-.card { background: var(--paper); border: 1px solid var(--line); border-radius: var(--r); box-shadow: 0 1px 0 #e9dcbc, 0 2px 8px rgba(42,36,22,.05); position: relative; outline: 1px dashed rgba(42,36,22,.12); outline-offset: -6px; }
+.card { background: var(--paper); border: 1px solid var(--line); border-radius: var(--r); box-shadow: 0 2px 10px rgba(0,0,0,.25); position: relative; outline: 1px dashed rgba(244,234,210,.1); outline-offset: -6px; }
 .card::before { content: ""; position: absolute; left: -1px; right: -1px; top: -1px; height: 4px; background: var(--tone); border-radius: var(--r) var(--r) 0 0; }
 .card h2 { font-family: var(--serif96); font-style: italic; text-transform: none; letter-spacing: 0; font-size: 18px; font-weight: 700; color: var(--ink96); }
-.card h2::before { width: 10px; height: 10px; border-radius: 0 60% 0 60%; background: var(--tone); }
+.card h2::before { width: 16px; height: 13px; border-radius: 0; background: var(--tone); -webkit-mask: var(--picto-mtn) center / contain no-repeat; mask: var(--picto-mtn) center / contain no-repeat; }
 .card.full { outline: 0; }
 .card.full::before { display: none; }
 
 /* Season goal: the torch panel */
 .hero { --color-fg: var(--cream); --color-fg-muted: #d6cba8; --cds-chart-grid: rgba(244,234,210,.16);
   color: var(--cream); border: 0; padding-bottom: 27px;
-  background: radial-gradient(110% 130% at 100% 0%, rgba(217,162,27,.42) 0%, transparent 55%), linear-gradient(160deg, #1f6b3a 0%, #123f24 75%); }
+  background: radial-gradient(110% 130% at 100% 0%, rgba(217,162,27,.42) 0%, transparent 55%), linear-gradient(160deg, #24804a 0%, #145230 75%); }
 .hero::before { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 5px; background: var(--quilt); z-index: 2; }
 .hero::after { background: none; }
 .kick { color: var(--gold); }
@@ -80,16 +82,16 @@ body { background-image: var(--leaves); }
 .hero .tag.ok, .hrow b.ok { color: #9fe0a8; } .hero .tag.bad, .hrow b.bad { color: #ffb19f; }
 
 /* Plan, next up, buttons */
-.nextup { background: linear-gradient(90deg, rgba(181,64,44,.08), transparent 60%), var(--paper); }
+.nextup { background: linear-gradient(90deg, rgba(217,162,27,.14), transparent 60%), var(--paper); }
 .nu-s, .pw-rel, .ps-title { font-family: var(--serif96); font-style: italic; }
-.pw-save, .pw-start, .gk-btns .gk-save, .ps-btns .ps-done, .go { background: var(--g96); color: var(--cream); }
-.pw-nav button { background: var(--cream); }
-.badge { color: var(--g96); background: rgba(31,107,58,.1); }
-.tag.warn { color: #8a5d00; background: rgba(217,162,27,.18); }
+.pw-save, .pw-start, .gk-btns .gk-save, .ps-btns .ps-done, .go { background: var(--gold); color: var(--g96-deep); }
+.pw-nav button { background: #0e2a1a; color: var(--cream); }
+.badge { color: var(--gold); background: rgba(217,162,27,.14); }
+.tag.warn { color: var(--gold); background: rgba(217,162,27,.18); }
 .rc-rep.best { border-color: var(--gold); background: rgba(217,162,27,.14); }
 .ed-step.goal { border-color: var(--gold); background: rgba(217,162,27,.14); }
 .sheet > * { background: var(--paper); }
 
 /* Closing ceremony footer */
 .app-foot { border-top: 0; padding-top: 18px; position: relative; }
-.app-foot::before { content: "Atlanta, Georgia"; display: block; font: italic 700 15px var(--serif96); color: var(--g96); margin-bottom: 6px; padding-top: 10px; background: var(--quilt) top / 100% 4px no-repeat; }
+.app-foot::before { content: "Atlanta, Georgia"; display: block; font: italic 700 15px var(--serif96); color: var(--gold); margin-bottom: 6px; padding-top: 10px; background: var(--quilt) top / 100% 4px no-repeat; }

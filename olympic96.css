@@ -70,7 +70,7 @@ html, body { background: var(--page); }
   background: radial-gradient(90% 120% at 100% 0%, rgba(179,126,44,.28) 0%, transparent 60%), linear-gradient(160deg, var(--stone) 0%, #003a36 80%); }
 .hero::after { content: ""; position: absolute; right: -30px; bottom: 30px; top: auto; width: 260px; height: 205px; background: var(--copper); opacity: .14;
   -webkit-mask: var(--picto-mtn) center / contain no-repeat; mask: var(--picto-mtn) center / contain no-repeat; pointer-events: none; }
-.rings { position: relative; z-index: 1; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; align-self: start; min-width: 18rem; }
+.rings { position: relative; z-index: 1; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px 10px; align-self: start; min-width: 18rem; }
 .ring { display: grid; justify-items: center; gap: 6px; text-align: center; }
 .ring-face { position: relative; width: 100%; max-width: 104px; aspect-ratio: 1; }
 .ring svg { width: 100%; height: 100%; transform: rotate(-90deg); display: block; }
@@ -139,3 +139,9 @@ h3.sec { color: var(--copper-hi); letter-spacing: .14em; }
 .heat-key { margin-top: 10px; gap: 6px 14px; }
 .heat-key b { color: var(--cream); margin-right: 3px; }
 .heat-key i { width: 10px; height: 10px; }
+
+/* Distance graph view switch and the all-years key */
+.units.dv { background: rgba(0,0,0,.25); }
+.units.dv button { color: var(--color-fg-muted); }
+.year-key { margin-top: 8px; gap: 6px 14px; }
+.year-key b { color: var(--cream); margin-right: 3px; }

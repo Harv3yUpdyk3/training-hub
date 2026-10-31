@@ -74,7 +74,7 @@
           <h2 class="hl"><span data-draw="km-done" data-source="ytd" data-row="0" data-field="km">—</span><small> <span class="u-m">km</span><span class="u-i">mi</span> of <span data-draw="goal">—</span></small></h2>
           <div class="goal-track" data-draw="goal-bar" data-source="ytd"></div>
         </div>
-        <div class="rings" data-draw="rings" data-source="ytd plan_week eddington"></div>
+        <div class="rings" data-draw="rings" data-source="ytd plan_week eddington month_goal climbs"></div>
         <div class="hrow">
           <div data-goal="open"><span>To go</span><b><span data-draw="km-left" data-source="ytd" data-row="0" data-field="km_left">—</span> <small><span class="u-m">km</span><span class="u-i">mi</span></small></b></div>
           <div data-goal="open"><span>Needed per week</span><b><span data-draw="per-week" data-source="ytd" data-row="0" data-field="km_per_week">—</span> <small><span class="u-m">km</span><span class="u-i">mi</span></small></b></div>
@@ -101,8 +101,10 @@
       </div>
 
       <div class="card" id="cumulative-card">
-        <div class="card-h"><h2>Distance through 2026</h2><span class="note">Running total, <span class="u-m">km</span><span class="u-i">mi</span> · gray = 2025 · dashed = even pace</span></div>
-        <div class="chart" data-draw="cum-chart" data-source="cumulative cumulative_2025"></div>
+        <div class="card-h"><h2>Distance</h2><span class="units dv" role="group" aria-label="Distance view"><button type="button" data-dist-view="year" aria-pressed="true">2026</button><button type="button" data-dist-view="all" aria-pressed="false">All time</button></span></div>
+        <p class="note" data-dist-note="year">Running total, <span class="u-m">km</span><span class="u-i">mi</span> · gray = 2025 · dashed = even pace · each month is shaded by its distance, with its total on top</p>
+        <p class="note" data-dist-note="all" hidden>Running total for every year, <span class="u-m">km</span><span class="u-i">mi</span>, so you can compare pace on any date</p>
+        <div class="chart" data-draw="cum-chart" data-source="cumulative cumulative_2025 monthly cumulative_all"></div>
       </div>
       <div class="card" id="calendar-card">
         <div class="card-h"><h2>Ride calendar</h2><span class="note">Each square is a day in 2026, coloured by distance; orange and pink are Eddington 55 days</span></div>
@@ -301,10 +303,6 @@
             <div class="chart" data-draw="weekly-chart" data-source="weekly"></div>
           </div>
       </div>
-      <div class="card" id="monthly-card">
-        <div class="card-h"><h2>Distance by month</h2><span class="note">Distance per month, 2026, <span class="u-m">km</span><span class="u-i">mi</span></span></div>
-        <div class="chart mid" data-draw="month-chart" data-source="monthly"></div>
-      </div>
       <div class="card" id="bests-card">
         <div class="card-h"><h2>2026 bests vs 2025</h2><span class="note">From Strava best efforts · green = better this year</span></div>
         <div class="scroll">
@@ -313,19 +311,6 @@
             <tbody data-draw="bests-rows"></tbody>
           </table>
         </div>
-      </div>
-      <h3 class="sec">Habits</h3>
-      <div class="card" id="dow-card">
-        <div class="card-h"><h2>When you ride</h2><span class="note">2026 rides by weekday · bar = rides, label = average <span class="u-m">km</span><span class="u-i">mi</span></span></div>
-        <div class="chart mid" data-draw="dow-chart" data-source="dow"></div>
-      </div>
-      <div class="card" id="hour-card">
-        <div class="card-h"><h2>Time of day</h2><span class="note">2026 rides by start hour · label = rides</span></div>
-        <div class="chart mid" data-draw="hour-chart" data-source="by_hour"></div>
-      </div>
-      <div class="card" id="speed-card">
-        <div class="card-h"><h2>Speed trend</h2><span class="note">Average moving speed per week, last 16 weeks, <span class="u-m">km/h</span><span class="u-i">mph</span> · dashed = 16-week average</span></div>
-        <div class="chart mid" data-draw="speed-chart" data-source="weekly"></div>
       </div>
       <div class="card" id="garage-card">
         <div class="card-h"><h2>Garage</h2><span class="note">ATLien is the Diverge; Bombs over Baghdad is the Arise</span></div>

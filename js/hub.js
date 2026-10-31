@@ -404,6 +404,21 @@ const ED_GOAL_MI = 55; // Will's Eddington goal, in miles
     },
   });
 
+  dash.calc('cumulative_all', {
+    inputs: ['rides_all'],
+    title: 'Running total by year, all time',
+    description: 'For every year on Strava, km added up day by day through that year (miles × 1.609344).',
+    fn: (rides) => {
+      const byYear = d3.group(rides.filter((r) => /Ride/.test(r.sport_type || 'Ride')), (r) => r.date.slice(0, 4));
+      return [...byYear].sort((a, b) => d3.ascending(a[0], b[0])).map(([year, v]) => {
+        let total = 0;
+        const pts = [...d3.rollup(v, (x) => d3.sum(x, (r) => r.miles), (r) => r.date)].sort((a, b) => d3.ascending(a[0], b[0]))
+          .map(([date, mi]) => { total += mi * 1.609344; return { date, km_total: Math.round(total) }; });
+        return { year: +year, km: Math.round(total), pts };
+      });
+    },
+  });
+
   dash.calc('records', {
     inputs: ['rides'],
     title: '2026 records',
@@ -1364,19 +1379,75 @@ const ED_GOAL_MI = 55; // Will's Eddington goal, in miles
   }));
 
   // Charts
+  // Distance graph view: this year (with each month shaded by its distance) or every year since joining Strava.
+  let distView = 'year';
+  try { distView = localStorage.getItem('hub.distView') || 'year'; } catch {}
+  document.querySelectorAll('[data-dist-view]').forEach((b) => b.addEventListener('click', () => {
+    distView = b.dataset.distView;
+    try { localStorage.setItem('hub.distView', distView); } catch {}
+    dash.draw('cum-chart');
+  }));
+  const YEAR_COLORS = ['#2fa497', '#00B1EA', '#9557A9', '#EA2C78', '#F4462F', '#d9a24a', '#5fe0a8', '#b07cc2'];
+  const allYearsChart = (box) => {
+    const g = dash.data('cumulative_all');
+    if (failed(box, 'cumulative_all')) return;
+    if (g.status !== 'ok') { box.append(el('p', 'note', 'Loading every year from Strava…')); return; }
+    const years = g.data.filter((d) => d.pts.length);
+    if (!years.length) return;
+    const w = box.clientWidth || 600, h = 260, m = { t: 12, r: 64, b: 24, l: 40 }, U = distU();
+    const cur = new Date().getFullYear();
+    const x = d3.scaleTime([new Date(2026, 0, 1), new Date(2026, 11, 31)], [m.l, w - m.r]);
+    const y = d3.scaleLinear([0, d3.max(years, (d) => dist(d.km)) || 1], [h - m.b, m.t]).nice();
+    const svg = d3.select(box).append('svg').attr('viewBox', `0 0 ${w} ${h}`).attr('width', '100%').attr('role', 'img').attr('aria-label', 'Running total of distance for every year');
+    svg.append('g').selectAll('line').data(y.ticks(4)).join('line').attr('x1', m.l).attr('x2', w - m.r).attr('y1', y).attr('y2', y).attr('stroke', css('--cds-chart-grid'));
+    svg.append('g').attr('transform', `translate(${m.l - 6},0)`).call(d3.axisLeft(y).ticks(4).tickSize(0).tickFormat(d3.format('~s'))).call((a) => axisStyle(a, false));
+    svg.append('g').attr('transform', `translate(0,${h - m.b})`).call(d3.axisBottom(x).ticks(w < 500 ? 4 : 6).tickSize(0).tickPadding(8).tickFormat(d3.timeFormat('%b'))).call((a) => axisStyle(a, true));
+    const inYear = (date) => new Date(2026, +date.slice(5, 7) - 1, +date.slice(8, 10));
+    const color = (d, i) => (d.year === cur ? '#B37E2C' : YEAR_COLORS[(years.length - 1 - i) % YEAR_COLORS.length]);
+    years.forEach((d, i) => {
+      const pts = d.pts.map((p) => ({ date: inYear(p.date), v: dist(p.km_total) }));
+      svg.append('path').datum(pts).attr('fill', 'none').attr('stroke', color(d, i)).attr('stroke-width', d.year === cur ? 3 : 1.6)
+        .attr('stroke-opacity', d.year === cur ? 1 : 0.85).attr('stroke-linejoin', 'round').attr('d', d3.line().x((p) => x(p.date)).y((p) => y(p.v)));
+    });
+    // Year labels at the right edge, nudged apart so they don't overlap.
+    const ends = years.map((d, i) => ({ d, i, y: y(dist(d.km)) })).sort((a, b) => a.y - b.y);
+    ends.forEach((e, k) => { if (k && e.y - ends[k - 1].y < 12) e.y = ends[k - 1].y + 12; });
+    ends.forEach((e) => svg.append('text').attr('x', w - m.r + 6).attr('y', e.y + 4).attr('fill', color(e.d, e.i)).style('font-size', '11px').style('font-family', MONO).style('font-weight', e.d.year === cur ? 700 : 400).text(e.d.year));
+    const key = el('div', 'legend year-key');
+    [...years].reverse().forEach((d) => { const i = years.indexOf(d); const sp = el('span'); const sw = el('i'); sw.style.background = color(d, i); sp.append(sw, el('b', null, String(d.year)), document.createTextNode(' ' + fmt(Math.round(dist(d.km))) + ' ' + U)); key.append(sp); });
+    box.append(key);
+  };
   dash.draw('cum-chart', (box) => {
-    const g = dash.data('cumulative');
+    document.querySelectorAll('[data-dist-view]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.distView === distView)));
+    document.querySelectorAll('[data-dist-note]').forEach((n) => { n.hidden = n.dataset.distNote !== distView; });
     box.replaceChildren();
+    if (distView === 'all') { allYearsChart(box); return; }
+    const g = dash.data('cumulative');
     if (failed(box, 'cumulative') || g.status !== 'ok' || !g.data.length) return;
-    const w = box.clientWidth || 600, h = 240, m = { t: 12, r: 64, b: 24, l: 40 };
+    const w = box.clientWidth || 600, h = 260, m = { t: 22, r: 64, b: 24, l: 40 };
     const GOAL = dist(GOAL_KM), U = distU();
     const pts = g.data.map((d) => ({ date: asDate(d.date), km: Math.round(dist(d.km_total)) }));
     const x = d3.scaleTime([new Date(2026, 0, 1), new Date(2026, 11, 31)], [m.l, w - m.r]);
-    const y = d3.scaleLinear([0, Math.max(GOAL, d3.max(pts, (d) => d.km))], [h - m.b, m.t]);
+    const p25 = dash.data('cumulative_2025');
+    const y = d3.scaleLinear([0, Math.max(GOAL, d3.max(pts, (d) => d.km), p25.status === 'ok' ? d3.max(p25.data, (d) => dist(d.km_total)) || 0 : 0)], [h - m.b, m.t]).nice();
     const svg = d3.select(box).append('svg').attr('viewBox', `0 0 ${w} ${h}`).attr('width', '100%').attr('role', 'img').attr('aria-label', 'Running total of distance in 2026 against even pace to the goal');
     svg.append('g').selectAll('line').data(y.ticks(4)).join('line').attr('x1', m.l).attr('x2', w - m.r).attr('y1', y).attr('y2', y).attr('stroke', css('--cds-chart-grid'));
     svg.append('g').attr('transform', `translate(${m.l - 6},0)`).call(d3.axisLeft(y).ticks(4).tickSize(0).tickFormat(d3.format('~s'))).call((a) => axisStyle(a, false));
     svg.append('g').attr('transform', `translate(0,${h - m.b})`).call(d3.axisBottom(x).ticks(w < 500 ? 4 : 6).tickSize(0).tickPadding(8).tickFormat(d3.timeFormat('%b'))).call((a) => axisStyle(a, true));
+    // Each month is a band shaded by its distance, with the month's total along the top.
+    const mon = dash.data('monthly');
+    if (mon.status === 'ok') {
+      const top = d3.max(mon.data, (d) => d.km) || 1;
+      const mg = svg.insert('g', ':first-child');
+      mon.data.forEach((d, i) => {
+        const a = new Date(2026, i, 1), b2 = new Date(2026, i + 1, 1);
+        if (a > new Date()) return;
+        mg.append('rect').attr('x', x(a) + 1).attr('width', Math.max(0, x(b2) - x(a) - 2)).attr('y', m.t).attr('height', h - m.b - m.t)
+          .attr('fill', '#B37E2C').attr('fill-opacity', 0.05 + 0.25 * d.km / top);
+        if (x(b2) - x(a) >= 14) mg.append('text').attr('x', (x(a) + x(b2)) / 2).attr('y', m.t - 6).attr('text-anchor', 'middle')
+          .attr('fill', css('--color-fg-muted')).style('font-size', x(b2) - x(a) < 24 ? '8.5px' : '10px').style('font-family', MONO).text(fmt(Math.round(dist(d.km))));
+      });
+    }
     svg.append('line').attr('x1', x(new Date(2026, 0, 1))).attr('y1', y(0)).attr('x2', x(new Date(2026, 11, 31))).attr('y2', y(GOAL))
       .attr('stroke', css('--cds-chart-reference')).attr('stroke-dasharray', '4 4');
     svg.append('text').attr('x', w - m.r + 6).attr('y', y(GOAL) + 4).attr('fill', css('--color-fg-muted')).style('font-size', '11px').style('font-family', MONO).text(fmt(Math.round(GOAL)));
@@ -1956,18 +2027,21 @@ const ED_GOAL_MI = 55; // Will's Eddington goal, in miles
     return wrap;
   };
   dash.draw('rings', (box) => {
-    const y = dash.data('ytd'), w = dash.data('plan_week'), e = dash.data('eddington');
-    const yr = y.status === 'ok' && y.data.length ? y.data[0] : null;
-    const wk = w.status === 'ok' && w.data.length ? w.data[0] : null;
-    const ed = e.status === 'ok' && e.data.length ? e.data[0] : null;
+    const row = (id) => { const g = dash.data(id); return g.status === 'ok' && g.data.length ? g.data[0] : null; };
+    const yr = row('ytd'), wk = row('plan_week'), ed = row('eddington'), mo = row('month_goal');
+    const cl = (() => { const g = dash.data('climbs'); return g.status === 'ok' ? g.data.find((d) => d && /single/.test(d.what)) : null; })();
     const goal = ed && (ed.ladder_mi || []).find((l) => l.level === ED_GOAL_MI);
     const wHi = wk ? (isImp() ? wk.plan_hi_mi : wk.plan_hi_km) : 0, wDone = wk ? (isImp() ? wk.ridden_mi : wk.ridden_km) : 0;
     box.replaceChildren(
       ring(yr ? yr.pct_goal / 100 : null, 'var(--copper)', yr ? yr.pct_goal + '%' : '—', 'of ' + (isImp() ? '3,107 mi' : '5,000 km'), 'Season goal'),
+      ring(mo ? mo.pct / 100 : null, 'var(--amethyst)', mo ? fmt(isImp() ? mo.mi : mo.km) : '—', mo ? 'of ' + fmt(isImp() ? mo.target_mi : mo.target_km) + ' ' + distU() : '', mo ? mo.month : 'This month'),
       ring(wk && wHi ? wDone / wHi : null, 'var(--stone-hi)', wk ? fmt(Math.round(wDone)) : '—', wk ? 'of ' + fmt(wHi) + ' ' + distU() : 'planned', 'This week'),
-      ring(goal ? goal.have / ED_GOAL_MI : null, 'var(--sky)', goal ? String(goal.have) : (ed ? String(ED_GOAL_MI) : '—'), 'of ' + ED_GOAL_MI + ' days', 'Eddington ' + ED_GOAL_MI),
+      ring(ed ? ed.e_mi / ED_GOAL_MI : null, 'var(--sky)', ed ? String(ed.e_mi) : '—', 'of ' + ED_GOAL_MI + ' mi', 'Eddington'),
+      ring(goal ? goal.have / ED_GOAL_MI : null, 'var(--cerise)', goal ? String(goal.have) : '—', 'of ' + ED_GOAL_MI + ' days', ED_GOAL_MI + '-mile days'),
+      ring(cl ? cl.pct_colombier / 100 : null, 'var(--orange)', cl ? cl.pct_colombier + '%' : '—', 'of the Colombier', 'Longest climb'),
     );
   });
+
 
 
   // Weather: this week and next, Monday to Sunday, with the planned ride under each day.

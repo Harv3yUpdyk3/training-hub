@@ -1,6 +1,6 @@
 {
  "week_start": "2026-11-02",
- "updated_at": "2026-10-31T00:20:00Z",
+ "updated_at": "2026-10-31T00:15:00Z",
  "updated_by": "Claude",
  "days": [
   {
@@ -74,9 +74,9 @@
    "day": "Sun",
    "date": "2026-11-08",
    "session": "Long Zone 2",
-   "details": "2–2.5 hours flat or rolling. Eat every 30–45 min.",
+   "details": "55+ mi (Eddington 55 goal: every 55-mile day counts), about 4 hours on the Silver Comet. Eat every 30–45 min.",
    "target_hr": "130–150, cap 153",
-   "target_miles": "30–38",
+   "target_miles": "55",
    "status": "Planned",
    "intensity": "Endurance"
   }

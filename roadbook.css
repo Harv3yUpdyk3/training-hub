@@ -1,0 +1,85 @@
+/* Road book: the hub dressed like a Tour de France race manual, to match the
+   Tour 2027 Road Book. Asphalt background, yellow-jersey accents, a jersey
+   colour per tab (yellow overview, green training, white rides, polka-dot
+   segments and France). Loaded after hub.css; only overrides looks. */
+:root, :root[data-theme] {
+  color-scheme: dark;
+  --jaune: #f2c200; --jaune-ink: #2b2300;
+  --vert: #2fb35a; --pois: #e5322d; --blanc: #f5f6f3;
+  --color-bg: #1c2024; --color-panel: #23282d; --color-fg: #f5f6f3; --color-fg-muted: #a0a8b0;
+  --color-border-line: #3a4148; --color-ok: #4cd07a; --color-warn: #f2c200; --color-bad: #ff5a6e;
+  --series-1: #f2c200; --series-2: #2fb35a; --series-3: #e5322d; --series-4: #5aa9ff;
+  --series-5: #f5f6f3; --series-6: #c48bff; --series-7: #8b949e; --series-8: #ff8a3d;
+  --cds-border: #3a4148; --cds-chart-axis: #59626b; --cds-chart-grid: #2c3238; --cds-chart-muted: #4a525a;
+  --cds-chart-reference: #a0a8b0; --cds-chart-categorical-1: #5aa9ff; --cds-chart-categorical-3: #c48bff;
+  --cds-chart-status-warning: #f2c200; --cds-chart-status-critical: #e5322d;
+  --cds-text-secondary: #a0a8b0; --cds-surface-popover: #2a3036; --cds-shadow-popover: 0 8px 24px rgba(0,0,0,.55);
+}
+html, body { background: var(--color-bg); }
+.hub, #plan-sheet { --acc: var(--jaune); --line: var(--color-border-line); --r: 4px; }
+.hub { background: var(--color-bg); }
+
+/* Masthead: race-manual cover strip */
+.mast { background: #121518; border-bottom: 4px solid var(--jaune); }
+.mast .logo { background: var(--jaune); }
+.mast .logo svg { stroke: var(--jaune-ink); }
+.wm { letter-spacing: .06em; }
+.wm::after { content: " · Road Book"; color: var(--jaune); font-style: italic; }
+@media (max-width: 34rem) { .wm::after { content: ""; } }
+.mchip { background: var(--jaune); color: var(--jaune-ink); }
+.mchip b { color: var(--jaune-ink); }
+.units { background: rgba(255,255,255,.08); }
+.units button[aria-pressed=true] { background: var(--jaune); color: var(--jaune-ink); }
+.sync { background: rgba(255,255,255,.08); }
+
+/* Tabs: stage tabs, the open one is a yellow plate */
+.tabs { background: #16191c; border-bottom: 1px solid #000; box-shadow: none; }
+.hub-tab { color: #8b949e; border: 0; height: 44px; margin: 6px 2px; border-radius: 3px; padding: 0 12px; font-style: italic; }
+.hub-tab:hover { background: rgba(255,255,255,.05); color: var(--blanc); }
+.hub-tab[aria-selected=true] { background: var(--jaune); color: var(--jaune-ink); }
+.hub-tab[data-tab=training][aria-selected=true] { background: var(--vert); color: #fff; }
+.hub-tab[data-tab=rides][aria-selected=true] { background: var(--blanc); color: #121518; }
+.hub-tab[data-tab=segments][aria-selected=true], .hub-tab[data-tab=france][aria-selected=true] {
+  background: #fff radial-gradient(circle, var(--pois) 3.2px, transparent 3.6px) 0 0 / 12px 12px; color: #121518; text-shadow: 0 0 3px #fff, 0 0 3px #fff;
+}
+.kbd { display: none; }
+
+/* Page headers: a jersey swatch and a highlighter stroke */
+.ph h1 { font-style: italic; font-size: 32px; }
+.ph h1::before { width: 18px; height: 22px; border-radius: 3px 3px 5px 5px; background: var(--jaune); }
+#training .ph h1::before { background: var(--vert); }
+#rides .ph h1::before { background: var(--blanc); }
+#segments .ph h1::before, #france .ph h1::before { background: #fff radial-gradient(circle, var(--pois) 2.4px, transparent 2.8px) 0 0 / 8px 8px; }
+
+/* Stage cards */
+.card { background: var(--color-panel); border: 1px solid var(--line); border-radius: var(--r); box-shadow: 0 1px 0 rgba(0,0,0,.4); position: relative; }
+.card::before { content: ""; position: absolute; left: -1px; right: -1px; top: -1px; height: 3px; background: var(--jaune); border-radius: var(--r) var(--r) 0 0; }
+#training .card::before { background: var(--vert); }
+#rides .card::before { background: var(--blanc); }
+#segments .card::before, #france .card::before { background: var(--pois); }
+.card h2 { font-style: italic; letter-spacing: .06em; }
+.card h2::before { width: 9px; height: 9px; border-radius: 50%; background: var(--jaune); }
+#training .card h2::before { background: var(--vert); }
+#rides .card h2::before { background: var(--blanc); }
+#segments .card h2::before, #france .card h2::before { background: var(--pois); }
+.card.full::before { display: none; }
+
+/* Season goal: the maillot jaune panel */
+.hero { background: radial-gradient(120% 140% at 100% 0%, rgba(242,194,0,.28) 0%, transparent 55%), linear-gradient(160deg, #1a1e22 0%, #0f1215 70%); border: 1px solid #000; }
+.hero::after { background: repeating-linear-gradient(-16deg, rgba(242,194,0,.06) 0 14px, transparent 14px 28px); }
+.hstat { border-top-color: var(--jaune); }
+.hstat b, .hero .hl { color: var(--jaune); }
+
+/* Plan days and next-up read like stage listings */
+.nextup { border-radius: var(--r); background: linear-gradient(90deg, rgba(242,194,0,.08), transparent 60%), var(--color-panel); }
+.nu-s { font-style: italic; }
+.pw-rel, .ps-title { font-style: italic; }
+.pw-save, .pw-start, .gk-btns .gk-save, .ps-btns .ps-done, .go { background: var(--jaune); color: var(--jaune-ink); }
+.pw-nav button { background: #1a1e22; }
+.badge { color: var(--jaune); background: rgba(242,194,0,.12); }
+.tag.warn { color: var(--jaune); background: rgba(242,194,0,.14); }
+.rc-rep.best { border-color: var(--jaune); background: rgba(242,194,0,.1); }
+
+/* Kilometre-marker footer */
+.app-foot { border-top: 1px dashed var(--line); padding-top: 14px; }
+.app-foot::before { content: "Arrivée"; display: block; font: italic 800 14px var(--display); letter-spacing: .14em; text-transform: uppercase; color: var(--jaune); margin-bottom: 4px; }

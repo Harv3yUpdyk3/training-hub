@@ -429,3 +429,5 @@
   .gh-key[hidden], .pw-save[hidden], .pw-start[hidden] { display: none; }
   #plan-sheet { --mono: ui-monospace, "SF Mono", "Roboto Mono", Consolas, monospace; --display: "Saira Condensed", "Arial Narrow", sans-serif; --acc: #f2542d; --line: var(--color-border-line); }
   .ps-btns { position: sticky; bottom: calc(-16px - env(safe-area-inset-bottom)); background: var(--color-panel); padding: 8px 0 calc(8px + env(safe-area-inset-bottom)); margin-bottom: calc(-16px - env(safe-area-inset-bottom)); }
+  .ed-step.goal { background: linear-gradient(90deg, color-mix(in srgb, var(--acc) 14%, transparent), transparent 70%); }
+  .ed-step.goal .ed-lvl, .ed-step.goal .ed-have { color: var(--acc); }

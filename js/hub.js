@@ -1,4 +1,5 @@
 // The hub's own charts and calculations, ported unchanged from the dashboard.
+const ED_GOAL_MI = 55; // Will's Eddington goal, in miles
 {
   const ridesLoader = {
     description: 'Strava returns activities a page at a time; this follows the pages and makes one row per activity.',
@@ -529,21 +530,23 @@
     fn: (weekly) => weekly.map((w) => ({ week_of: w.week_of, elev_ft: w.elev_ft, elev_m: Math.round(w.elev_ft * 0.3048) })),
   });
 
+
+
   dash.calc('eddington', {
     inputs: ['rides_all', 'rides'],
     title: 'Eddington number, all time',
     description: 'Ride distance per day over every Strava ride; Eddington E is the largest number with at least E days of E or more (in miles, and separately in km). For each next level, how many more days of that distance it needs. Also the longest run of consecutive riding days in 2026.',
     fn: (rides_all, rides) => {
       const days = d3.rollups(rides_all.filter((r) => /Ride/.test(r.sport_type || 'Ride')), (v) => d3.sum(v, (r) => r.miles), (r) => r.date).map((d) => d[1]);
-      const ed = (vals) => {
+      const ed = (vals, extra = []) => {
         const s = vals.slice().sort((a, b) => b - a);
         let e = 0;
         while (e < s.length && s[e] >= e + 1) e++;
         const have = (n) => s.filter((v) => v >= n).length;
-        const levels = [...new Set([...d3.range(e + 1, e + 6), ...d3.range(Math.ceil((e + 6) / 5) * 5, e + 31, 5)])].sort((a, b) => a - b);
+        const levels = [...new Set([...d3.range(e + 1, e + 6), ...d3.range(Math.ceil((e + 6) / 5) * 5, e + 31, 5), ...extra])].filter((n) => n > e).sort((a, b) => a - b);
         return { e, ladder: levels.map((n) => ({ level: n, have: have(n), need: Math.max(0, n - have(n)) })) };
       };
-      const mi = ed(days), km = ed(days.map((v) => v * 1.609344));
+      const mi = ed(days, [ED_GOAL_MI]), km = ed(days.map((v) => v * 1.609344), [Math.round(ED_GOAL_MI * 1.609344)]);
       const dates = new Set(rides.map((r) => r.date));
       let best = 0, run = 0, bestEnd = null;
       d3.timeDay.range(new Date(2026, 0, 1), d3.timeDay.offset(d3.timeDay.floor(new Date()), 1)).forEach((d) => {
@@ -1470,6 +1473,12 @@
   dash.draw('ed-next', oneU('eddington', 'next_km', 'next_mi'));
   dash.draw('ed-days', one('eddington', 'ride_days'));
   dash.draw('ed-run', one('eddington', 'longest_run'));
+  dash.draw('ed-goal', (e) => {
+    const g = dash.data('eddington');
+    if (g.status !== 'ok' || !g.data.length) { e.textContent = '—'; return; }
+    const step = g.data[0].ladder_mi.find((r) => r.level === ED_GOAL_MI);
+    e.textContent = step ? fmt(step.need) + ' days to go' : 'Reached';
+  });
   // The ladder: how many more days of each distance the next levels need.
   dash.draw('ed-ladder', (box) => {
     const g = dash.data('eddington');
@@ -1482,7 +1491,9 @@
       bar.style.width = Math.min(100, (r.have / r.level) * 100) + '%';
       const track = el('span', 'ed-track');
       track.append(bar);
-      row.append(el('b', 'ed-lvl', String(r.level)), el('span', 'ed-need', fmt(r.need) + ' more ' + (r.need === 1 ? 'day' : 'days') + ' of ' + r.level + '+ ' + distU()), track, el('span', 'ed-have', r.have + ' / ' + r.level));
+      const goal = r.level === (isImp() ? ED_GOAL_MI : Math.round(ED_GOAL_MI * 1.609344));
+      if (goal) row.classList.add('goal');
+      row.append(el('b', 'ed-lvl', String(r.level)), el('span', 'ed-need', fmt(r.need) + ' more ' + (r.need === 1 ? 'day' : 'days') + ' of ' + r.level + '+ ' + distU()), track, el('span', 'ed-have', (goal ? 'Goal · ' : '') + r.have + ' / ' + r.level));
       return row;
     }));
   });

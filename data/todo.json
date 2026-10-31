@@ -1,7 +1,8 @@
 [
- {"order": 1, "item": "Power meter", "detail": "SRAM Force E1 XPLR power meter crank arm (left side, keeps your 40T). Match your crank length.", "cost": "about $240"},
- {"order": 2, "item": "Install", "detail": "Shop fit, or DIY with an 8 mm hex key and a torque wrench. Pair it and run a zero offset.", "cost": "about $20–50 (estimate)"},
- {"order": 3, "item": "FTP test", "detail": "20-minute test in the first week with the meter, then power targets get redone.", "cost": "—"},
- {"order": 4, "item": "Heart rate strap", "detail": "Wear it every ride.", "cost": "—"},
- {"order": 5, "item": "Kennesaw Mountain", "detail": "Climb it for the first time someday, as Colombier practice: steady seated efforts up the summit road. Check the park's bike hours first.", "cost": "—"}
+ {"order": 1, "item": "Eddington 55", "detail": "Get to 55 days of 55+ miles. Long rides are set to 55 mi so each one counts. 50 is close; 55 is the goal.", "cost": "—"},
+ {"order": 2, "item": "Power meter", "detail": "SRAM Force E1 XPLR power meter crank arm (left side, keeps your 40T). Match your crank length.", "cost": "about $240"},
+ {"order": 3, "item": "Install", "detail": "Shop fit, or DIY with an 8 mm hex key and a torque wrench. Pair it and run a zero offset.", "cost": "about $20–50 (estimate)"},
+ {"order": 4, "item": "FTP test", "detail": "20-minute test in the first week with the meter, then power targets get redone.", "cost": "—"},
+ {"order": 5, "item": "Heart rate strap", "detail": "Wear it every ride.", "cost": "—"},
+ {"order": 6, "item": "Kennesaw Mountain", "detail": "Climb it for the first time someday, as Colombier practice: steady seated efforts up the summit road. Check the park's bike hours first.", "cost": "—"}
 ]

@@ -1,0 +1,77 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Will at the Tour</title>
+<meta name="description" content="Where Will is each day of the 2027 Tour de France, and when to watch for him on TV.">
+<style>
+:root{--bg:#fbfaf6;--card:#fff;--ink:#1d1d1b;--muted:#6b6b66;--line:#e6e3da;--y:#FFD100;--g:#00A859;--r:#EF4135;--blue:#0055A4}
+@media (prefers-color-scheme:dark){:root{--bg:#141413;--card:#1f1f1d;--ink:#f2f0ea;--muted:#a9a69d;--line:#33322e}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+.flag{height:6px;background:linear-gradient(90deg,var(--blue) 0 33.3%,#fff 33.3% 66.6%,var(--r) 66.6%)}
+header{padding:22px 16px 8px;max-width:760px;margin:0 auto}
+h1{margin:0;font-size:26px;letter-spacing:-.01em}header p{margin:4px 0 0;color:var(--muted)}
+main{max-width:760px;margin:0 auto;padding:0 16px 40px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin:14px 0}
+.now{border:2px solid var(--y)}.now h2{margin:0 0 4px;font-size:20px}.kicker{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:0}
+.big{font-size:22px;font-weight:700;margin:6px 0}.cd{font-variant-numeric:tabular-nums;font-weight:700;color:var(--g)}
+h3{font-size:17px;margin:22px 0 6px}
+.tv{list-style:none;margin:0;padding:0}
+.tv li{display:grid;grid-template-columns:62px 1fr;gap:10px;padding:12px 0;border-top:1px solid var(--line)}
+.tv li:first-child{border-top:0}.tv .dt{font-weight:700}.tv .dt small{display:block;font-weight:400;color:var(--muted)}
+.tv .t{font-weight:600}.tv .spot{color:var(--muted);font-size:14px}
+.times{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.times span{font-size:13px;border-radius:999px;padding:3px 10px;background:var(--bg);border:1px solid var(--line);font-variant-numeric:tabular-nums}
+.times .key{background:var(--y);color:#1d1d1b;border-color:var(--y);font-weight:700}
+.tv li.past{opacity:.55}.tv li.today{background:color-mix(in srgb,var(--y) 14%,transparent);margin:0 -16px;padding:12px 16px}
+.tag{display:inline-block;font-size:11px;font-weight:700;border-radius:4px;padding:1px 6px;margin-left:6px;vertical-align:2px;color:#1d1d1b}
+.tag.mtn{background:#fff;border:1px solid var(--r);color:var(--r);background-image:radial-gradient(var(--r) 1.2px,transparent 1.3px);background-size:6px 6px}
+.tag.hill,.tag.tt{background:var(--y)}.tag.sprint{background:var(--g);color:#fff}
+.how p{margin:6px 0}.how ul{margin:6px 0;padding-left:20px}
+.where{list-style:none;padding:0;margin:0;columns:2;column-gap:20px;font-size:14px}.where li{break-inside:avoid;padding:3px 0}.where b{display:inline-block;width:56px}
+@media (max-width:480px){.where{columns:1}}
+footer{color:var(--muted);font-size:13px;text-align:center;padding:10px 16px 30px}
+</style></head><body>
+<div class="flag"></div>
+<header><h1>Will at the Tour de France</h1><p>8 to 26 July 2027. Where he is each day, and when to look for him on TV. All times are US Eastern.</p></header>
+<main>
+<section class="card now" id="now"></section>
+<section class="card how"><h3 style="margin-top:0">How to watch in the US</h3>
+<p><b>Peacock</b> streams every stage live from start to finish. NBC and CNBC show some stages too, mostly the big mountain days and the weekends. Check the listings in June 2027, when the TV schedule is confirmed.</p>
+<ul><li>France is 6 hours ahead of Eastern, so most stages finish between 10:30am and noon Eastern.</li>
+<li>The <b>caravan</b> (the sponsor parade) comes through about 1h30 before the riders. It isn't on TV, but it's when Will is grabbing freebies.</li>
+<li>On the <b>Will sees the riders</b> time, the cameras are on the stretch of road where he's standing. Look for a US flag. On the flat stages the bunch passes in under a minute; in the mountains they're spread out and slower.</li></ul></section>
+<h3>TV guide, day by day</h3>
+<section class="card"><ul class="tv" id="tv"></ul></section>
+<h3>Where Will sleeps</h3>
+<section class="card"><ul class="where" id="where"></ul></section>
+<p style="color:var(--muted);font-size:13px">Times are Will's estimates from the official race schedule and can shift by 20 to 30 minutes on the day.</p>
+</main>
+<footer>Allez Will !</footer>
+<script>
+const DATA={"days":[{"d":"8 Jul","dow":"Thu","type":"rest","stage":null,"title":"Fly to Paris","eta":null,"night":"Paris (airport hotel)"},{"d":"9 Jul","dow":"Fri","type":"rest","stage":null,"title":"Land in Paris","eta":null,"night":"Paris (airport hotel)"},{"d":"10 Jul","dow":"Sat","type":"rest","stage":null,"title":"Van pickup and the drive to the Alps","eta":null,"night":"Culoz, near the Grand Colombier"},{"d":"11 Jul","dow":"Sun","type":"mtn","stage":9,"title":"Stage 9 · Villars-les-Dombes to Grand Colombier","eta":["Grand Colombier, near the top","Summit finish","15:30","17:15","17:30"],"night":"Culoz, near the Grand Colombier"},{"d":"12 Jul","dow":"Mon","type":"rest","stage":null,"title":"Rest day · move to the Haute-Savoie base","eta":null,"night":"Praz-sur-Arly, Mont Blanc country"},{"d":"13 Jul","dow":"Tue","type":"mtn","stage":10,"title":"Stage 10 · Annecy to Sallanches","eta":["Route de Cruet hairpin, Domancy","First lap of the finishing circuit","15:15","16:00","17:30"],"night":"Praz-sur-Arly, Mont Blanc country"},{"d":"14 Jul","dow":"Wed","type":"mtn","stage":11,"title":"Stage 11 · Cluses to Les Saisies","eta":["Yeti's Café, Les Saisies","≈5 km from the finish","15:30","17:15","17:30"],"night":"Praz-sur-Arly, Mont Blanc country"},{"d":"15 Jul","dow":"Thu","type":"sprint","stage":12,"title":"Stage 12 · Chambéry to Valence","eta":["Hauterives village","km 107.5","14:30","16:00","17:15"],"night":"In the van near Privas"},{"d":"16 Jul","dow":"Fri","type":"sprint","stage":13,"title":"Stage 13 · Aubenas to Montpellier","eta":["Largentière","km 11","11:20","12:50","17:00"],"night":"The Cévennes, near Ganges"},{"d":"17 Jul","dow":"Sat","type":"mtn","stage":14,"title":"Stage 14 · Montpellier to Mende","eta":["Cap de Côte, Col de la Lusette","Mid-climb","14:00","15:20","17:30"],"night":"The Cévennes, near Ganges"},{"d":"18 Jul","dow":"Sun","type":"hill","stage":15,"title":"Stage 15 · Rodez to Albi","eta":["Villefranche-de-Rouergue","km 88.5","12:55","14:25","17:00"],"night":"Toulouse"},{"d":"19 Jul","dow":"Mon","type":"rest","stage":null,"title":"Rest day · Toulouse","eta":null,"night":"Toulouse"},{"d":"20 Jul","dow":"Tue","type":"tt","stage":16,"title":"Stage 16 · Toulouse individual time trial","eta":["Côte de Pech-David","Time trial: riders every 1 to 2 min","—","13:00","17:30"],"night":"Toulouse"},{"d":"21 Jul","dow":"Wed","type":"sprint","stage":17,"title":"Stage 17 · Muret to Pau","eta":null,"night":"In the van up on the Tourmalet"},{"d":"22 Jul","dow":"Thu","type":"mtn","stage":18,"title":"Stage 18 · Pau to Col du Portet","eta":["Col du Tourmalet, near the top","Over the top","13:15","15:00","17:45"],"night":"The Pyrenees, near Laruns"},{"d":"23 Jul","dow":"Fri","type":"mtn","stage":19,"title":"Stage 19 · Hasparren to Laruns","eta":["Col de Marie Blanque, top","Last climb before Laruns","14:30","16:25","17:00"],"night":"The Pyrenees, near Laruns"},{"d":"24 Jul","dow":"Sat","type":"sprint","stage":20,"title":"Stage 20 · Maubourguet to Libourne, then north","eta":null,"night":"Driving north towards Paris"},{"d":"25 Jul","dow":"Sun","type":"sprint","stage":21,"title":"Stage 21 · Saint-Quentin-en-Yvelines to Paris","eta":["Montmartre, Paris","Laps of the finishing circuit","13:30","15:00","17:30"],"night":"Paris (airport hotel)"},{"d":"26 Jul","dow":"Mon","type":"rest","stage":null,"title":"Fly home","eta":null,"night":"Home"}]};
+const TYPE={mtn:"Mountain",hill:"Hilly",sprint:"Flat",tt:"Time trial",rest:""};
+function parisNow(){const f=new Intl.DateTimeFormat("en-CA",{timeZone:"Europe/Paris",year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit",hourCycle:"h23"});
+  const p=Object.fromEntries(f.formatToParts(new Date()).map(x=>[x.type,x.value]));return Date.UTC(+p.year,+p.month-1,+p.day,+p.hour%24,+p.minute);}
+const dayMs=d=>Date.UTC(2027,6,+d.split(" ")[0]);
+const hm=t=>{const [h,m]=t.split(":").map(Number);return (h*60+m)*6e4;};
+function et(t){if(!t||t==="—")return "";let [h,m]=t.split(":").map(Number);h-=6;const ap=h>=12?"pm":"am";const h12=((h+11)%12)+1;return h12+(m?":"+String(m).padStart(2,"0"):"")+ap;}
+function fr(t){return t&&t!=="—"?t.replace(":","h"):"";}
+function dur(ms){const m=Math.round(ms/6e4),h=Math.floor(m/60);return h?`${h}h ${m%60}m`:`${m}m`;}
+function times(e,tt){const [,,car,rid,fin]=e;const a=[];
+  if(car!=="—")a.push(`<span>Caravan ${et(car)}</span>`);
+  a.push(`<span class="key">${tt?"First rider":"Will sees the riders"} ${et(rid)}</span>`);
+  a.push(`<span>${tt?"Last rider":"Finish"} ≈${et(fin)}</span>`);return a.join("");}
+function render(){const now=parisNow();const today=DATA.days.findIndex(d=>now>=dayMs(d.d)&&now<dayMs(d.d)+864e5);
+  document.getElementById("tv").innerHTML=DATA.days.map((d,i)=>{const cls=i===today?"today":(dayMs(d.d)+864e5<=now?"past":"");
+    const e=d.eta;const tg=TYPE[d.type]?`<span class="tag ${d.type}">${TYPE[d.type]}</span>`:"";
+    return `<li class="${cls}"><div class="dt">${d.d}<small>${d.dow}</small></div><div><div class="t">${d.title}${tg}</div>${e?`<div class="spot">Will is at: ${e[0]} (${e[1]})</div><div class="times">${times(e,d.type==="tt")}</div>`:`<div class="spot">${d.stage?"Watching on TV or on the road between spots.":"No racing for Will today."}</div>`}</div></li>`;}).join("");
+  document.getElementById("where").innerHTML=DATA.days.map(d=>`<li><b>${d.d}</b>${d.night}</li>`).join("");
+  const box=document.getElementById("now");const first=dayMs(DATA.days[0].d),last=dayMs(DATA.days.at(-1).d)+864e5;
+  if(now<first){const days=Math.ceil((first-now)/864e5);const nx=DATA.days.find(d=>d.eta);
+    box.innerHTML=`<p class="kicker">Countdown</p><h2>Will leaves for France in ${days} day${days===1?"":"s"}</h2><p>First time to look for him: <b>${nx.d}, ${et(nx.eta[3])} Eastern</b>, on ${nx.eta[0]}.</p>`;return;}
+  if(now>=last){box.innerHTML=`<p class="kicker">Trip over</p><h2>Will is home</h2><p>Thanks for watching along.</p>`;return;}
+  const d=DATA.days[today];let h=`<p class="kicker">Today · ${d.dow} ${d.d}</p><h2>${d.title}</h2>`;
+  if(d.eta){const t=dayMs(d.d)+hm(d.eta[3]),diff=t-now;
+    h+=`<p class="big">Will sees the riders at ${et(d.eta[3])} Eastern</p><p>He's at ${d.eta[0]} (${d.eta[1]}). ${diff>0?`That's <span class="cd">in ${dur(diff)}</span>.`:diff>-2*36e5?`<span class="cd">Happening now, or just went past.</span>`:"The riders have been through. Finish ≈"+et(d.eta[4])+" Eastern."}</p>`;}
+  else h+=`<p>${d.stage?"No set spot today. He'll be watching on TV or on the move.":"No racing for Will today."}</p>`;
+  h+=`<p style="color:var(--muted);margin:0">Tonight: ${d.night}</p>`;box.innerHTML=h;}
+render();setInterval(render,60000);
+</script></body></html>

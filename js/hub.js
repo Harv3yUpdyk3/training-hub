@@ -188,6 +188,8 @@ const ED_GOAL_MI = 55; // Will's Eddington goal, in miles
         km: Math.round(km),
         pct_goal: Math.round(km / 5000 * 100),
         km_left: Math.round(kmLeft),
+        km_over: Math.max(0, Math.round(km - 5000)),
+        mi_over: Math.max(0, Math.round((km - 5000) / 1.609344)),
         mi_left: Math.round(kmLeft / 1.609344),
         weeks_left: Math.round(weeksLeft * 10) / 10,
         km_per_week: Math.round(perWeek),
@@ -1472,7 +1474,7 @@ const ED_GOAL_MI = 55; // Will's Eddington goal, in miles
   dash.draw('ed-e', oneU('eddington', 'e_km', 'e_mi'));
   dash.draw('ed-next', oneU('eddington', 'next_km', 'next_mi'));
   dash.draw('ed-days', one('eddington', 'ride_days'));
-  dash.draw('ed-run', one('eddington', 'longest_run'));
+  dash.draw('ed-run', one('eddington', 'longest_run', (v) => v + (v === 1 ? ' day' : ' days')));
   dash.draw('ed-goal', (e) => {
     const g = dash.data('eddington');
     if (g.status !== 'ok' || !g.data.length) { e.textContent = '—'; return; }
@@ -1900,4 +1902,59 @@ const ED_GOAL_MI = 55; // Will's Eddington goal, in miles
     const fx = x(asDate(rows[rows.length - 1].start));
     svg.append('text').attr('x', Math.min(fx, w - 60)).attr('y', 22).attr('fill', css('--color-fg-muted')).style('font-size', '12px').text('France ✈');
   });
+
+  // This week's dates for the week card (Mon – Sun).
+  dash.draw('wk-dates', (e) => {
+    const mon = d3.timeMonday.floor(new Date()), sun = d3.timeDay.offset(mon, 6), f = d3.timeFormat('%a %b %-d');
+    e.textContent = f(mon) + ' – ' + f(sun);
+  });
+  dash.draw('km-over', oneU('ytd', 'km_over', 'mi_over'));
+  dash.draw('weeks-left', one('ytd', 'weeks_left', (v) => String(Math.ceil(v))));
+  // Once the season goal is reached, "to go" and "per week" give way to "past goal".
+  dash.onData(() => {
+    const g = dash.data('ytd');
+    const done = g.status === 'ok' && g.data.length && g.data[0].km_left === 0;
+    document.querySelectorAll('[data-goal]').forEach((c) => { c.hidden = c.dataset.goal === 'done' ? !done : !!done; });
+  });
+
+  // Progress rings: season goal, this week against the plan, days toward Eddington 55.
+  const RING = 'http://www.w3.org/2000/svg';
+  const ring = (frac, color, big, small, label) => {
+    const wrap = el('div', 'ring');
+    const svg = document.createElementNS(RING, 'svg');
+    svg.setAttribute('viewBox', '0 0 100 100');
+    const R = 42, C = 2 * Math.PI * R;
+    const arc = (cls, f, stroke) => {
+      const c = document.createElementNS(RING, 'circle');
+      c.setAttribute('cx', 50); c.setAttribute('cy', 50); c.setAttribute('r', R);
+      c.setAttribute('class', cls);
+      if (stroke) c.style.stroke = stroke;
+      if (f != null) c.setAttribute('stroke-dasharray', (Math.max(0, Math.min(1, f)) * C).toFixed(1) + ' ' + C.toFixed(1));
+      svg.append(c);
+    };
+    arc('ring-track', null, color);
+    const f = frac == null ? 0 : frac;
+    arc('ring-arc', Math.min(f, 1), color);
+    if (f > 1) arc('ring-arc lap2', f - 1, 'var(--cream)');
+    const mid = el('div', 'ring-mid');
+    mid.append(el('b', null, big), el('small', null, small));
+    const face = el('div', 'ring-face');
+    face.append(svg, mid);
+    wrap.append(face, el('span', 'ring-l', label));
+    return wrap;
+  };
+  dash.draw('rings', (box) => {
+    const y = dash.data('ytd'), w = dash.data('plan_week'), e = dash.data('eddington');
+    const yr = y.status === 'ok' && y.data.length ? y.data[0] : null;
+    const wk = w.status === 'ok' && w.data.length ? w.data[0] : null;
+    const ed = e.status === 'ok' && e.data.length ? e.data[0] : null;
+    const goal = ed && (ed.ladder_mi || []).find((l) => l.level === ED_GOAL_MI);
+    const wHi = wk ? (isImp() ? wk.plan_hi_mi : wk.plan_hi_km) : 0, wDone = wk ? (isImp() ? wk.ridden_mi : wk.ridden_km) : 0;
+    box.replaceChildren(
+      ring(yr ? yr.pct_goal / 100 : null, 'var(--copper)', yr ? yr.pct_goal + '%' : '—', 'of ' + (isImp() ? '3,107 mi' : '5,000 km'), 'Season goal'),
+      ring(wk && wHi ? wDone / wHi : null, 'var(--stone-hi)', wk ? fmt(Math.round(wDone)) : '—', wk ? 'of ' + fmt(wHi) + ' ' + distU() : 'planned', 'This week'),
+      ring(goal ? goal.have / ED_GOAL_MI : null, 'var(--sky)', goal ? String(goal.have) : (ed ? String(ED_GOAL_MI) : '—'), 'of ' + ED_GOAL_MI + ' days', 'Eddington ' + ED_GOAL_MI),
+    );
+  });
+
 }

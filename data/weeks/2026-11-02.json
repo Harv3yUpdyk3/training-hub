@@ -62,23 +62,23 @@
    "order": 6,
    "day": "Sat",
    "date": "2026-11-07",
-   "session": "Long Zone 2",
-   "details": "2–2.5 hours flat or rolling. Eat every 30–45 min.",
-   "target_hr": "130–150, cap 153",
-   "target_miles": "30–38",
-   "status": "Planned",
-   "intensity": "Endurance"
-  },
-  {
-   "order": 7,
-   "day": "Sun",
-   "date": "2026-11-08",
    "session": "Easy spin or rest",
    "details": "Optional 30–45 min spin, or off.",
    "target_hr": "under 125",
    "target_miles": "0–10",
    "status": "Planned",
    "intensity": "Rest"
+  },
+  {
+   "order": 7,
+   "day": "Sun",
+   "date": "2026-11-08",
+   "session": "Long Zone 2",
+   "details": "2–2.5 hours flat or rolling. Eat every 30–45 min.",
+   "target_hr": "130–150, cap 153",
+   "target_miles": "30–38",
+   "status": "Planned",
+   "intensity": "Endurance"
   }
  ]
 }

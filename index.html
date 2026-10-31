@@ -213,9 +213,23 @@
         <div class="card-h"><h2>When you ride</h2><span class="note">2026 rides by weekday · bar = rides, label = average <span class="u-m">km</span><span class="u-i">mi</span></span></div>
         <div class="chart mid" data-draw="dow-chart" data-source="dow"></div>
       </div>
-      <div class="card" id="sessions-card">
-        <h2>Sessions</h2>
-        <div class="sessions" data-draw="plan-sessions" data-source="plan" data-row-key="order"></div>
+      <div class="card" id="plan-card">
+        <div class="card-h"><h2>Training plan</h2><button type="button" class="pw-gh land">GitHub</button></div>
+        <div class="pw-nav">
+          <button type="button" class="pw-prev" aria-label="Previous week">‹</button>
+          <div class="pw-label"><b class="pw-rel">This week</b><span class="pw-dates">—</span></div>
+          <button type="button" class="pw-next" aria-label="Next week">›</button>
+        </div>
+        <div class="gh-key" id="gh-key" hidden>
+          <p>To share plans you edit here with your computer and with Claude, paste a GitHub key that can edit the <b>training-hub</b> repo. Make one at github.com › Settings › Developer settings › Fine-grained tokens: pick only the training-hub repository and set <b>Contents</b> to <b>Read and write</b>. It stays on this device.</p>
+          <input type="password" autocomplete="off" placeholder="github_pat_…" aria-label="GitHub key">
+          <div class="gk-btns"><button type="button" class="gk-save">Save key</button><button type="button" class="gk-clear">Remove key</button></div>
+        </div>
+        <p class="pw-status" role="status"></p>
+        <div class="pw-days"></div>
+        <button type="button" class="pw-start" hidden>Start a plan for this week</button>
+        <button type="button" class="pw-save" hidden>Save week</button>
+        <p class="note">Tap a day to change it. Claude also writes and adjusts plans here.</p>
       </div>
       <div class="g2">
         <div class="card" id="zones-card">
@@ -441,6 +455,22 @@
   </main>
 </div>
 </div>
+<div class="sheet" id="plan-sheet" hidden>
+  <div class="sheet-in" role="dialog" aria-label="Edit day">
+    <div class="ps-head"><b class="ps-title">Day</b><button type="button" class="ps-rest">Make it a rest day</button></div>
+    <label>Session<input name="session" placeholder="Zone 2 endurance"></label>
+    <label>Type<select name="intensity"><option>Rest</option><option>Endurance</option><option>Tempo</option><option>Threshold</option><option>VO2</option></select></label>
+    <div class="ps-two">
+      <label>Miles<input name="target_miles" placeholder="20–25"></label>
+      <label>Heart rate<input name="target_hr" placeholder="130–150, cap 153"></label>
+    </div>
+    <label>Notes<textarea name="details" rows="3" placeholder="What the ride is"></textarea></label>
+    <label>Status<select name="status"><option>Planned</option><option>Done</option><option>Skipped</option></select></label>
+    <label>What you did<textarea name="actual" rows="2" placeholder="Optional, once it's ridden"></textarea></label>
+    <div class="ps-btns"><button type="button" class="ps-cancel">Cancel</button><button type="button" class="ps-done">Done</button></div>
+  </div>
+</div>
+<script src="js/planner.js"></script>
 <script src="js/hub.js"></script>
 <script src="js/app.js"></script>
 </body>

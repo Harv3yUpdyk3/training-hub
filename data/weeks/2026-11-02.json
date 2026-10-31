@@ -1,0 +1,84 @@
+{
+ "week_start": "2026-11-02",
+ "updated_at": "2026-10-31T00:20:00Z",
+ "updated_by": "Claude",
+ "days": [
+  {
+   "order": 1,
+   "day": "Mon",
+   "date": "2026-11-02",
+   "session": "Rest",
+   "details": "Off after Sunday's long ride.",
+   "target_hr": "—",
+   "target_miles": "0",
+   "status": "Planned",
+   "intensity": "Rest"
+  },
+  {
+   "order": 2,
+   "day": "Tue",
+   "date": "2026-11-03",
+   "session": "Threshold 3 × 10 min",
+   "details": "20 min easy warm-up, then 3 × 10 min at threshold with 5 min easy between. Steady and seated, like a long climb. Easy spin home.",
+   "target_hr": "169–178 in the efforts",
+   "target_miles": "18–22",
+   "status": "Planned",
+   "intensity": "Threshold"
+  },
+  {
+   "order": 3,
+   "day": "Wed",
+   "date": "2026-11-04",
+   "session": "Zone 2 endurance",
+   "details": "75–90 min steady. Keep it conversational.",
+   "target_hr": "130–150, cap 153",
+   "target_miles": "17–21",
+   "status": "Planned",
+   "intensity": "Endurance"
+  },
+  {
+   "order": 4,
+   "day": "Thu",
+   "date": "2026-11-05",
+   "session": "Rest or easy spin",
+   "details": "Off, or a 30-minute spin.",
+   "target_hr": "under 125",
+   "target_miles": "0–6",
+   "status": "Planned",
+   "intensity": "Rest"
+  },
+  {
+   "order": 5,
+   "day": "Fri",
+   "date": "2026-11-06",
+   "session": "Hascall hill repeats",
+   "details": "4–5 mi easy warm-up, 4 × Full Hascall Hill at 8/10 effort, 4–5 min easy between. Push the first rep: aim to reach 175 by the top. Stop if a rep is 15+ s slower than the first.",
+   "target_hr": "175–183 by end of each rep",
+   "target_miles": "12–15",
+   "status": "Planned",
+   "intensity": "VO2"
+  },
+  {
+   "order": 6,
+   "day": "Sat",
+   "date": "2026-11-07",
+   "session": "Long Zone 2",
+   "details": "2–2.5 hours flat or rolling. Eat every 30–45 min.",
+   "target_hr": "130–150, cap 153",
+   "target_miles": "30–38",
+   "status": "Planned",
+   "intensity": "Endurance"
+  },
+  {
+   "order": 7,
+   "day": "Sun",
+   "date": "2026-11-08",
+   "session": "Easy spin or rest",
+   "details": "Optional 30–45 min spin, or off.",
+   "target_hr": "under 125",
+   "target_miles": "0–10",
+   "status": "Planned",
+   "intensity": "Rest"
+  }
+ ]
+}

@@ -1,0 +1,92 @@
+{
+ "week_start": "2026-10-26",
+ "updated_at": "2026-10-31T00:20:00Z",
+ "updated_by": "Claude",
+ "days": [
+  {
+   "order": 1,
+   "day": "Mon",
+   "date": "2026-10-26",
+   "session": "Beltline loop",
+   "details": "Beltline loop.",
+   "target_hr": "avg 157 (actual)",
+   "target_miles": "24.2",
+   "status": "Done",
+   "intensity": "Tempo",
+   "actual": "Beltline loop, 24.2 mi at avg HR 157 (tempo). Harder than planned, so Tuesday became rest.",
+   "actual_short": "24.2 mi, avg HR 157"
+  },
+  {
+   "order": 2,
+   "day": "Tue",
+   "date": "2026-10-27",
+   "session": "Rest",
+   "details": "Off.",
+   "target_hr": "—",
+   "target_miles": "0",
+   "status": "Done",
+   "intensity": "Rest"
+  },
+  {
+   "order": 3,
+   "day": "Wed",
+   "date": "2026-10-28",
+   "session": "Zone 2 endurance",
+   "details": "Steady Zone 2 ride.",
+   "target_hr": "130–150, cap 153",
+   "target_miles": "18.3",
+   "status": "Done",
+   "intensity": "Endurance",
+   "actual": "Edgewood, 18.3 mi at avg HR 137. Right on target.",
+   "actual_short": "18.3 mi, avg HR 137"
+  },
+  {
+   "order": 4,
+   "day": "Thu",
+   "date": "2026-10-29",
+   "session": "Rest",
+   "details": "Off, or a 30-minute spin.",
+   "target_hr": "under 125",
+   "target_miles": "0–6",
+   "status": "Done",
+   "intensity": "Rest",
+   "actual": "Rested, as planned.",
+   "actual_short": "Rested"
+  },
+  {
+   "order": 5,
+   "day": "Fri",
+   "date": "2026-10-30",
+   "session": "Hascall hill repeats",
+   "details": "4–5 mi easy warm-up, 3 × Full Hascall Hill at 8/10 effort, 4–5 min easy between, easy spin home. Stop if a rep is 15+ s slower than the first.",
+   "target_hr": "175–183 by end of each rep",
+   "target_miles": "12–15",
+   "status": "Done",
+   "intensity": "VO2",
+   "actual": "5 × Full Hascall Hill (2:44, 2:49, 2:31, 3:00, 2:52), 7.5 mi, rep HR 146–162, max 172. Two more reps than planned; the third was fastest. HR stayed a bit under the 175–183 target.",
+   "actual_short": "5 × Full Hascall, 7.5 mi"
+  },
+  {
+   "order": 6,
+   "day": "Sat",
+   "date": "2026-10-31",
+   "session": "Easy spin or rest",
+   "details": "Optional 30–45 min spin, or off. Keep it easy so your legs are fresh for Sunday's long ride.",
+   "target_hr": "under 125",
+   "target_miles": "0–10",
+   "status": "Planned",
+   "intensity": "Rest"
+  },
+  {
+   "order": 7,
+   "day": "Sun",
+   "date": "2026-11-01",
+   "session": "Long Zone 2, Silver Comet",
+   "details": "40–50 mi on the Silver Comet, about 3–3.5 hours. Steady Zone 2 the whole way; ease off on the climbs to stay under the cap. Eat every 30–45 min and drink about a bottle an hour. Threshold 3 × 10 min moves to Tue Nov 3.",
+   "target_hr": "130–150, cap 153",
+   "target_miles": "40–50",
+   "status": "Planned",
+   "intensity": "Endurance"
+  }
+ ]
+}

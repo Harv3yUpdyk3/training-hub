@@ -52,7 +52,15 @@
     state.set(key, prev ? { ...prev, refreshing: true } : { status: 'loading', data: [], columns: [], meta: [] });
     try {
       let answer;
-      if (ds.kind === 'file') {
+      if (ds.kind === 'week') {
+        const w = window.planner ? await window.planner.loadWeek(window.planner.monday()) : null;
+        if (w) answer = w.days;
+        else {
+          const r = await fetch(ds.fallback, { cache: 'no-cache' });
+          if (!r.ok) throw new Error('No plan for this week yet');
+          answer = await r.json();
+        }
+      } else if (ds.kind === 'file') {
         const r = await fetch(ds.url, { cache: 'no-cache' });
         if (!r.ok) throw new Error('Could not read ' + ds.url + ' (' + r.status + ')');
         answer = await r.json();

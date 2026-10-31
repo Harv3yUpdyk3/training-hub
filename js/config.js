@@ -17,7 +17,7 @@ window.HUB_CONFIG = {
     streak: { kind: 'query', tool: 'get_active_streak', args: {} },
     bests: { kind: 'file', url: 'data/bests.json' },
     bests_yoy: { kind: 'file', url: 'data/bests_yoy.json' },
-    plan: { kind: 'file', url: 'data/plan.json' },
+    plan: { kind: 'week', fallback: 'data/plan.json' },
     roadmap: { kind: 'file', url: 'data/roadmap.json' },
     todo: { kind: 'file', url: 'data/todo.json' },
     zones: { kind: 'file', url: 'data/zones.json' },

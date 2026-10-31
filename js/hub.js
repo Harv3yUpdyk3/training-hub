@@ -1797,14 +1797,16 @@ const ED_GOAL_MI = 55; // Will's Eddington goal, in miles
     const w = l + cols * step, h = t + 7 * step + 4;
     const svg = d3.select(box).append('svg').attr('viewBox', `0 0 ${w} ${h}`).attr('width', '100%').attr('role', 'img').attr('aria-label', 'Calendar of 2026 ride days, shaded by km');
     const today = f(new Date());
-    const shade = (km) => (km <= 0 ? 0 : km < 20 ? 0.3 : km < 40 ? 0.5 : km < 80 ? 0.75 : 1);
+    // Each day takes a colour from the palette by distance (bands in miles); 55+ is an Eddington day.
+    const BANDS = [[0, '#2fa497'], [15, '#00B1EA'], [25, '#9557A9'], [40, '#B37E2C'], [ED_GOAL_MI, '#F4462F'], [80, '#EA2C78']];
+    const band = (km) => { const mi = km / 1.609344; let c = BANDS[0][1]; BANDS.forEach(([m, col]) => { if (mi >= m) c = col; }); return c; };
     const tip = el('div', 'tip'); tip.hidden = true; box.append(tip);
     svg.append('g').selectAll('rect').data(days).join('rect')
       .attr('x', (d) => l + d3.timeMonday.count(start, d) * step)
       .attr('y', (d) => t + ((d.getDay() + 6) % 7) * step)
       .attr('width', cell).attr('height', cell).attr('rx', 2)
-      .attr('fill', (d) => (by.get(f(d)) ? dash.colors[0] : css('--cds-chart-grid')))
-      .attr('fill-opacity', (d) => { const v = by.get(f(d)); return v ? shade(v.km) : 1; })
+      .attr('fill', (d) => { const v = by.get(f(d)); return v ? band(v.km) : '#005B55'; })
+      .attr('fill-opacity', (d) => (by.get(f(d)) ? 1 : 0.35))
       .attr('stroke', (d) => (f(d) === today ? css('--color-fg') : 'none')).attr('stroke-width', 1.5)
       .on('pointermove', (ev, d) => {
         const v = by.get(f(d));
@@ -1822,6 +1824,14 @@ const ED_GOAL_MI = 55; // Will's Eddington goal, in miles
       .attr('fill', css('--color-fg-muted')).style('font-size', '10px').text(d3.timeFormat('%b'));
     svg.append('g').selectAll('text').data([['Mon', 0], ['Wed', 2], ['Fri', 4]]).join('text')
       .attr('x', 0).attr('y', (d) => t + d[1] * step + cell - 2).attr('fill', css('--color-fg-muted')).style('font-size', '10px').text((d) => d[0]);
+    const key = el('div', 'legend heat-key');
+    BANDS.forEach(([m, col], i) => {
+      const next = BANDS[i + 1];
+      const lab = isImp() ? (next ? m + '–' + next[0] : m + '+') + ' mi' : (next ? Math.round(m * 1.609344) + '–' + Math.round(next[0] * 1.609344) : Math.round(m * 1.609344) + '+') + ' km';
+      const s = el('span'); const sw = el('i'); sw.style.background = col; s.append(sw, document.createTextNode(lab)); key.append(s);
+    });
+    box.closest('.card').querySelectorAll('.heat-key').forEach((k) => k.remove());
+    box.closest('.scroll').after(key);
   });
 
   dash.draw('zone-bar', (box) => {

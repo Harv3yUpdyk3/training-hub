@@ -1,97 +1,90 @@
-/* Atlanta '96: the hub in the colours of the Centennial Games' "Quilt of
-   Leaves" look, with cycling and mountain pictograms. Deep olympic green page with cream type, terracotta clay, torch
-   gold, Chattahoochee teal and plum, with a patchwork band and a leaf quilt.
-   Loaded after hub.css; only overrides looks. */
+/* Centennial look: the hub in the bright patchwork colours of the 1996 Games
+   (green, terracotta, gold, teal, purple) on a dark green page, with bold block
+   type and solid cycling and mountain pictograms. Loaded after hub.css. */
 :root, :root[data-theme] {
   color-scheme: dark;
-  --g96: #1f6b3a; --g96-deep: #123f24; --clay: #b5402c; --gold: #d9a21b;
-  --teal: #1d6f8f; --plum: #6b3d74; --olive: #7d8b2d; --cream: #f4ead2; --paper: #17402a; --ink96: #f4ead2; --page: #0e2a1a;
-  --color-bg: var(--page); --color-panel: var(--paper); --color-fg: var(--cream); --color-fg-muted: #b8b294;
-  --color-border-line: #2a5a3c; --color-ok: #7fd68f; --color-warn: #e8b730; --color-bad: #f07a5f;
-  --series-1: #e8b730; --series-2: #e0664a; --series-3: #7fd68f; --series-4: #4fb0d6;
-  --series-5: #c08ad0; --series-6: #b7c45a; --series-7: #b8b294; --series-8: #f39a4d;
-  --cds-border: #2a5a3c; --cds-chart-axis: #7d9a80; --cds-chart-grid: #234d33; --cds-chart-muted: #3f6b4c;
-  --cds-chart-reference: #b8b294; --cds-chart-categorical-1: #4fb0d6; --cds-chart-categorical-3: #c08ad0;
-  --cds-chart-status-warning: #e8b730; --cds-chart-status-critical: #e0664a;
-  --cds-text-secondary: #b8b294; --cds-surface-popover: #1d4a30; --cds-shadow-popover: 0 8px 24px rgba(0,0,0,.5);
-  --serif96: "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+  --g96: #2e9b4f; --clay: #e2553a; --gold: #f2b51d; --teal: #19a3b6; --plum: #8e4bb3; --cream: #f6eedb;
+  --page: #0b221a; --panel96: #133227; --deep: #071811;
+  --color-bg: var(--page); --color-panel: var(--panel96); --color-fg: var(--cream); --color-fg-muted: #a9bdb2;
+  --color-border-line: #25503f; --color-ok: #6fdc8c; --color-warn: var(--gold); --color-bad: #ff7a5c;
+  --series-1: #f2b51d; --series-2: #e2553a; --series-3: #2e9b4f; --series-4: #19a3b6;
+  --series-5: #8e4bb3; --series-6: #b7c45a; --series-7: #a9bdb2; --series-8: #ff9a3d;
+  --cds-border: #25503f; --cds-chart-axis: #6f9483; --cds-chart-grid: #1d4335; --cds-chart-muted: #3a6a56;
+  --cds-chart-reference: #a9bdb2; --cds-chart-categorical-1: #19a3b6; --cds-chart-categorical-3: #a56fd0;
+  --cds-chart-status-warning: #f2b51d; --cds-chart-status-critical: #e2553a;
+  --cds-text-secondary: #a9bdb2; --cds-surface-popover: #1a4033; --cds-shadow-popover: 0 8px 24px rgba(0,0,0,.5);
   --quilt: linear-gradient(90deg, var(--g96) 0 20%, var(--clay) 20% 40%, var(--gold) 40% 60%, var(--teal) 60% 80%, var(--plum) 80%);
-  --leaves: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cg transform='translate%2810 14%29' opacity='.13'%3E%3Cpath d='M1 24 12 6l5 8 4-5 10 15z' fill='%237fd68f'/%3E%3Cpath d='M9.6 10 12 6l2.9 4.6-1.6 1.4-1.3-1.6-1.3 1.6z' fill='%23f4ead2'/%3E%3C/g%3E%3Cg transform='translate%2870 72%29' opacity='.12'%3E%3Cg fill='%23e8b730'%3E%3Ccircle cx='9' cy='19' r='5.2' fill='none' stroke='%23e8b730' stroke-width='2.6'/%3E%3Ccircle cx='27' cy='19' r='5.2' fill='none' stroke='%23e8b730' stroke-width='2.6'/%3E%3Ccircle cx='22.5' cy='4' r='2.8'/%3E%3Cpath d='M9 19 15.5 11h8.5L27 19M15.5 11l3 8' fill='none' stroke='%23e8b730' stroke-width='2.2' stroke-linejoin='round'/%3E%3Cpath d='M13 10.5 19.5 6.5l5 4.5' fill='none' stroke='%23e8b730' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M14 10.5l4.5 4-0 4.5' fill='none' stroke='%23e8b730' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/g%3E%3C/g%3E%3Cg transform='translate%2872 18%29 scale%28.7%29' opacity='.1'%3E%3Cpath d='M1 24 12 6l5 8 4-5 10 15z' fill='%234fb0d6'/%3E%3Cpath d='M9.6 10 12 6l2.9 4.6-1.6 1.4-1.3-1.6-1.3 1.6z' fill='%23f4ead2'/%3E%3C/g%3E%3Cg transform='translate%2812 76%29 scale%28.8%29' opacity='.1'%3E%3Cg fill='%23e0664a'%3E%3Ccircle cx='9' cy='19' r='5.2' fill='none' stroke='%23e0664a' stroke-width='2.6'/%3E%3Ccircle cx='27' cy='19' r='5.2' fill='none' stroke='%23e0664a' stroke-width='2.6'/%3E%3Ccircle cx='22.5' cy='4' r='2.8'/%3E%3Cpath d='M9 19 15.5 11h8.5L27 19M15.5 11l3 8' fill='none' stroke='%23e0664a' stroke-width='2.2' stroke-linejoin='round'/%3E%3Cpath d='M13 10.5 19.5 6.5l5 4.5' fill='none' stroke='%23e0664a' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M14 10.5l4.5 4-0 4.5' fill='none' stroke='%23e0664a' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-  --picto-bike: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 -2 36 28'%3E%3Cg fill='%23000'%3E%3Ccircle cx='9' cy='19' r='5.2' fill='none' stroke='%23000' stroke-width='2.6'/%3E%3Ccircle cx='27' cy='19' r='5.2' fill='none' stroke='%23000' stroke-width='2.6'/%3E%3Ccircle cx='22.5' cy='4' r='2.8'/%3E%3Cpath d='M9 19 15.5 11h8.5L27 19M15.5 11l3 8' fill='none' stroke='%23000' stroke-width='2.2' stroke-linejoin='round'/%3E%3Cpath d='M13 10.5 19.5 6.5l5 4.5' fill='none' stroke='%23000' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M14 10.5l4.5 4-0 4.5' fill='none' stroke='%23000' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/g%3E%3C/svg%3E");
-  --picto-mtn: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 26'%3E%3Cpath d='M1 24 12 6l5 8 4-5 10 15z' fill='%23000'/%3E%3Cpath d='M9.6 10 12 6l2.9 4.6-1.6 1.4-1.3-1.6-1.3 1.6z' fill='%23000'/%3E%3C/svg%3E");
+  --pattern: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cg transform='translate%2814 18%29' opacity='.07'%3E%3Cpath d='M0 32 17 4l8 12 6-8 17 24z' fill='%23f4ead2'/%3E%3Cpath d='M12.6 11.2 17 4l4.6 7-2.6 2.4-2-2.6-2.2 2.6z' fill='%23f4ead2'/%3E%3Cpath d='M27.6 12.6 31 8l3.6 5.2-1.8 1.4-1.6-1.6-1.6 1.6z' fill='%23f4ead2'/%3E%3C/g%3E%3Cg transform='translate%2896 100%29' opacity='.07'%3E%3Cg fill='%23f4ead2' stroke='%23f4ead2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='10' cy='28' r='7.5' fill='none' stroke-width='3.6'/%3E%3Ccircle cx='38' cy='28' r='7.5' fill='none' stroke-width='3.6'/%3E%3Cpath d='M10 28 19 17h13l6 11M19 17l4 11 9-11' fill='none' stroke-width='2.4'/%3E%3Ccircle cx='35' cy='5.5' r='4' stroke='none'/%3E%3Cpath d='M16 15c3-6 9-9 16-8l1 4c-6 0-10 2-13 6z' stroke='none'/%3E%3Cpath d='M31 9l5 7' fill='none' stroke-width='3.4'/%3E%3Cpath d='M18 15l8 5-3 7' fill='none' stroke-width='4.2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  --picto-bike: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 38'%3E%3Cg fill='%23000' stroke='%23000' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='10' cy='28' r='7.5' fill='none' stroke-width='3.6'/%3E%3Ccircle cx='38' cy='28' r='7.5' fill='none' stroke-width='3.6'/%3E%3Cpath d='M10 28 19 17h13l6 11M19 17l4 11 9-11' fill='none' stroke-width='2.4'/%3E%3Ccircle cx='35' cy='5.5' r='4' stroke='none'/%3E%3Cpath d='M16 15c3-6 9-9 16-8l1 4c-6 0-10 2-13 6z' stroke='none'/%3E%3Cpath d='M31 9l5 7' fill='none' stroke-width='3.4'/%3E%3Cpath d='M18 15l8 5-3 7' fill='none' stroke-width='4.2'/%3E%3C/g%3E%3C/svg%3E");
+  --picto-mtn: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 32'%3E%3Cpath d='M0 32 17 4l8 12 6-8 17 24z' fill='%23000'/%3E%3Cpath d='M12.6 11.2 17 4l4.6 7-2.6 2.4-2-2.6-2.2 2.6z' fill='%23000'/%3E%3Cpath d='M27.6 12.6 31 8l3.6 5.2-1.8 1.4-1.6-1.6-1.6 1.6z' fill='%23000'/%3E%3C/svg%3E");
 }
 html, body { background: var(--page); }
-body { background-image: var(--leaves); }
-.hub, #plan-sheet { --acc: var(--clay); --line: var(--color-border-line); --r: 6px; }
-.hub { background: transparent; }
+body { background-image: var(--pattern); }
+.hub, #plan-sheet { --acc: var(--clay); --line: var(--color-border-line); --r: 2px; }
+.hub { background: transparent; --tone: var(--gold); }
+#training { --tone: var(--clay); } #rides { --tone: var(--teal); } #segments { --tone: var(--g96); } #france { --tone: var(--plum); }
 
-/* Masthead: deep green with the patchwork band under it */
-.mast { background: var(--g96-deep) var(--leaves); color: var(--cream); position: relative; border-bottom: 0; }
-.mast::after { content: ""; position: absolute; left: 0; right: 0; bottom: -5px; height: 5px; background: var(--quilt); }
-.mast .logo { background: var(--gold); border-radius: 50%; }
-.mast .logo svg { stroke: var(--g96-deep); }
-.wm { font-family: var(--serif96); font-style: italic; font-weight: 700; letter-spacing: .01em; text-transform: none; }
-.wm::after { content: " '96"; color: var(--gold); font-style: italic; }
-.wm span { color: rgba(244,234,210,.6); font-family: var(--font-anthropic-sans); font-style: normal; }
-.mchip { background: rgba(244,234,210,.12); color: var(--cream); }
+/* Masthead: dark band over a patchwork strip */
+.mast { background: var(--deep); color: var(--cream); position: relative; border-bottom: 0; }
+.mast::after { content: ""; position: absolute; left: 0; right: 0; bottom: -6px; height: 6px; background: var(--quilt); }
+.mast .logo { background: var(--clay); border-radius: 2px; }
+.mast .logo svg { stroke: #fff; }
+.wm { font-style: normal; font-weight: 800; letter-spacing: .08em; }
+.wm span { color: rgba(246,238,219,.55); }
+.mchip { background: rgba(246,238,219,.1); color: var(--cream); border-radius: 2px; }
 .mchip b { color: var(--gold); }
-.mchip.rb { background: var(--gold); color: var(--g96-deep); }
-.units, .sync { background: rgba(244,234,210,.12); }
-.units button { color: rgba(244,234,210,.75); }
-.units button[aria-pressed=true] { background: var(--gold); color: var(--g96-deep); }
-.live { background: var(--gold); box-shadow: 0 0 0 3px rgba(217,162,27,.3); }
+.mchip.rb { background: var(--gold); color: var(--deep); }
+.units, .sync { background: rgba(246,238,219,.1); border-radius: 2px; }
+.units button { color: rgba(246,238,219,.75); border-radius: 1px; }
+.units button[aria-pressed=true] { background: var(--gold); color: var(--deep); }
+.live { background: var(--g96); box-shadow: 0 0 0 3px rgba(46,155,79,.3); }
 
-/* Tabs: each event gets a quilt colour */
-.tabs { background: #0b2316; border-bottom: 1px solid var(--line); margin-top: 5px; box-shadow: 0 2px 6px rgba(0,0,0,.3); }
-.hub-tab { color: var(--color-fg-muted); font-family: var(--serif96); font-style: italic; font-weight: 700; text-transform: none; letter-spacing: .01em; border-bottom: 3px solid transparent; }
-.hub-tab:hover { color: var(--cream); }
-.hub-tab[aria-selected=true] { color: var(--cream); border-bottom-color: var(--cream); }
-.hub-tab[data-tab=training][aria-selected=true] { color: #f08a6e; border-bottom-color: var(--clay); }
-.hub-tab[data-tab=rides][aria-selected=true] { color: #6cc3e6; border-bottom-color: #4fb0d6; }
-.hub-tab[data-tab=segments][aria-selected=true] { color: var(--gold); border-bottom-color: var(--gold); }
-.hub-tab[data-tab=france][aria-selected=true] { color: #d6a3e3; border-bottom-color: #c08ad0; }
+/* Tabs: the open one is a solid quilt patch in its event colour */
+.tabs { background: var(--deep); border-bottom: 0; margin-top: 6px; box-shadow: 0 2px 8px rgba(0,0,0,.35); }
+.hub-tab { color: #a9bdb2; font-style: normal; font-weight: 800; letter-spacing: .08em; border: 0; border-radius: 2px; height: 40px; margin: 7px 3px; padding: 0 14px; }
+.hub-tab:hover { color: var(--cream); background: rgba(246,238,219,.06); }
+.hub-tab[aria-selected=true] { background: var(--gold); color: var(--deep); }
+.hub-tab[data-tab=training][aria-selected=true] { background: var(--clay); color: #fff; }
+.hub-tab[data-tab=rides][aria-selected=true] { background: var(--teal); color: #fff; }
+.hub-tab[data-tab=segments][aria-selected=true] { background: var(--g96); color: #fff; }
+.hub-tab[data-tab=france][aria-selected=true] { background: var(--plum); color: #fff; }
 .kbd { display: none; }
 
-/* Page headers: serif italic with the cycling pictogram; cards get the mountain */
-.hub { --tone: var(--gold); }
-#training { --tone: var(--clay); } #rides { --tone: #4fb0d6; } #segments { --tone: var(--gold); } #france { --tone: #c08ad0; }
-.ph h1 { font-family: var(--serif96); font-style: italic; font-weight: 700; text-transform: none; letter-spacing: 0; font-size: 34px; color: var(--ink96); }
-.ph h1::before { width: 40px; height: 31px; background: var(--tone); border-radius: 0; -webkit-mask: var(--picto-bike) center / contain no-repeat; mask: var(--picto-bike) center / contain no-repeat; }
+/* Page headers: block type with the cycling pictogram */
+.ph h1 { font-style: normal; font-weight: 800; letter-spacing: .02em; }
+.ph h1::before { width: 44px; height: 35px; background: var(--tone); border-radius: 0; -webkit-mask: var(--picto-bike) center / contain no-repeat; mask: var(--picto-bike) center / contain no-repeat; }
 
-/* Cards: paper squares, stitched like a quilt block */
-.card { background: var(--paper); border: 1px solid var(--line); border-radius: var(--r); box-shadow: 0 2px 10px rgba(0,0,0,.25); position: relative; outline: 1px dashed rgba(244,234,210,.1); outline-offset: -6px; }
-.card::before { content: ""; position: absolute; left: -1px; right: -1px; top: -1px; height: 4px; background: var(--tone); border-radius: var(--r) var(--r) 0 0; }
-.card h2 { font-family: var(--serif96); font-style: italic; text-transform: none; letter-spacing: 0; font-size: 18px; font-weight: 700; color: var(--ink96); }
-.card h2::before { width: 16px; height: 13px; border-radius: 0; background: var(--tone); -webkit-mask: var(--picto-mtn) center / contain no-repeat; mask: var(--picto-mtn) center / contain no-repeat; }
-.card.full { outline: 0; }
-.card.full::before { display: none; }
+/* Cards: flat panels with a colour block down the side */
+.card { background: var(--panel96); border: 0; border-radius: var(--r); box-shadow: inset 4px 0 0 var(--tone), 0 2px 10px rgba(0,0,0,.25); position: relative; }
+.card h2 { font-style: normal; letter-spacing: .1em; color: var(--cream); }
+.card h2::before { width: 18px; height: 12px; border-radius: 0; background: var(--tone); -webkit-mask: var(--picto-mtn) center / contain no-repeat; mask: var(--picto-mtn) center / contain no-repeat; }
+.card.full { box-shadow: none; }
 
-/* Season goal: the torch panel */
-.hero { --color-fg: var(--cream); --color-fg-muted: #d6cba8; --cds-chart-grid: rgba(244,234,210,.16);
-  color: var(--cream); border: 0; padding-bottom: 27px;
-  background: radial-gradient(110% 130% at 100% 0%, rgba(217,162,27,.42) 0%, transparent 55%), linear-gradient(160deg, #24804a 0%, #145230 75%); }
-.hero::before { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 5px; background: var(--quilt); z-index: 2; }
+/* Season goal: a patchwork quilt panel */
+.hero { --color-fg: var(--cream); --color-fg-muted: #c7d6cd; --cds-chart-grid: rgba(246,238,219,.16);
+  color: var(--cream); border: 0; border-radius: var(--r); padding-bottom: 28px;
+  background:
+    linear-gradient(90deg, var(--deep) 0%, var(--deep) 46%, rgba(7,24,17,.55) 70%, rgba(7,24,17,.2) 100%),
+    conic-gradient(from 90deg at 50% 50%, var(--clay) 0 25%, var(--teal) 0 50%, var(--gold) 0 75%, var(--plum) 0) 0 0 / 72px 72px,
+    var(--g96); }
+.hero::before { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 6px; background: var(--quilt); z-index: 2; }
 .hero::after { background: none; }
 .kick { color: var(--gold); }
-.dek { color: #e8dfc4; } .dek b { color: #fff; }
-.hstat { background: rgba(18,63,36,.75); border-top-color: var(--gold); }
+.dek { color: #dfe8e2; } .dek b { color: #fff; }
+.hstat { background: rgba(7,24,17,.85); border-top: 4px solid var(--clay); border-radius: 2px; }
 .hstat b, .hero .hl { color: var(--gold); }
-.sl, .hl small, .hrow span, .hrow b small, .hrow b small span { color: #cfc4a2; }
-.hrow { background: rgba(244,234,210,.1); border-top-color: rgba(244,234,210,.12); }
-.hrow > div { background: rgba(18,63,36,.55); }
-.hero .tag.ok, .hrow b.ok { color: #9fe0a8; } .hero .tag.bad, .hrow b.bad { color: #ffb19f; }
+.sl, .hl small, .hrow span, .hrow b small, .hrow b small span { color: #b9cbc1; }
+.hrow { background: rgba(246,238,219,.08); border-top: 0; }
+.hrow > div { background: var(--deep); }
+.hero .tag.ok, .hrow b.ok { color: #6fdc8c; } .hero .tag.bad, .hrow b.bad { color: #ff9a80; }
 
 /* Plan, next up, buttons */
-.nextup { background: linear-gradient(90deg, rgba(217,162,27,.14), transparent 60%), var(--paper); }
-.nu-s, .pw-rel, .ps-title { font-family: var(--serif96); font-style: italic; }
-.pw-save, .pw-start, .gk-btns .gk-save, .ps-btns .ps-done, .go { background: var(--gold); color: var(--g96-deep); }
-.pw-nav button { background: #0e2a1a; color: var(--cream); }
-.badge { color: var(--gold); background: rgba(217,162,27,.14); }
-.tag.warn { color: var(--gold); background: rgba(217,162,27,.18); }
-.rc-rep.best { border-color: var(--gold); background: rgba(217,162,27,.14); }
-.ed-step.goal { border-color: var(--gold); background: rgba(217,162,27,.14); }
-.sheet > * { background: var(--paper); }
+.nextup { border-radius: var(--r); background: var(--panel96); box-shadow: inset 6px 0 0 var(--teal); }
+.pw-save, .pw-start, .gk-btns .gk-save, .ps-btns .ps-done, .go { background: var(--gold); color: var(--deep); border-radius: 2px; }
+.pw-nav button { background: var(--deep); color: var(--cream); border-radius: 2px; }
+.badge { color: var(--gold); background: rgba(242,181,29,.14); }
+.tag.warn { color: var(--gold); background: rgba(242,181,29,.16); }
+.rc-rep.best, .ed-step.goal { border-color: var(--gold); background: rgba(242,181,29,.14); }
 
-/* Closing ceremony footer */
-.app-foot { border-top: 0; padding-top: 18px; position: relative; }
-.app-foot::before { content: "Atlanta, Georgia"; display: block; font: italic 700 15px var(--serif96); color: var(--gold); margin-bottom: 6px; padding-top: 10px; background: var(--quilt) top / 100% 4px no-repeat; }
+/* Footer: the patchwork strip again */
+.app-foot { border-top: 0; padding-top: 22px; background: var(--quilt) top / 100% 6px no-repeat; }

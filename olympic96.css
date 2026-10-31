@@ -23,7 +23,7 @@
 }
 [hidden] { display: none !important; }
 html, body { background: var(--page); }
-body { background-image: var(--pattern); }
+
 .hub, #plan-sheet { --acc: var(--copper); --line: var(--color-border-line); --r: 2px; }
 .hub { background: transparent; --tone: var(--copper-hi); }
 #training { --tone: var(--stone-hi); } #rides { --tone: var(--sky); } #segments { --tone: var(--orange); } #france { --tone: var(--amethyst); }

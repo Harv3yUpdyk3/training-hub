@@ -2024,6 +2024,7 @@ const ED_GOAL_MI = 55; // Will's Eddington goal, in miles
     const face = el('div', 'ring-face');
     face.append(svg, mid);
     wrap.append(face, el('span', 'ring-l', label));
+    wrap.title = label + ': ' + big + ' ' + small;
     return wrap;
   };
   dash.draw('rings', (box) => {
@@ -2033,12 +2034,12 @@ const ED_GOAL_MI = 55; // Will's Eddington goal, in miles
     const goal = ed && (ed.ladder_mi || []).find((l) => l.level === ED_GOAL_MI);
     const wHi = wk ? (isImp() ? wk.plan_hi_mi : wk.plan_hi_km) : 0, wDone = wk ? (isImp() ? wk.ridden_mi : wk.ridden_km) : 0;
     box.replaceChildren(
-      ring(yr ? yr.pct_goal / 100 : null, 'var(--copper)', yr ? yr.pct_goal + '%' : '—', 'of ' + (isImp() ? '3,107 mi' : '5,000 km'), 'Season goal'),
+      ring(yr ? yr.pct_goal / 100 : null, 'var(--copper)', yr ? yr.pct_goal + '%' : '—', 'of ' + (isImp() ? '3,107 mi' : '5,000 km'), 'Season'),
       ring(mo ? mo.pct / 100 : null, 'var(--amethyst)', mo ? fmt(isImp() ? mo.mi : mo.km) : '—', mo ? 'of ' + fmt(isImp() ? mo.target_mi : mo.target_km) + ' ' + distU() : '', mo ? mo.month : 'This month'),
-      ring(wk && wHi ? wDone / wHi : null, 'var(--stone-hi)', wk ? fmt(Math.round(wDone)) : '—', wk ? 'of ' + fmt(wHi) + ' ' + distU() : 'planned', 'This week'),
+      ring(wk && wHi ? wDone / wHi : null, 'var(--stone-hi)', wk ? fmt(Math.round(wDone)) : '—', wk ? 'of ' + fmt(wHi) + ' ' + distU() : 'planned', 'Week'),
       ring(ed ? ed.e_mi / ED_GOAL_MI : null, 'var(--sky)', ed ? String(ed.e_mi) : '—', 'of ' + ED_GOAL_MI + ' mi', 'Eddington'),
-      ring(goal ? goal.have / ED_GOAL_MI : null, 'var(--cerise)', goal ? String(goal.have) : '—', 'of ' + ED_GOAL_MI + ' days', ED_GOAL_MI + '-mile days'),
-      ring(cl ? cl.pct_colombier / 100 : null, 'var(--orange)', cl ? cl.pct_colombier + '%' : '—', 'of the Colombier', 'Longest climb'),
+      ring(goal ? goal.have / ED_GOAL_MI : null, 'var(--cerise)', goal ? String(goal.have) : '—', 'of ' + ED_GOAL_MI + ' days', ED_GOAL_MI + '-mi days'),
+      ring(cl ? cl.pct_colombier / 100 : null, 'var(--orange)', cl ? cl.pct_colombier + '%' : '—', 'of the Colombier', 'Climb'),
     );
   });
 

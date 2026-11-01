@@ -191,3 +191,20 @@ h3.sec { color: var(--copper-hi); letter-spacing: .14em; }
 .tabs { margin-top: 4px; }
 h3.sec { color: var(--copper-hi); }
 @media (max-width: 26rem) { .mast-r { gap: 6px; } .sync { padding: 0 8px; } }
+
+/* Phones: the top bar must fit the screen at any text size. Sync becomes an icon
+   (its state shows as the spin / red colour), the wordmark can shrink, nothing pushes the page wider. */
+html, body { overflow-x: clip; }
+.mast-in { min-width: 0; }
+.wm { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+@media (max-width: 34rem) {
+  #sync-text { display: none; }
+  .sync { width: 30px; height: 30px; padding: 0; justify-content: center; }
+  .sync svg { width: 16px; height: 16px; }
+  .units button { height: 24px; padding: 0 8px; }
+  .mast .logo { width: 30px; height: 30px; }
+  .mast .logo svg { width: 22px; height: 18px; }
+  .wm { font-size: 15px; letter-spacing: .05em; }
+  .wm::after { width: 18px; height: 14px; margin-left: 4px; }
+}
+@media (max-width: 30rem) { .hub-tab { padding: 0 8px; margin: 7px 1px; letter-spacing: .04em; font-size: 14px; } }

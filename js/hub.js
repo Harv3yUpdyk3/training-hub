@@ -942,11 +942,14 @@ const ED_GOAL_MI = 55; // Will's Eddington goal, in miles
   const planRows = () => { const g = dash.data('plan'); return g.status === 'ok' ? [...g.data].sort((a, b) => a.order - b.order) : null; };
   // Next up: today's planned session if not ridden yet, else the next one this week
   dash.draw('next-up', (box) => {
-    const rows = planRows();
+    const nx = dash.data('plan_next');
+    const rows = planRows() && [...planRows(), ...(nx.status === 'ok' ? [...nx.data].sort((a, b) => a.order - b.order) : [])];
     box.replaceChildren();
     if (failed(box, 'plan') || !rows) return;
     const today = d3.timeFormat('%Y-%m-%d')(new Date());
-    const r = rows.find((p) => p.date >= today && String(p.status).toLowerCase() !== 'done' && p.intensity !== 'Rest') || rows.find((p) => p.date >= today && String(p.status).toLowerCase() !== 'done');
+    // Skip days already ridden or skipped; when this week is used up, look into next week.
+    const open = (p) => p.date >= today && !/^(done|skipped)$/i.test(String(p.status));
+    const r = rows.find((p) => open(p) && p.intensity !== 'Rest') || rows.find(open);
     if (!r) { box.append(el('span', 'nu-d', 'Nothing left in this week\'s plan. Ask Claude to plan next week.')); return; }
     box.dataset.key = String(r.order);
     box.style.setProperty('--int', css(INT[r.intensity] || '--cds-chart-muted'));
@@ -2067,7 +2070,8 @@ const ED_GOAL_MI = 55; // Will's Eddington goal, in miles
     box.replaceChildren();
     if (failed(box, 'weather') || g.status !== 'ok') return;
     const by = new Map(g.data.map((d) => [d.date, d]));
-    const plan = new Map((planRows() || []).map((p) => [p.date, p]));
+    const nx = dash.data('plan_next');
+    const plan = new Map([...(planRows() || []), ...(nx.status === 'ok' ? nx.data : [])].map((p) => [p.date, p]));
     const f = d3.timeFormat('%Y-%m-%d'), today = f(new Date());
     const mon = d3.timeMonday.floor(new Date());
     [['This week', 0], ['Next week', 7]].forEach(([label, off]) => {
@@ -2086,7 +2090,8 @@ const ED_GOAL_MI = 55; // Will's Eddington goal, in miles
         const t = (v) => Math.round(isImp() ? v : (v - 32) * 5 / 9) + '°';
         c.append(el('b', 'wx-t', w ? t(w.hi_f) : '—'), el('span', 'wx-lo', w ? t(w.lo_f) : ''));
         c.append(el('span', 'wx-pop', w && w.pop != null ? w.pop + '%' : ''));
-        if (p && p.intensity !== 'Rest' && p.target_miles && p.target_miles !== '0') c.append(el('span', 'wx-plan', p.target_miles + ' mi'));
+        if (p && /skipped/i.test(String(p.status))) c.append(el('span', 'wx-plan', 'Skipped'));
+        else if (p && p.intensity !== 'Rest' && p.target_miles && p.target_miles !== '0') c.append(el('span', 'wx-plan', p.target_miles + ' mi'));
         c.title = d3.timeFormat('%A %b %-d')(day) + (w ? ': ' + kind + ', ' + w.pop + '% chance of rain, wind ' + Math.round(isImp() ? w.wind_mph : w.wind_mph * 1.609344) + (isImp() ? ' mph' : ' km/h') : '') + (p ? ' · Plan: ' + p.session : '');
         row.append(c);
       });

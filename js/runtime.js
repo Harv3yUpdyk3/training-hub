@@ -53,8 +53,9 @@
     try {
       let answer;
       if (ds.kind === 'week') {
-        const w = window.planner ? await window.planner.loadWeek(window.planner.monday()) : null;
+        const w = window.planner ? await window.planner.loadWeek(window.planner.addDays(window.planner.monday(), ds.offset || 0)) : null;
         if (w) answer = w.days;
+        else if (ds.offset) answer = [];
         else {
           const r = await fetch(ds.fallback, { cache: 'no-cache' });
           if (!r.ok) throw new Error('No plan for this week yet');

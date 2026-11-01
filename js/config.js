@@ -18,6 +18,7 @@ window.HUB_CONFIG = {
     weather: { kind: 'weather' },
     bests: { kind: 'file', url: 'data/bests.json' },
     bests_yoy: { kind: 'file', url: 'data/bests_yoy.json' },
+    plan_next: { kind: 'week', offset: 7 },
     plan: { kind: 'week', fallback: 'data/plan.json' },
     roadmap: { kind: 'file', url: 'data/roadmap.json' },
     todo: { kind: 'file', url: 'data/todo.json' },

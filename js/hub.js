@@ -1387,7 +1387,7 @@ const ED_GOAL_MI = 55; // Will's Eddington goal, in miles
     try { localStorage.setItem('hub.distView', distView); } catch {}
     dash.draw('cum-chart');
   }));
-  const YEAR_COLORS = ['#2fa497', '#00B1EA', '#9557A9', '#EA2C78', '#F4462F', '#d9a24a', '#5fe0a8', '#b07cc2'];
+  const YEAR_COLORS = ['var(--band-4)', 'var(--band-3)', 'var(--band-2)', 'var(--band-1)', '#e6e1ff', '#4fd69c', '#d9a24a', '#a9a6cc'];
   const allYearsChart = (box) => {
     const g = dash.data('cumulative_all');
     if (failed(box, 'cumulative_all')) return;
@@ -1403,7 +1403,7 @@ const ED_GOAL_MI = 55; // Will's Eddington goal, in miles
     svg.append('g').attr('transform', `translate(${m.l - 6},0)`).call(d3.axisLeft(y).ticks(4).tickSize(0).tickFormat(d3.format('~s'))).call((a) => axisStyle(a, false));
     svg.append('g').attr('transform', `translate(0,${h - m.b})`).call(d3.axisBottom(x).ticks(w < 500 ? 4 : 6).tickSize(0).tickPadding(8).tickFormat(d3.timeFormat('%b'))).call((a) => axisStyle(a, true));
     const inYear = (date) => new Date(2026, +date.slice(5, 7) - 1, +date.slice(8, 10));
-    const color = (d, i) => (d.year === cur ? '#B37E2C' : YEAR_COLORS[(years.length - 1 - i) % YEAR_COLORS.length]);
+    const color = (d, i) => (d.year === cur ? 'var(--year-now)' : YEAR_COLORS[(years.length - 1 - i) % YEAR_COLORS.length]);
     years.forEach((d, i) => {
       const pts = d.pts.map((p) => ({ date: inYear(p.date), v: dist(p.km_total) }));
       svg.append('path').datum(pts).attr('fill', 'none').attr('stroke', color(d, i)).attr('stroke-width', d.year === cur ? 3 : 1.6)
@@ -1443,7 +1443,7 @@ const ED_GOAL_MI = 55; // Will's Eddington goal, in miles
         const a = new Date(2026, i, 1), b2 = new Date(2026, i + 1, 1);
         if (a > new Date()) return;
         mg.append('rect').attr('x', x(a) + 1).attr('width', Math.max(0, x(b2) - x(a) - 2)).attr('y', m.t).attr('height', h - m.b - m.t)
-          .attr('fill', '#B37E2C').attr('fill-opacity', 0.05 + 0.25 * d.km / top);
+          .attr('fill', 'var(--month-shade)').attr('fill-opacity', 0.05 + 0.25 * d.km / top);
         if (x(b2) - x(a) >= 14) mg.append('text').attr('x', (x(a) + x(b2)) / 2).attr('y', m.t - 6).attr('text-anchor', 'middle')
           .attr('fill', css('--color-fg-muted')).style('font-size', x(b2) - x(a) < 24 ? '8.5px' : '10px').style('font-family', MONO).text(fmt(Math.round(dist(d.km))));
       });
@@ -1869,14 +1869,14 @@ const ED_GOAL_MI = 55; // Will's Eddington goal, in miles
     const svg = d3.select(box).append('svg').attr('viewBox', `0 0 ${w} ${h}`).attr('width', '100%').attr('role', 'img').attr('aria-label', 'Calendar of 2026 ride days, shaded by km');
     const today = f(new Date());
     // Each day takes a colour from the palette by distance (bands in miles); 55+ is an Eddington day.
-    const BANDS = [[0, '#2fa497', 'Spin'], [15, '#00B1EA', 'Ride'], [30, '#9557A9', 'Long'], [45, '#B37E2C', 'Big'], [ED_GOAL_MI, '#F4462F', 'Eddington'], [100, '#EA2C78', 'Century']];
+    const BANDS = [[0, 'var(--band-1)', 'Spin'], [15, 'var(--band-2)', 'Ride'], [30, 'var(--band-3)', 'Long'], [45, 'var(--band-4)', 'Big'], [ED_GOAL_MI, 'var(--band-5)', 'Eddington'], [100, 'var(--band-6)', 'Century']];
     const band = (km) => { const mi = km / 1.609344; let c = BANDS[0][1]; BANDS.forEach(([m, col]) => { if (mi >= m) c = col; }); return c; };
     const tip = el('div', 'tip'); tip.hidden = true; box.append(tip);
     svg.append('g').selectAll('rect').data(days).join('rect')
       .attr('x', (d) => l + d3.timeMonday.count(start, d) * step)
       .attr('y', (d) => t + ((d.getDay() + 6) % 7) * step)
       .attr('width', cell).attr('height', cell).attr('rx', 2)
-      .attr('fill', (d) => { const v = by.get(f(d)); return v ? band(v.km) : '#005B55'; })
+      .attr('fill', (d) => { const v = by.get(f(d)); return v ? band(v.km) : 'var(--cal-empty)'; })
       .attr('fill-opacity', (d) => (by.get(f(d)) ? 1 : 0.35))
       .attr('stroke', (d) => (f(d) === today ? css('--color-fg') : 'none')).attr('stroke-width', 1.5)
       .on('pointermove', (ev, d) => {
@@ -2092,7 +2092,7 @@ const ED_GOAL_MI = 55; // Will's Eddington goal, in miles
       });
       box.append(row);
     });
-    box.append(el('p', 'note', 'Percent is the chance of rain. Rainy days are marked blue; the plan’s miles show under each riding day.'));
+    box.append(el('p', 'note', 'Percent is the chance of rain. Rainy days are highlighted; the plan’s miles show under each riding day.'));
   });
 
 }

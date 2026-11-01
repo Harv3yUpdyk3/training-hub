@@ -1,0 +1,178 @@
+/* Onyx and indigo: Will's second palette (Nov 1). Onyx Black #01010D page,
+   Electric Indigo #6331FB as the main colour, Tropical Mint #88F9C0 for accents,
+   with lighter indigo tints where a chart needs more colours. Loaded after hub.css.
+   The variable names come from the Blue Stone and Copper theme (olympic96.css). */
+:root, :root[data-theme] {
+  color-scheme: dark;
+  --onyx: #01010D; --indigo: #6331FB; --mint: #88F9C0;
+  --stone: #15103a; --sky: #b39dff; --amethyst: #8f6bff; --copper: #6331FB; --cerise: #4fd69c; --orange: #e6e1ff; --cream: #ecebff;
+  --stone-hi: #88F9C0; --copper-hi: #88F9C0; --g96: var(--stone); --clay: var(--orange); --gold: var(--copper); --teal: var(--sky); --plum: var(--amethyst);
+  --page: #01010D; --panel96: #0e0b22; --deep: #07061a;
+  --color-bg: var(--page); --color-panel: var(--panel96); --color-fg: var(--cream); --color-fg-muted: #a9a6cc;
+  --color-border-line: #241c52; --color-ok: #88F9C0; --color-warn: #d9a24a; --color-bad: #ff6a52;
+  --series-1: #8f6bff; --series-2: #88F9C0; --series-3: #b39dff; --series-4: #6331FB;
+  --series-5: #4fd69c; --series-6: #e6e1ff; --series-7: #a9a6cc; --series-8: #d9a24a;
+  --cds-border: #241c52; --cds-chart-axis: #6f68a0; --cds-chart-grid: #1a1540; --cds-chart-muted: #2e2566;
+  --cds-chart-reference: #a9a6cc; --cds-chart-categorical-1: #88F9C0; --cds-chart-categorical-3: #b39dff;
+  --cds-chart-status-warning: #d9a24a; --cds-chart-status-critical: #F4462F;
+  --cds-text-secondary: #a9a6cc; --cds-surface-popover: #17123a; --cds-shadow-popover: 0 8px 24px rgba(0,0,0,.5);
+  --quilt: linear-gradient(90deg, var(--indigo) 0 70%, var(--amethyst) 70% 82%, var(--sky) 82% 90%, var(--mint) 90%);
+  --pattern: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cg transform='translate%2814 18%29' opacity='.07'%3E%3Cpath d='M0 32 17 4l8 12 6-8 17 24z' fill='%23f4ead2'/%3E%3Cpath d='M12.6 11.2 17 4l4.6 7-2.6 2.4-2-2.6-2.2 2.6z' fill='%23f4ead2'/%3E%3Cpath d='M27.6 12.6 31 8l3.6 5.2-1.8 1.4-1.6-1.6-1.6 1.6z' fill='%23f4ead2'/%3E%3C/g%3E%3Cg transform='translate%2896 100%29' opacity='.07'%3E%3Cg fill='%23f4ead2' stroke='%23f4ead2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='10' cy='28' r='7.5' fill='none' stroke-width='3.6'/%3E%3Ccircle cx='38' cy='28' r='7.5' fill='none' stroke-width='3.6'/%3E%3Cpath d='M10 28 19 17h13l6 11M19 17l4 11 9-11' fill='none' stroke-width='2.4'/%3E%3Ccircle cx='35' cy='5.5' r='4' stroke='none'/%3E%3Cpath d='M16 15c3-6 9-9 16-8l1 4c-6 0-10 2-13 6z' stroke='none'/%3E%3Cpath d='M31 9l5 7' fill='none' stroke-width='3.4'/%3E%3Cpath d='M18 15l8 5-3 7' fill='none' stroke-width='4.2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  --picto-bike: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 38'%3E%3Cg fill='%23000' stroke='%23000' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='10' cy='28' r='7.5' fill='none' stroke-width='3.6'/%3E%3Ccircle cx='38' cy='28' r='7.5' fill='none' stroke-width='3.6'/%3E%3Cpath d='M10 28 19 17h13l6 11M19 17l4 11 9-11' fill='none' stroke-width='2.4'/%3E%3Ccircle cx='35' cy='5.5' r='4' stroke='none'/%3E%3Cpath d='M16 15c3-6 9-9 16-8l1 4c-6 0-10 2-13 6z' stroke='none'/%3E%3Cpath d='M31 9l5 7' fill='none' stroke-width='3.4'/%3E%3Cpath d='M18 15l8 5-3 7' fill='none' stroke-width='4.2'/%3E%3C/g%3E%3C/svg%3E");
+  --picto-mtn: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 32'%3E%3Cpath d='M0 32 17 4l8 12 6-8 17 24z' fill='%23000'/%3E%3Cpath d='M12.6 11.2 17 4l4.6 7-2.6 2.4-2-2.6-2.2 2.6z' fill='%23000'/%3E%3Cpath d='M27.6 12.6 31 8l3.6 5.2-1.8 1.4-1.6-1.6-1.6 1.6z' fill='%23000'/%3E%3C/svg%3E");
+}
+[hidden] { display: none !important; }
+html, body { background: var(--page); }
+
+.hub, #plan-sheet { --acc: var(--copper); --line: var(--color-border-line); --r: 2px; }
+.hub { background: transparent; --tone: var(--copper-hi); }
+#training { --tone: var(--stone-hi); } #rides { --tone: var(--sky); } #segments { --tone: var(--orange); } #france { --tone: var(--amethyst); }
+
+/* Masthead: dark band over a patchwork strip */
+.mast { background: var(--stone); color: var(--cream); position: relative; border-bottom: 0; }
+.mast::after { content: ""; position: absolute; left: 0; right: 0; bottom: -6px; height: 6px; background: linear-gradient(90deg, var(--indigo) 0 72%, var(--amethyst) 72% 84%, var(--mint) 84%); }
+.mast .logo { background: var(--copper); border-radius: 6px; transform: none; width: 34px; height: 34px; }
+.mast .logo svg { width: 26px; height: 22px; transform: none; stroke: none; }
+.wm { font-style: normal; font-weight: 800; letter-spacing: .08em; }
+.wm span { color: rgba(236,235,255,.55); }
+.mchip { background: rgba(236,235,255,.1); color: var(--cream); border-radius: 2px; }
+.mchip b { color: var(--copper-hi); }
+.mchip.rb { background: var(--copper); color: #fff; }
+.units, .sync { background: rgba(236,235,255,.1); border-radius: 2px; }
+.units button { color: rgba(236,235,255,.75); border-radius: 1px; }
+.units button[aria-pressed=true] { background: var(--copper); color: #fff; }
+.live { background: var(--copper-hi); box-shadow: 0 0 0 3px rgba(99,49,251,.35); }
+
+/* Tabs: the open one is a solid quilt patch in its event colour */
+.tabs { background: #0a0820; border-bottom: 0; margin-top: 6px; box-shadow: 0 2px 8px rgba(0,0,0,.35); }
+.hub-tab { color: #a9a6cc; font-style: normal; font-weight: 800; letter-spacing: .08em; border: 0; border-radius: 2px; height: 40px; margin: 7px 3px; padding: 0 14px; }
+.hub-tab:hover { color: var(--cream); background: rgba(236,235,255,.06); }
+.hub-tab[aria-selected=true] { background: var(--copper); color: #fff; }
+.hub-tab[data-tab=training][aria-selected=true] { background: var(--page); color: #fff; box-shadow: inset 0 -4px 0 var(--stone-hi); }
+.hub-tab[data-tab=rides][aria-selected=true] { background: var(--sky); color: var(--deep); }
+.hub-tab[data-tab=segments][aria-selected=true] { background: var(--orange); color: #fff; }
+.hub-tab[data-tab=france][aria-selected=true] { background: var(--amethyst); color: #fff; }
+.kbd { display: none; }
+
+/* Page headers: block type with the cycling pictogram */
+.ph h1 { font-style: normal; font-weight: 800; letter-spacing: .02em; }
+.ph h1::before { width: 44px; height: 35px; background: var(--tone); border-radius: 0; -webkit-mask: var(--picto-bike) center / contain no-repeat; mask: var(--picto-bike) center / contain no-repeat; }
+
+/* Cards: flat panels with a colour block down the side */
+.card { background: var(--panel96); border: 0; border-radius: var(--r); box-shadow: inset 4px 0 0 var(--tone), 0 2px 10px rgba(0,0,0,.25); position: relative; }
+.card h2 { font-style: normal; letter-spacing: .1em; color: var(--cream); }
+.card h2::before { width: 18px; height: 12px; border-radius: 0; background: var(--tone); -webkit-mask: var(--picto-mtn) center / contain no-repeat; mask: var(--picto-mtn) center / contain no-repeat; }
+.card.full { box-shadow: none; }
+
+/* Season goal: Blue Stone panel with a big copper pictogram and the progress rings */
+.hero { --color-fg: var(--cream); --color-fg-muted: #c9c6e8; --cds-chart-grid: rgba(236,235,255,.16);
+  color: var(--cream); border: 0; border-radius: var(--r); padding-bottom: 28px;
+  background: radial-gradient(90% 120% at 100% 0%, rgba(99,49,251,.45) 0%, transparent 60%), linear-gradient(160deg, #15103a 0%, #05041a 80%); }
+.hero::after { content: ""; position: absolute; right: -30px; bottom: 30px; top: auto; width: 260px; height: 205px; background: var(--indigo); opacity: .22;
+  -webkit-mask: var(--picto-mtn) center / contain no-repeat; mask: var(--picto-mtn) center / contain no-repeat; pointer-events: none; }
+.rings { position: relative; z-index: 1; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px 10px; align-self: start; min-width: 18rem; }
+.ring { display: grid; justify-items: center; gap: 6px; text-align: center; }
+.ring-face { position: relative; width: 100%; max-width: 104px; aspect-ratio: 1; }
+.ring svg { width: 100%; height: 100%; transform: rotate(-90deg); display: block; }
+.ring circle { fill: none; stroke-width: 11; }
+.ring-track { opacity: .2; }
+.ring-arc { stroke-linecap: round; }
+.ring-arc.lap2 { opacity: .9; }
+.ring-mid { position: absolute; inset: 0; display: grid; place-content: center; line-height: 1; }
+.ring-mid b { font: 800 22px/1 var(--display); font-variant-numeric: tabular-nums; color: var(--cream); }
+.ring-mid small { font: 600 10.5px/1.2 var(--font-anthropic-sans); color: #b8b5d9; margin-top: 3px; }
+.ring-l { font: 800 11px var(--display); letter-spacing: .1em; text-transform: uppercase; color: var(--cream); }
+@media (max-width: 40rem) { .rings { order: -1; min-width: 0; margin-bottom: 4px; } }
+.hero::before { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 6px; background: var(--quilt); z-index: 2; }
+.kick { color: var(--copper-hi); }
+.dek { color: #e2e0f5; } .dek b { color: #fff; }
+.hstat { background: rgba(7,6,26,.88); border-top: 4px solid var(--copper); border-radius: 2px; }
+.hstat b, .hero .hl { color: var(--copper-hi); }
+.sl, .hl small, .hrow span, .hrow b small, .hrow b small span { color: #a9a6cc; }
+.hrow { background: rgba(236,235,255,.08); border-top: 0; }
+.hrow > div { background: var(--deep); }
+.hero .tag.ok, .hrow b.ok { color: #5fe0a8; } .hero .tag.bad, .hrow b.bad { color: #ff8a73; }
+
+/* Plan, next up, buttons */
+.nextup { border-radius: var(--r); background: var(--panel96); }
+.pw-save, .pw-start, .gk-btns .gk-save, .ps-btns .ps-done, .go { background: var(--copper); color: #fff; border-radius: 2px; }
+.pw-nav button { background: var(--deep); color: var(--cream); border-radius: 2px; }
+.badge { color: var(--copper-hi); background: rgba(99,49,251,.18); }
+.tag.warn { color: #d9a24a; background: rgba(99,49,251,.2); }
+.rc-rep.best, .ed-step.goal { border-color: var(--copper); background: rgba(99,49,251,.18); }
+
+/* Footer: the patchwork strip again */
+.app-foot { border-top: 0; padding-top: 22px; background: var(--quilt) top / 100% 6px no-repeat; }
+
+/* Landscape: a small icon button at the right of the card title */
+.card-h { position: relative; }
+button.land:not(.pw-gh) { position: absolute; top: 12px; right: 12px; width: 34px; height: 30px; padding: 0; justify-content: center; border-radius: 2px; background: transparent; }
+.card:has(button.land:not(.pw-gh)) .card-h { padding-right: 44px; }
+.card.full button.land:not(.pw-gh) { width: auto; padding: 0 10px; }
+.land span { margin-left: 4px; }
+/* Ride detail and fact grids: an odd last tile spans the row instead of leaving a hole */
+@media (max-width: 40rem) { .rd-stats > div:last-child:nth-child(odd), .facts > .fact:last-child:nth-child(odd) { grid-column: 1 / -1; } }
+h3.sec { color: var(--copper-hi); letter-spacing: .14em; }
+
+/* Weather: two rows of seven days */
+.wx-h { font: 800 12px var(--display); letter-spacing: .12em; text-transform: uppercase; color: var(--color-fg-muted); margin: 6px 0 6px; }
+.wx-row { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; margin-bottom: 8px; }
+.wx-d { display: grid; justify-items: center; gap: 1px; padding: 7px 2px 6px; border-radius: 3px; background: rgba(0,0,0,.18); border: 1px solid transparent; text-align: center; min-width: 0; }
+.wx-d.today { border-color: var(--copper); background: rgba(99,49,251,.16); }
+.wx-d.past { opacity: .5; }
+.wx-d.wet { background: rgba(179,157,255,.16); border-color: rgba(179,157,255,.55); }
+.wx-d.today.wet { border-color: var(--copper); }
+.wx-dow { font: 800 11px var(--display); letter-spacing: .08em; text-transform: uppercase; }
+.wx-date { font-size: 11px; color: var(--color-fg-muted); }
+.wx-ic { width: 24px; height: 24px; color: var(--copper-hi); margin: 3px 0 2px; }
+.wx-d.wet .wx-ic { color: var(--sky); }
+.wx-ic svg { width: 100%; height: 100%; display: block; }
+.wx-t { font: 800 16px/1 var(--display); }
+.wx-lo { font-size: 11px; color: var(--color-fg-muted); }
+.wx-pop { font: 700 11px var(--mono, monospace); color: var(--color-fg-muted); }
+.wx-d.wet .wx-pop { color: var(--sky); }
+.wx-plan { margin-top: 3px; font: 800 10.5px var(--display); letter-spacing: .04em; color: var(--copper-hi); white-space: nowrap; }
+/* Weather on plan days */
+.pw-r small.pw-wx { color: var(--color-fg-muted); white-space: nowrap; letter-spacing: .02em; text-transform: none; }
+.pw-r small.pw-wx.wet { color: var(--sky); font-weight: 700; }
+/* Ride calendar key: name and range */
+.heat-key { margin-top: 10px; gap: 6px 14px; }
+.heat-key b { color: var(--cream); margin-right: 3px; }
+.heat-key i { width: 10px; height: 10px; }
+
+/* Distance graph view switch and the all-years key */
+.units.dv { background: rgba(0,0,0,.25); }
+.units.dv button { color: var(--color-fg-muted); }
+.year-key { margin-top: 8px; gap: 6px 14px; }
+.year-key b { color: var(--cream); margin-right: 3px; }
+
+/* Rings: all six in one row */
+.rings { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; min-width: 0; grid-column: 1 / -1; }
+.ring { gap: 4px; }
+.ring-face { max-width: 64px; }
+.ring circle { stroke-width: 12; }
+.ring-mid b { font-size: 15px; }
+.ring-mid small { display: none; }
+.ring-l { font-size: 9px; letter-spacing: .06em; line-height: 1.15; }
+@media (min-width: 40rem) { .ring-face { max-width: 84px; } .ring-mid b { font-size: 19px; } .ring-l { font-size: 10.5px; } }
+
+/* PR medals: Olympic gold, silver and bronze */
+.medal { color: #1b1405; font-weight: 800; box-shadow: inset 0 -2px 0 rgba(0,0,0,.25), inset 0 2px 0 rgba(255,255,255,.35); }
+.medal.m1 { background: radial-gradient(circle at 35% 30%, #fff1b0, #e4b521 45%, #a9800f); }
+.medal.m2 { background: radial-gradient(circle at 35% 30%, #ffffff, #c9cfd4 45%, #8a9399); }
+.medal.m3 { background: radial-gradient(circle at 35% 30%, #ffd2a6, #c4793a 45%, #8a4e1d); color: #fff; }
+
+/* Season ring: big, level with the distance total; the other five sit in a row below */
+.hl-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.ring-main { flex: none; width: 128px; }
+.ring-main .ring-face { max-width: 128px; }
+.ring-main .ring circle { stroke-width: 10; }
+.ring-main .ring-mid b { font-size: 30px; }
+.ring-main .ring-mid small { display: block; font-size: 10.5px; }
+.ring-main .ring-l { font-size: 11px; }
+.rings { grid-template-columns: repeat(5, minmax(0, 1fr)); order: 0; margin: 4px 0 2px; }
+@media (max-width: 40rem) { .rings { order: 0; } .ring-main { width: 112px; } .ring-main .ring-mid b { font-size: 26px; } }
+
+/* Chart colours the scripts read: calendar distance bands (indigo to mint), years, empty days, month shading */
+:root { --band-1: #3b2a8f; --band-2: #6331FB; --band-3: #8f6bff; --band-4: #b39dff; --band-5: #88F9C0; --band-6: #ffffff;
+  --cal-empty: #15103a; --month-shade: #6331FB; --year-now: #88F9C0; }

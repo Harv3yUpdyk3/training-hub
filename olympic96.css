@@ -172,3 +172,7 @@ h3.sec { color: var(--copper-hi); letter-spacing: .14em; }
 .ring-main .ring-l { font-size: 11px; }
 .rings { grid-template-columns: repeat(5, minmax(0, 1fr)); order: 0; margin: 4px 0 2px; }
 @media (max-width: 40rem) { .rings { order: 0; } .ring-main { width: 112px; } .ring-main .ring-mid b { font-size: 26px; } }
+
+/* Chart colours the scripts read: calendar distance bands, years, empty days, month shading */
+:root { --band-1: #2fa497; --band-2: #00B1EA; --band-3: #9557A9; --band-4: #B37E2C; --band-5: #F4462F; --band-6: #EA2C78;
+  --cal-empty: #005B55; --month-shade: #B37E2C; --year-now: #B37E2C; }

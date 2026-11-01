@@ -1,6 +1,6 @@
 {
  "week_start": "2026-10-26",
- "updated_at": "2026-10-31T15:24:42Z",
+ "updated_at": "2026-11-01T17:23:52Z",
  "updated_by": "Claude",
  "days": [
   {
@@ -85,8 +85,10 @@
    "details": "55+ mi (Eddington 55 goal: every 55-mile day counts), about 4 hours on the Silver Comet. Steady Zone 2 the whole way; ease off on the climbs to stay under the cap. Eat every 30–45 min and drink about a bottle an hour. If it's raining, bring a rain shell or take it to Monday.",
    "target_hr": "130–150, cap 153",
    "target_miles": "55",
-   "status": "Planned",
-   "intensity": "Endurance"
+   "status": "Skipped",
+   "intensity": "Endurance",
+   "actual": "Couch day: rain, NFL and the Switch 2.",
+   "actual_short": "Skipped (rain)"
   }
  ]
 }

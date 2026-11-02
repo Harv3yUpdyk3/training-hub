@@ -20,7 +20,7 @@ h1{margin:0 0 2px;font-size:22px}.sub{margin:0 0 14px;color:var(--muted);font-si
 .where{font-size:26px;font-weight:800;line-height:1.2;margin:0 0 8px}
 .what{margin:0}
 .tag{display:inline-block;font-size:12px;font-weight:700;border-radius:4px;padding:1px 7px;margin-left:6px;vertical-align:2px;color:#1d1d1b}
-.tag.mtn{background:#fff;border:1px solid var(--r);color:var(--r);background-image:radial-gradient(var(--r) 1.2px,transparent 1.3px);background-size:6px 6px}
+.tag.mtn{background:#fff;border:2px dotted var(--r);color:var(--r);padding:0 6px}
 .tag.hill,.tag.tt{background:var(--y)}.tag.sprint{background:var(--g);color:#fff}
 .row{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-top:1px solid var(--line)}.row:first-of-type{border-top:0}
 .row b{font-variant-numeric:tabular-nums;white-space:nowrap}.row.key b{background:var(--y);color:#1d1d1b;padding:0 8px;border-radius:6px}
@@ -96,7 +96,7 @@ function render(){const now=parisNow();const ti=todayIdx(now);const d=DATA.days[
   h+=`<div class="card main"><p class="k">Where Will is</p><p class="where">${e?e[0]:(WHERE[d.d]||(d.stage?"On the road":d.title))}</p>${stageLine?`<p class="what">${stageLine}</p>`:""}</div>`;
   if(e){const tt=d.type==="tt";const t=dayMs(d.d)+hm(e[3]),diff=t-now;
     let live="";if(isToday)live=diff>0?`<p class="muted">Riders reach Will <span class="cd">in ${dur(diff)}</span>.</p>`:diff>-2*36e5?`<p class="muted"><span class="cd">Happening now, or just went past.</span></p>`:"";
-    h+=`<div class="card"><p class="k">How to watch from home</p><p class="what">Live on <b>Peacock</b>, with some stages on NBC or CNBC. Look for Will on the road at ${e[0]}${tt?"":", waving a US flag"}.</p>
+    h+=`<div class="card"><p class="k">How to watch from home</p><p class="what">Live on <b>Peacock</b>, with some stages on NBC or CNBC. Look for Will on the road at ${e[0]}.</p>
     ${e[2]!=="—"?`<div class="row"><span>Sponsor caravan passes Will</span><b>${et(e[2])}</b></div>`:""}
     <div class="row key"><span>${tt?"First rider passes Will":"Riders pass Will"}</span><b>${et(e[3])}</b></div>
     <div class="row"><span>${tt?"Last rider finishes":"Stage finishes"}</span><b>≈${et(e[4])}</b></div>${live}</div>`;}

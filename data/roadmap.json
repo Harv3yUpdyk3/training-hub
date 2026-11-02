@@ -2,23 +2,32 @@
  {
   "order": 1,
   "phase": "Base",
-  "months": "Nov 2026 – Feb 2027",
-  "focus": "Zone 2 volume plus sweet-spot intervals (2 × 20, then 3 × 20 min). Fit the power meter and set a real FTP.",
-  "milestone": "5,000 km for 2026; 20-minute FTP test",
+  "months": "Nov – Dec 2026",
+  "focus": "Zone 2 volume, one sweet-spot session a week, strength twice a week. Fit the power meter and test FTP.",
+  "milestone": "5,000 km for 2026 and an FTP test",
   "start": "2026-11-01",
-  "end": "2027-02-28"
+  "end": "2026-12-31"
  },
  {
   "order": 2,
+  "phase": "Build",
+  "months": "Jan – Feb 2027",
+  "focus": "Sweet spot 2 × 20 building to 3 × 20 min, a 55+ mi long ride every week, Kennesaw and Hascall repeats.",
+  "milestone": "Kennesaw Mountain, first ascent; Eddington 50",
+  "start": "2027-01-01",
+  "end": "2027-02-28"
+ },
+ {
+  "order": 3,
   "phase": "Climb-specific",
   "months": "Mar – May 2027",
-  "focus": "Long low-cadence efforts of 30–60 min, Hascall repeats, one North Georgia day a month (Three Gap loop building to the Six Gap loop).",
-  "milestone": "Hogpen Gap twice in one day",
+  "focus": "Long low-cadence efforts of 30–60 min, one North Georgia day a month (Three Gap loop building to the Six Gap loop).",
+  "milestone": "Brasstown Bald, then Hogpen Gap twice in one day; Eddington 55",
   "start": "2027-03-01",
   "end": "2027-05-31"
  },
  {
-  "order": 3,
+  "order": 4,
   "phase": "Sharpen and taper",
   "months": "Jun 2027",
   "focus": "One big mountain weekend, then ease off into the trip.",
@@ -27,7 +36,7 @@
   "end": "2027-06-30"
  },
  {
-  "order": 4,
+  "order": 5,
   "phase": "France",
   "months": "Jul 2027",
   "focus": "Tour de France trip: ride each climb at a steady pace from the bottom.",

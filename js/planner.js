@@ -137,6 +137,36 @@
       row.addEventListener('click', () => openEditor(i));
       list.append(row);
     });
+    rainSwap();
+  };
+
+  // Rain swap: when the long ride sits on a wet day and a drier day is left this week, one tap trades the two days and saves.
+  const SWAP_FIELDS = ['session', 'details', 'target_miles', 'target_hr', 'intensity', 'status', 'actual', 'actual_short'];
+  const isLong = (d) => /long/i.test(d.session || '') || Math.max(...String(d.target_miles).split('–').map(Number).filter(Number.isFinite), 0) >= 40;
+  const open = (d) => !/^(done|skipped)$/i.test(String(d.status || '')) && d.date >= iso(new Date());
+  const rainSwap = () => {
+    let b = $('.pw-swap');
+    if (!b) { b = el('button', 'pw-swap'); b.type = 'button'; $('.pw-days').before(b); b.addEventListener('click', () => doSwap(b._from, b._to)); }
+    b.hidden = true;
+    if (!week || !wxBy.size) return;
+    const from = week.days.findIndex((d) => open(d) && isLong(d));
+    if (from < 0) return;
+    const wet = wxBy.get(week.days[from].date);
+    if (!wet || wet.pop < 40) return;
+    let to = -1, best = wet.pop - 20;
+    week.days.forEach((d, i) => { const w = wxBy.get(d.date); if (i !== from && open(d) && w && w.pop <= best) { best = w.pop; to = i; } });
+    if (to < 0) return;
+    const dry = wxBy.get(week.days[to].date);
+    b._from = from; b._to = to;
+    b.replaceChildren(el('b', null, 'Rain swap'), el('span', null, `${week.days[from].day} is ${wet.pop}% rain. Move the long ride to ${week.days[to].day} (${dry.pop}%, ${Math.round(dry.hi_f)}°)`));
+    b.hidden = false;
+  };
+  const doSwap = async (a, b) => {
+    const A = week.days[a], B = week.days[b];
+    SWAP_FIELDS.forEach((k) => { const t = A[k]; if (B[k] === undefined) delete A[k]; else A[k] = B[k]; if (t === undefined) delete B[k]; else B[k] = t; });
+    dirty = true;
+    render();
+    $('.pw-save').click();
   };
 
   const load = async () => {

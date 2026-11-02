@@ -60,7 +60,7 @@
       <button class="hub-tab" role="tab" data-tab="training" aria-controls="training" aria-selected="false">Plan</button>
       <button class="hub-tab" role="tab" data-tab="rides" aria-controls="rides" aria-selected="false">Rides</button>
       <button class="hub-tab" role="tab" data-tab="segments" aria-controls="segments" aria-selected="false">Segments</button>
-      <button class="hub-tab" role="tab" data-tab="france" aria-controls="france" aria-selected="false">France</button>
+      <button class="hub-tab" role="tab" data-tab="france" aria-controls="france" aria-selected="false">Trips</button>
       <span class="tabs-r"><span class="kbd" title="Press 1–5 to switch tabs, / to search rides">1–5 · /</span></span>
     </div>
   </nav>
@@ -98,10 +98,16 @@
         <div data-draw="recap" data-source="plan rides recap_detail"></div>
       </div>
 
+      <div class="card" id="lastweek-card" hidden>
+        <div class="card-h"><h2>Last week</h2><span class="note" data-lw-dates>—</span></div>
+        <div class="lw" data-draw="lastweek" data-source="plan_prev rides zone_time"></div>
+      </div>
+
       <div class="nextup" id="next-up" data-draw="next-up" data-source="plan plan_next"></div>
 
       <div class="card" id="weather-card">
-        <div class="card-h"><h2>Weather</h2><span class="note">Atlanta · this week and next · Open-Meteo forecast</span></div>
+        <div class="card-h"><h2>Weather</h2><button type="button" class="ra-toggle" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a6 6 0 0 0-6 6v4l-2 3h16l-2-3V9a6 6 0 0 0-6-6zm-2 15a2 2 0 0 0 4 0"/></svg><span>Rain alerts off</span></button></div>
+        <p class="note">Atlanta · this week and next · Open-Meteo forecast</p>
         <div class="wx" data-draw="wx" data-source="weather plan plan_next"></div>
       </div>
 
@@ -252,6 +258,10 @@
     <section class="hub-page" id="rides" role="tabpanel" hidden>
       <div class="ph">
         <div><h1>Rides</h1><p>Every 2026 ride. Tap one in the log to see it above.</p></div>
+      </div>
+      <div class="card" id="year-card">
+        <div class="card-h"><h2>2026 so far</h2><span class="note">Every ride this year</span></div>
+        <div class="yr" data-draw="year-review" data-source="rides rides_all eddington legends"></div>
       </div>
       <div class="card" id="ride-detail-card">
         <div class="card-h"><h2>Ride detail</h2><span class="note">Tap any ride in the ride log</span></div>
@@ -405,6 +415,11 @@
         <div><h1>Road to the Tourmalet</h1><p>Each climb is about 1,300 m in one go, so the work is long, steady climbing.</p></div>
         <span class="pill"><b data-draw="days-france-2">—</b> days to go</span>
       </div>
+      <div class="card" id="phase-card">
+        <div class="card-h"><h2>Season timeline</h2></div>
+        <div class="pn" data-draw="phase-now" data-source="roadmap"></div>
+        <div class="chart short" data-draw="timeline" data-source="roadmap"></div>
+      </div>
       <div class="g2">
         <div class="card" id="colombier-card">
           <span class="eyebrow">Jura</span>
@@ -417,6 +432,10 @@
           <div class="climb-facts"><div><strong><span class="u-m">19 km</span><span class="u-i">12 mi</span></strong><span>length</span></div><div><strong><span class="u-m">~1,400 m</span><span class="u-i">~4,600 ft</span></strong><span>climbing</span></div><div><strong>~7.4%</strong><span>average, to <span class="u-m">2,115 m</span><span class="u-i">6,939 ft</span></span></div></div>
         </div>
       </div>
+      <div class="card" id="climb-sim-card">
+        <div class="card-h"><h2>Climb simulator</h2><span class="note">Predicted times from your recent climbs</span></div>
+        <div class="sim" data-draw="climb-sim" data-source="efforts30"></div>
+      </div>
       <div class="card" id="climb-ready-card">
         <div class="card-h"><h2>Climb readiness</h2><span class="note">All-time Strava bests, climbing in <span class="u-m">m</span><span class="u-i">ft</span></span></div>
         <p class="note">Your biggest single climb is <b data-draw="climb-pct" data-source="climbs" data-row="0" data-field="pct_colombier">—</b>% of the Colombier. Compare it with your biggest climbing day: the gap is doing that climbing in one go.</p>
@@ -427,18 +446,16 @@
         <p class="note">A week with a full climb's worth of vertical is a building block; the goal by spring is doing it in one ride.</p>
         <div class="chart mid" data-draw="climb-weeks-chart" data-source="climb_weeks"></div>
       </div>
-      <div class="card" id="timeline-card">
-        <div class="card-h"><h2>Training phases</h2><span class="note">Now to the trip · marker is today</span></div>
-        <div class="chart short" data-draw="timeline" data-source="roadmap"></div>
-      </div>
       <div class="card" id="phases-card">
-        <h2>Phase by phase</h2>
-        <div class="scroll">
-          <table class="tbl stack" data-source="roadmap" data-row-key="order">
-            <thead><tr><th data-field="phase">Phase</th><th data-field="months">When</th><th data-field="focus">Focus</th><th data-field="milestone">Milestone</th></tr></thead>
-            <tbody data-draw="roadmap-rows"></tbody>
-          </table>
-        </div>
+        <div class="card-h"><h2>Phase by phase</h2></div>
+        <ol class="psteps" data-draw="phase-steps" data-source="roadmap"></ol>
+      </div>
+      <div class="ph ph2">
+        <div><h1>Week-long tours</h1><p>Trips matched to each bike, soonest season first.</p></div>
+      </div>
+      <div class="card" id="tours-card">
+        <div class="card-h"><h2>Tour planner</h2></div>
+        <div class="tours" data-draw="tours" data-source="tours"></div>
       </div>
     </section>
 

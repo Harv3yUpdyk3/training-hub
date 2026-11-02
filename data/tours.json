@@ -1,0 +1,131 @@
+[
+ {
+  "order": 1,
+  "tour": "Florida Coast-to-Coast Trail",
+  "bike": "Bombtrack",
+  "months": [
+   12,
+   1,
+   2,
+   3
+  ],
+  "miles": 250,
+  "style": "Paved trail, state park camping",
+  "note": "St. Petersburg to Titusville, nearly all paved trail with springs to swim in. Best winter shakedown for the new 11-speed build."
+ },
+ {
+  "order": 2,
+  "tour": "Natchez Trace Parkway",
+  "bike": "Bombtrack",
+  "months": [
+   4,
+   10,
+   11
+  ],
+  "miles": 444,
+  "style": "Car-light road, free bike-only campsites",
+  "note": "Natchez, MS to Nashville. No commercial traffic, 50 mph limit, 4–5 hours' drive from Atlanta."
+ },
+ {
+  "order": 3,
+  "tour": "Erie Canalway Trail",
+  "bike": "Bombtrack",
+  "months": [
+   6,
+   9
+  ],
+  "miles": 360,
+  "style": "Canal towpath, lock and village camping",
+  "note": "Buffalo to Albany on stone dust and pavement, flat the whole way, Amtrak at both ends."
+ },
+ {
+  "order": 4,
+  "tour": "Wisconsin rail-trail loop",
+  "bike": "Bombtrack",
+  "months": [
+   8,
+   9,
+   10
+  ],
+  "miles": 275,
+  "style": "Crushed-stone trails, tunnels, trailside camping",
+  "note": "Elroy-Sparta, 400, La Crosse River and Great River trails, with three old railroad tunnels."
+ },
+ {
+  "order": 5,
+  "tour": "Danube: Passau to Vienna",
+  "bike": "Bombtrack",
+  "months": [
+   5,
+   6,
+   9
+  ],
+  "miles": 300,
+  "style": "Riverside path, campgrounds, fly-in",
+  "note": "Europe's classic flat riverside tour through the Wachau wine villages. Needs a flight and a bike box."
+ },
+ {
+  "order": 6,
+  "tour": "North Georgia and Pisgah gravel",
+  "bike": "Diverge",
+  "months": [
+   4,
+   5,
+   10
+  ],
+  "miles": 350,
+  "style": "Gravel and mountain roads, from home",
+  "note": "Six Gap climbs, Helen, Clayton, Highlands and the Pisgah forest roads, inns each night. Check Helene closures."
+ },
+ {
+  "order": 7,
+  "tour": "Blue Ridge Parkway",
+  "bike": "Diverge",
+  "months": [
+   5,
+   6,
+   10
+  ],
+  "miles": 470,
+  "style": "Big road climbing, inns off the Parkway",
+  "note": "Waynesboro, VA to Cherokee, NC, about 45,000 ft of climbing. Add Skyline Drive for about 575 mi."
+ },
+ {
+  "order": 8,
+  "tour": "Vermont gravel, inn to inn",
+  "bike": "Diverge",
+  "months": [
+   9,
+   10
+  ],
+  "miles": 325,
+  "style": "Dirt roads, gap climbs, B&Bs",
+  "note": "Lincoln, Middlebury and Appalachian gaps with a B&B in nearly every village. Skip mud season."
+ },
+ {
+  "order": 9,
+  "tour": "San Juan Skyway, Colorado",
+  "bike": "Diverge",
+  "months": [
+   8,
+   9
+  ],
+  "miles": 236,
+  "style": "High passes over 10,000 ft",
+  "note": "Durango, Silverton, Ouray, Telluride. Add an acclimatization day at the start."
+ },
+ {
+  "order": 10,
+  "tour": "Route des Grandes Alpes",
+  "bike": "Diverge",
+  "months": [
+   6,
+   7,
+   8,
+   9
+  ],
+  "miles": 430,
+  "style": "16+ cols, hotels every night, fly-in",
+  "note": "Lake Geneva to Nice over the Iseran, Galibier, Izoard and Bonette. The biggest climbing trip on the list."
+ }
+]

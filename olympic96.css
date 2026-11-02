@@ -239,6 +239,92 @@ html, body { overflow-x: clip; }
 .todo span.todo-s.in-progress { color: #6fd3f5; }
 .todo span.todo-s.done { color: #7fd6c9; }
 
+/* ---- Batch 1 builds: last week, rain swap/alerts, climb sim, timeline, tours, year ---- */
+.lw-stats, .yr-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+.lw-stats div, .yr-grid div { display: grid; gap: 3px; min-width: 0; }
+.lw-stats span, .yr-grid span, .pn-k, .lw-k, .sim-v span, .yr-hero span { font: 700 11px var(--display); letter-spacing: .1em; text-transform: uppercase; color: var(--color-fg-muted); }
+.lw-stats b, .yr-grid b { font: 800 22px/1.05 var(--display); font-variant-numeric: tabular-nums; }
+.lw-stats b small, .yr-grid b small { font: 600 11px var(--font-anthropic-sans); color: var(--color-fg-muted); }
+.yr-grid small { font-size: 11.5px; color: var(--color-fg-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.lw-bar, .pn-bar { position: relative; height: 8px; border-radius: 99px; background: rgba(255,255,255,.08); margin: 14px 0 4px; overflow: visible; }
+.lw-bar i, .pn-bar i { position: absolute; inset: 0 auto 0 0; border-radius: 99px; background: var(--copper); }
+.lw-bar em { position: absolute; top: -4px; bottom: -4px; width: 2px; background: var(--color-fg); }
+.lw-zones { display: flex; height: 10px; gap: 2px; margin-top: 14px; border-radius: 4px; overflow: hidden; }
+.lw-zk { margin: 6px 0 0; font: 500 11.5px var(--mono); color: var(--color-fg-muted); }
+.lw-k { display: block; margin-top: 14px; }
+.lw-tips { margin: 6px 0 0; padding-left: 18px; display: grid; gap: 5px; font-size: 13.5px; }
+.lw-tips li::marker { color: var(--copper-hi); }
+.pw-swap { display: grid; gap: 2px; width: 100%; text-align: left; margin: 4px 0 10px; padding: 10px 12px; border-radius: 10px; border: 1px solid rgba(0,177,234,.55); background: rgba(0,177,234,.12); color: var(--color-fg); cursor: pointer; font: inherit; }
+.pw-swap b { font: 800 12px var(--display); letter-spacing: .1em; text-transform: uppercase; color: #6fd3f5; }
+.pw-swap span { font-size: 13px; }
+.ra-toggle { display: inline-flex; align-items: center; gap: 6px; padding: 5px 10px; border-radius: 999px; border: 1px solid var(--line); background: transparent; color: var(--color-fg-muted); font: 700 11px var(--display); letter-spacing: .08em; text-transform: uppercase; cursor: pointer; }
+.ra-toggle svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2; }
+.ra-toggle[aria-pressed="true"] { border-color: rgba(0,177,234,.6); color: #6fd3f5; background: rgba(0,177,234,.12); }
+.sim-head { display: grid; gap: 6px; }
+.sim-v { display: grid; gap: 3px; }
+.sim-v b { font: 800 30px/1 var(--display); font-variant-numeric: tabular-nums; color: var(--copper-hi); }
+.sim-v b small { font: 600 12px var(--font-anthropic-sans); color: var(--color-fg-muted); }
+.sim-ctl { display: grid; gap: 6px; margin: 12px 0 6px; font-size: 13px; }
+.sim-ctl input { width: 100%; accent-color: var(--copper); }
+.sim-rows { display: grid; }
+.sim-r { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--line); }
+.sim-r:last-child { border-bottom: 0; }
+.sim-n, .sim-t { display: grid; gap: 2px; }
+.sim-t { text-align: right; }
+.sim-n small, .sim-t small { font-size: 11.5px; color: var(--color-fg-muted); }
+.sim-t b { font: 800 22px/1 var(--display); font-variant-numeric: tabular-nums; }
+.sim-r.goal .sim-t b { color: var(--copper-hi); }
+.sim-r.goal .sim-n b::after { content: " ★"; color: var(--copper-hi); }
+.pn-h { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; }
+.pn-k { width: 100%; }
+.pn-p { font: 800 28px/1 var(--display); text-transform: uppercase; color: var(--copper-hi); }
+.pn-w { font: 600 13px var(--mono); color: var(--color-fg-muted); }
+.pn-f { margin: 10px 0 4px; font-size: 14px; }
+.pn-m { margin: 0 0 6px; font-size: 13px; color: var(--color-fg-muted); }
+.pn-m b { color: var(--color-fg); }
+#phase-card .chart { margin-top: 8px; }
+.psteps { list-style: none; margin: 0; padding: 0; display: grid; }
+.psteps li { display: grid; grid-template-columns: 18px 1fr; gap: 12px; padding: 10px 0; position: relative; }
+.psteps li > i { width: 14px; height: 14px; margin-top: 3px; border-radius: 50%; border: 3px solid var(--ph); background: transparent; }
+.psteps li:not(:last-child)::after { content: ""; position: absolute; left: 6px; top: 26px; bottom: -4px; width: 2px; background: var(--line); }
+.psteps li.ps-now > i { background: var(--ph); box-shadow: 0 0 0 4px rgba(255,255,255,.08); }
+.psteps li.ps-past { opacity: .55; }
+.psteps li.ps-past > i { background: var(--ph); }
+.psteps div { display: grid; gap: 3px; }
+.psteps b { font: 800 15px var(--display); text-transform: uppercase; letter-spacing: .04em; }
+.psteps li.ps-now b::after { content: " · now"; color: var(--copper-hi); }
+.psteps small { font: 600 12px var(--mono); color: var(--color-fg-muted); }
+.psteps span { font-size: 13.5px; }
+.psteps em { font-style: normal; font-size: 12.5px; color: var(--color-fg-muted); }
+.ph2 { margin-top: 18px; }
+.tours .tb { margin-bottom: 4px; }
+.tr-list { display: grid; gap: 10px; margin-top: 8px; }
+.tr { padding: 12px; border-radius: 12px; background: rgba(0,0,0,.18); border-left: 3px solid var(--stone-hi); display: grid; gap: 8px; }
+.tr.bombtrack { border-left-color: var(--sky); }
+.tr.diverge { border-left-color: var(--copper); }
+.tr-top { display: flex; justify-content: space-between; gap: 10px; align-items: flex-start; }
+.tr-top div { display: grid; gap: 2px; }
+.tr-top b { font-size: 15px; }
+.tr-top small { font-size: 12px; color: var(--color-fg-muted); }
+.tr-when { flex: none; padding: 3px 8px; border-radius: 999px; font: 700 10.5px var(--display); letter-spacing: .08em; text-transform: uppercase; background: rgba(255,255,255,.08); color: var(--color-fg-muted); white-space: nowrap; }
+.tr-when.now { background: rgba(0,91,85,.55); color: #7fd6c9; }
+.tr-facts { display: flex; flex-wrap: wrap; gap: 4px 14px; font: 600 12.5px var(--mono); }
+.tr-months { display: grid; grid-template-columns: repeat(12, 1fr); gap: 3px; }
+.tr-months span { text-align: center; font: 700 10px var(--display); padding: 3px 0; border-radius: 3px; background: rgba(255,255,255,.05); color: rgba(255,255,255,.35); }
+.tr-months span.on { background: var(--copper); color: #1a1205; }
+.tr.bombtrack .tr-months span.on { background: var(--sky); color: #04222c; }
+.tr-months span.cur { outline: 1.5px solid var(--color-fg); outline-offset: -1.5px; }
+.tr-note { margin: 0; font-size: 13px; color: var(--color-fg-muted); }
+.yr-hero { display: grid; gap: 4px; margin-bottom: 14px; }
+.yr-hero b { font: 800 44px/1 var(--display); color: var(--copper-hi); font-variant-numeric: tabular-nums; }
+.yr-hero b small { font-size: 16px; color: var(--color-fg-muted); }
+.yr-vs { color: #7fd6c9 !important; }
+.yr-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); row-gap: 14px; }
+@media (max-width: 40rem) {
+  .lw-stats { grid-template-columns: 1fr 1fr; row-gap: 12px; }
+  .yr-grid { grid-template-columns: 1fr 1fr; }
+}
+
 /* Card icons: a different Olympic-style pictogram per card (star, flame, wheel, medal...) */
 :root {
   --ic-star: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpolygon points='12.00,1.60 14.91,8.60 22.46,9.20 16.71,14.13 18.47,21.50 12.00,17.55 5.53,21.50 7.29,14.13 1.54,9.20 9.09,8.60'/%3E%3C/svg%3E");
@@ -290,5 +376,9 @@ html, body { overflow-x: clip; }
 #tourmalet-card h2::before { -webkit-mask-image: var(--ic-mountain); mask-image: var(--ic-mountain); background: var(--amethyst); width: 17px; height: 17px; }
 #climb-ready-card h2::before { -webkit-mask-image: var(--ic-flag); mask-image: var(--ic-flag); background: var(--cream); width: 17px; height: 17px; }
 #climb-weeks-card h2::before { -webkit-mask-image: var(--ic-bars); mask-image: var(--ic-bars); background: var(--amethyst); width: 17px; height: 17px; }
-#timeline-card h2::before { -webkit-mask-image: var(--ic-torch); mask-image: var(--ic-torch); background: var(--orange); width: 17px; height: 17px; }
+#phase-card h2::before { -webkit-mask-image: var(--ic-torch); mask-image: var(--ic-torch); background: var(--orange); width: 17px; height: 17px; }
+#lastweek-card h2::before { -webkit-mask-image: var(--ic-podium); mask-image: var(--ic-podium); background: var(--sky); width: 17px; height: 17px; }
+#climb-sim-card h2::before { -webkit-mask-image: var(--ic-stopwatch); mask-image: var(--ic-stopwatch); background: var(--orange); width: 17px; height: 17px; }
+#tours-card h2::before { -webkit-mask-image: var(--ic-wheel); mask-image: var(--ic-wheel); background: var(--stone-hi); width: 17px; height: 17px; }
+#year-card h2::before { -webkit-mask-image: var(--ic-crown); mask-image: var(--ic-crown); background: var(--copper-hi); width: 17px; height: 17px; }
 #phases-card h2::before { -webkit-mask-image: var(--ic-stars); mask-image: var(--ic-stars); background: var(--copper-hi); width: 17px; height: 17px; }

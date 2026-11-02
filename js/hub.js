@@ -753,6 +753,7 @@ const ED_GOAL_MI = 55; // Will's Eddington goal, in miles
   const INT = { Rest: '--cds-chart-muted', Endurance: '--cds-chart-categorical-1', Tempo: '--cds-chart-categorical-3', Threshold: '--cds-chart-status-warning', VO2: '--cds-chart-status-critical' };
   const ZONE = ['--cds-chart-muted', '--cds-chart-categorical-1', '--cds-chart-categorical-3', '--cds-chart-status-warning', '--cds-chart-status-critical'];
   const TRIP = new Date(2027, 6, 1);
+  const PHASE_C = ['var(--band-1)', 'var(--band-4)', 'var(--band-3)', 'var(--band-2)', 'var(--band-5)'];
   const MONO = 'ui-monospace, "SF Mono", "Cascadia Mono", "Roboto Mono", Consolas, monospace';
   const mmss = (s) => Math.floor(s / 60) + ':' + String(Math.round(s % 60)).padStart(2, '0');
   const hm = (s) => { const m = Math.round(s / 60); return Math.floor(m / 60) + ':' + String(m % 60).padStart(2, '0'); };
@@ -1985,7 +1986,7 @@ const ED_GOAL_MI = 55; // Will's Eddington goal, in miles
     const x0 = d3.min([now, asDate(rows[0].start)]), x1 = asDate(rows[rows.length - 1].end);
     const x = d3.scaleTime([d3.timeMonth.floor(x0), d3.timeDay.offset(x1, 1)], [m.l, w - m.r]);
     const svg = d3.select(box).append('svg').attr('viewBox', `0 0 ${w} ${h}`).attr('width', '100%').attr('role', 'img').attr('aria-label', 'Training phases from now to July 2027');
-    const colors = [dash.colors[0], dash.colors[1], dash.colors[2], css('--cds-chart-status-warning')];
+    const colors = PHASE_C;
     const seg = svg.append('g').selectAll('g').data(rows).join('g');
     seg.append('rect').attr('x', (d) => x(asDate(d.start)) + 1).attr('width', (d) => Math.max(0, x(d3.timeDay.offset(asDate(d.end), 1)) - x(asDate(d.start)) - 2))
       .attr('y', by).attr('height', bh).attr('rx', 5).attr('fill', (d, i) => colors[i % colors.length]);
@@ -2118,5 +2119,300 @@ const ED_GOAL_MI = 55; // Will's Eddington goal, in miles
     });
     box.append(el('p', 'note', 'Percent is the chance of rain. Rainy days are highlighted; the plan’s miles show under each riding day.'));
   });
+
+
+  // ---- Monday recap: last week's plan against what was ridden --------------
+  const isoD = d3.timeFormat('%Y-%m-%d');
+  const nums = (s) => String(s ?? '').split('–').map(Number).filter(Number.isFinite);
+  dash.draw('lastweek', (box) => {
+    const pg = dash.data('plan_prev'), rg = dash.data('rides'), zg = dash.data('zone_time');
+    box.replaceChildren();
+    if (failed(box, 'rides')) return;
+    if (rg.status !== 'ok') { box.append(el('p', 'note', 'Loading…')); return; }
+    const mon = d3.timeDay.offset(d3.timeMonday.floor(new Date()), -7), sun = d3.timeDay.offset(mon, 6);
+    const a = isoD(mon), b = isoD(sun);
+    const card = box.closest('.card');
+    const note = card && card.querySelector('[data-lw-dates]');
+    if (note) note.textContent = d3.timeFormat('%b %-d')(mon) + ' – ' + d3.timeFormat('%b %-d')(sun);
+    const plan = pg.status === 'ok' ? pg.data : [];
+    const rides = rg.data.filter((r) => r.date >= a && r.date <= b && /Ride/.test(r.sport_type || 'Ride'));
+    const byDay = d3.rollup(rides, (v) => d3.sum(v, (r) => r.miles), (r) => r.date);
+    const ridden = d3.sum(rides, (r) => r.miles);
+    const lo = d3.sum(plan, (p) => nums(p.target_miles)[0] || 0), hi = d3.sum(plan, (p) => { const n = nums(p.target_miles); return n[n.length - 1] || 0; });
+    const rideDays = plan.filter((p) => p.intensity !== 'Rest' && (nums(p.target_miles)[0] || 0) > 0);
+    const hit = rideDays.filter((p) => (byDay.get(p.date) || 0) >= 0.6 * (nums(p.target_miles)[0] || 0));
+    const longest = d3.max([...byDay.values()]) || 0;
+    const zr = zg.status === 'ok' ? zg.data.filter((r) => r.date >= a && r.date <= b) : [];
+    const z = [1, 2, 3, 4, 5].map((i) => d3.sum(zr, (r) => r['z' + i]));
+    const zAll = d3.sum(z), easy = zAll ? Math.round((z[0] + z[1]) / zAll * 100) : null;
+
+    const stats = el('div', 'lw-stats');
+    const stat = (k, v, u) => { const d = el('div'); const bb = el('b', null, v); if (u) bb.append(el('small', null, ' ' + u)); d.append(el('span', null, k), bb); return d; };
+    stats.append(
+      stat('Ridden', fmt(Math.round(fromMi(ridden))), distU()),
+      stat('Planned', plan.length ? Math.round(fromMi(lo)) + (hi !== lo ? '–' + Math.round(fromMi(hi)) : '') : '—', plan.length ? distU() : ''),
+      stat('Sessions hit', rideDays.length ? hit.length + ' of ' + rideDays.length : String(rides.length) + ' rides'),
+      stat('Longest', fmt(Math.round(fromMi(longest))), distU()),
+    );
+    box.append(stats);
+    if (plan.length && hi) {
+      const bar = el('div', 'lw-bar');
+      const fill = el('i');
+      fill.style.width = Math.min(100, ridden / hi * 100) + '%';
+      const mark = el('em');
+      mark.style.left = Math.min(100, lo / hi * 100) + '%';
+      bar.append(fill, mark);
+      box.append(bar);
+    }
+    if (zAll) {
+      const zb = el('div', 'lw-zones');
+      z.forEach((m, i) => { if (!m) return; const s = el('span'); s.style.flex = String(m); s.style.background = css(ZONE[i]); s.title = 'Z' + (i + 1) + ': ' + m + ' min'; zb.append(s); });
+      box.append(zb, el('p', 'lw-zk', 'Zones: ' + z.map((m, i) => 'Z' + (i + 1) + ' ' + (m >= 60 ? Math.floor(m / 60) + 'h' + String(m % 60).padStart(2, '0') : m + 'm')).join(' · ')));
+    }
+    const tips = [];
+    if (!plan.length) tips.push('There was no plan for that week, so this is just what you rode.');
+    else if (ridden >= lo) tips.push('On plan: you rode ' + Math.round(fromMi(ridden)) + ' ' + distU() + ' against ' + Math.round(fromMi(lo)) + '–' + Math.round(fromMi(hi)) + ' planned.');
+    else tips.push(Math.round(fromMi(lo - ridden)) + ' ' + distU() + ' short of the plan' + (plan.some((p) => /skipped/i.test(String(p.status))) ? ', with a skipped day. Fine once; protect the long ride this week.' : '. Look for the missed day and move it, don\'t stack it.'));
+    if (longest >= ED_GOAL_MI) tips.push('Your ' + Math.round(longest) + ' mi day counts toward Eddington 55.');
+    else tips.push('No 55-mile day, so no Eddington progress. Make this week\'s long ride 55+.');
+    if (easy != null) tips.push(easy >= 80 ? easy + '% of your heart-rate time was easy (Z1–Z2). That\'s the right base mix.' : easy >= 70 ? easy + '% easy. Close; keep the Zone 2 days a little gentler.' : 'Only ' + easy + '% easy. Too much Z3: slow the endurance rides down so the hard days stay hard.');
+    else if (rides.length) tips.push('No heart rate from those rides. Wear the strap so the zone mix shows here.');
+    const ul = el('ul', 'lw-tips');
+    tips.forEach((t) => ul.append(el('li', null, t)));
+    box.append(el('span', 'lw-k', 'Coach\'s notes'), ul);
+  });
+
+  // ---- Climb simulator: your climbing speed turned into France times ----------
+  const SIM_CLIMBS = [
+    { name: 'Kennesaw Mountain', km: 2.3, m: 165, approx: true },
+    { name: 'Brasstown Bald', km: 4.3, m: 340, approx: true },
+    { name: 'Hogpen Gap', km: 11.6, m: 480, approx: true },
+    { name: 'Grand Colombier', km: 18.3, m: 1255, goal: true },
+    { name: 'Col du Tourmalet', km: 18.8, m: 1404, goal: true },
+  ];
+  // Sustainable climbing speed drops with duration (about power ∝ time^-0.12), and gentle grades lose some to drag.
+  const simTime = (c, vam1h) => {
+    const g = Math.min(1.04, Math.pow((c.m / (c.km * 1000)) / 0.07, 0.2));
+    let t = c.m / vam1h * 3600;
+    for (let i = 0; i < 6; i++) t = c.m / (vam1h * g * Math.pow(3600 / t, 0.12)) * 3600;
+    return t;
+  };
+  dash.draw('climb-sim', (box) => {
+    const g = dash.data('efforts30');
+    box.replaceChildren();
+    if (failed(box, 'efforts30')) return;
+    if (g.status !== 'ok') { box.append(el('p', 'note', 'Reading your recent climbs from Strava…')); return; }
+    const cands = g.data.filter((e) => e.elev_m >= 25 && e.distance_m >= 300 && e.time_s >= 60 && e.elev_m / e.distance_m >= 0.04)
+      .map((e) => ({ ...e, vam: e.elev_m / e.time_s * 3600, vam1h: (e.elev_m / e.time_s * 3600) * Math.pow(e.time_s / 3600, 0.12) }))
+      .sort((x, y) => y.vam1h - x.vam1h);
+    const top = cands.slice(0, 3);
+    const base = top.length ? d3.median(top, (e) => e.vam1h) : 600;
+    const gain = Number(box.dataset.gain ?? 10);
+    const vam = base * (1 + gain / 100);
+    const head = el('div', 'sim-head');
+    const v = el('div', 'sim-v');
+    v.append(el('span', null, 'Your hour-long climbing pace'), el('b', null, fmt(Math.round(isImp() ? vam / M_FT : vam))));
+    v.querySelector('b').append(el('small', null, isImp() ? ' ft/h' : ' m/h'));
+    head.append(v);
+    const src = top[0];
+    head.append(el('p', 'note', src ? `From your best recent climbs (fastest: ${src.segment}, ${mmss(src.time_s)} on ${dayFmt(asDate(src.date))}, ${fmt(Math.round(src.vam))} m/h for that effort), scaled to an hour-long climb.` : 'No steep segments in your last 30 rides yet, so this uses a typical amateur pace. Ride Hascall or Kennesaw to calibrate it.'));
+    box.append(head);
+    const ctl = el('label', 'sim-ctl');
+    const inp = el('input');
+    inp.type = 'range'; inp.min = '0'; inp.max = '25'; inp.step = '1'; inp.value = String(gain);
+    const lab = el('span', null, 'Fitness gain by July: +' + gain + '%');
+    inp.addEventListener('input', () => { box.dataset.gain = inp.value; dash.draw('climb-sim'); });
+    ctl.append(lab, inp);
+    box.append(ctl);
+    const tbl = el('div', 'sim-rows');
+    SIM_CLIMBS.forEach((c) => {
+      const t = simTime(c, vam), now = simTime(c, base);
+      const r = el('div', 'sim-r' + (c.goal ? ' goal' : ''));
+      const nm = el('span', 'sim-n');
+      nm.append(el('b', null, c.name), el('small', null, `${isImp() ? (c.km / KM_MI).toFixed(1) + ' mi' : c.km + ' km'} · ${fmt(Math.round(isImp() ? c.m / M_FT : c.m))} ${elevU()}${c.approx ? ' (approx.)' : ''}`));
+      const tm = el('span', 'sim-t');
+      tm.append(el('b', null, hm(t)), el('small', null, gain ? 'today ' + hm(now) : 'at today\'s fitness'));
+      r.append(nm, tm);
+      tbl.append(r);
+    });
+    box.append(tbl, el('p', 'note', 'Estimates assume a steady effort from the bottom, no stops. They sharpen once the power meter is on.'));
+  });
+
+  // ---- Season timeline: where you are now ---------------------------------
+  const phaseNow = (rows) => {
+    const today = isoD(new Date());
+    return rows.find((r) => today >= r.start && today <= r.end) || rows.find((r) => today < r.start) || rows[rows.length - 1];
+  };
+  dash.draw('phase-now', (box) => {
+    const g = dash.data('roadmap');
+    box.replaceChildren();
+    if (failed(box, 'roadmap') || g.status !== 'ok' || !g.data.length) return;
+    const rows = [...g.data].sort((a, b) => a.order - b.order);
+    const p = phaseNow(rows), i = rows.indexOf(p), nxt = rows[i + 1];
+    const now = d3.timeDay.floor(new Date()), s = asDate(p.start), e = asDate(p.end);
+    const wk = Math.max(1, Math.floor(d3.timeDay.count(s, now) / 7) + 1), wks = Math.ceil((d3.timeDay.count(s, e) + 1) / 7);
+    const head = el('div', 'pn-h');
+    head.append(el('span', 'pn-k', 'You are here'), el('b', 'pn-p', p.phase), el('span', 'pn-w', now < s ? 'Starts ' + dayFmt(s) : 'Week ' + Math.min(wk, wks) + ' of ' + wks));
+    box.append(head);
+    const bar = el('div', 'pn-bar');
+    const f = el('i');
+    f.style.width = Math.max(0, Math.min(100, d3.timeDay.count(s, now) / Math.max(1, d3.timeDay.count(s, e)) * 100)) + '%';
+    bar.append(f);
+    box.append(bar, el('p', 'pn-f', p.focus));
+    const ms = el('p', 'pn-m');
+    ms.append(el('b', null, 'Milestone: '), document.createTextNode(p.milestone));
+    box.append(ms);
+    if (nxt) box.append(el('p', 'note', nxt.phase + ' starts in ' + d3.timeDay.count(now, asDate(nxt.start)) + ' days (' + dayFmt(asDate(nxt.start)) + ').'));
+  });
+  dash.draw('phase-steps', (box) => {
+    const g = dash.data('roadmap');
+    box.replaceChildren();
+    if (failed(box, 'roadmap') || g.status !== 'ok' || !g.data.length) return;
+    const rows = [...g.data].sort((a, b) => a.order - b.order);
+    const p = phaseNow(rows), today = isoD(new Date());
+    rows.forEach((r) => {
+      const st = r === p ? 'now' : r.end < today ? 'past' : 'next';
+      const li = el('li', 'ps-' + st);
+      li.style.setProperty('--ph', PHASE_C[(r.order - 1) % PHASE_C.length]);
+      const t = el('div');
+      t.append(el('b', null, r.phase), el('small', null, r.months), el('span', null, r.focus), el('em', null, r.milestone));
+      li.append(el('i'), t);
+      box.append(li);
+    });
+  });
+
+  // ---- Tour planner: week-long trips by bike ---------------------------------
+  const MON3 = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const DAY_MI = { Bombtrack: 45, Diverge: 70 };
+  dash.draw('tours', (box) => {
+    const g = dash.data('tours');
+    box.replaceChildren();
+    if (failed(box, 'tours') || g.status !== 'ok') return;
+    let pick = box.dataset.bike;
+    if (!pick) { try { pick = localStorage.getItem('hub.tourBike') || 'All'; } catch { pick = 'All'; } }
+    const seg = el('div', 'units tb');
+    ['All', 'Bombtrack', 'Diverge'].forEach((b) => {
+      const btn = el('button', null, b);
+      btn.type = 'button';
+      btn.setAttribute('aria-pressed', String(b === pick));
+      btn.addEventListener('click', () => { box.dataset.bike = b; try { localStorage.setItem('hub.tourBike', b); } catch {} dash.draw('tours'); });
+      seg.append(btn);
+    });
+    box.append(seg, el('p', 'note', pick === 'Bombtrack' ? 'Bombtrack Arise: flat trail camping at about 45 mi a day.' : pick === 'Diverge' ? 'Diverge: fast road, gravel and climbing, hotel to hotel at about 70 mi a day.' : 'Sorted by which trips come into season soonest.'));
+    const m = new Date().getMonth() + 1;
+    const wait = (t) => Math.min(...t.months.map((x) => (x - m + 12) % 12));
+    const list = g.data.filter((t) => pick === 'All' || t.bike === pick).map((t) => ({ ...t, wait: wait(t) })).sort((a, b) => a.wait - b.wait || a.order - b.order);
+    const ul = el('div', 'tr-list');
+    list.forEach((t) => {
+      const c = el('div', 'tr ' + t.bike.toLowerCase());
+      const top = el('div', 'tr-top');
+      const nm = el('div');
+      nm.append(el('b', null, t.tour), el('small', null, t.bike + ' · ' + t.style));
+      const badge = el('span', 'tr-when' + (t.wait === 0 ? ' now' : ''), t.wait === 0 ? 'In season now' : 'Next: ' + MON3[(m - 1 + t.wait) % 12]);
+      top.append(nm, badge);
+      const days = Math.max(4, Math.round(t.miles / DAY_MI[t.bike]));
+      const facts = el('div', 'tr-facts');
+      facts.append(el('span', null, fmt(Math.round(fromMi(t.miles))) + ' ' + distU()), el('span', null, '~' + days + ' riding days'), el('span', null, '~' + Math.round(fromMi(t.miles / days)) + ' ' + distU() + '/day'));
+      const strip = el('div', 'tr-months');
+      MON3.forEach((mm, i) => { const s = el('span', t.months.includes(i + 1) ? 'on' : null, mm[0]); if (i + 1 === m) s.classList.add('cur'); s.title = mm; strip.append(s); });
+      c.append(top, facts, strip, el('p', 'tr-note', t.note));
+      ul.append(c);
+    });
+    box.append(ul);
+  });
+
+  // ---- 2026 in review (so far until Dec 31) ---------------------------------
+  dash.draw('year-review', (box) => {
+    const rg = dash.data('rides'), ag = dash.data('rides_all'), eg = dash.data('eddington'), lg = dash.data('legends');
+    box.replaceChildren();
+    if (failed(box, 'rides')) return;
+    if (rg.status !== 'ok') { box.append(el('p', 'note', 'Loading…')); return; }
+    const done = new Date() >= new Date(2026, 11, 31);
+    const card = box.closest('.card'), h = card && card.querySelector('h2');
+    if (h) h.textContent = done ? '2026 in review' : '2026 so far';
+    const rides = rg.data.filter((r) => /Ride/.test(r.sport_type || 'Ride'));
+    const mi = d3.sum(rides, (r) => r.miles), km = mi * KM_MI;
+    const days = d3.rollups(rides, (v) => d3.sum(v, (r) => r.miles), (r) => r.date);
+    const longest = d3.greatest(rides, (r) => r.miles);
+    const climbDay = d3.greatest(rides, (r) => r.elev_ft);
+    const months = d3.rollups(rides, (v) => d3.sum(v, (r) => r.miles), (r) => r.date.slice(0, 7));
+    const bestM = d3.greatest(months, (d) => d[1]);
+    const big = days.filter((d) => d[1] >= ED_GOAL_MI).length;
+    let e0 = null;
+    if (ag.status === 'ok') {
+      const prior = d3.rollups(ag.data.filter((r) => r.date < '2026-01-01' && /Ride/.test(r.sport_type || 'Ride')), (v) => d3.sum(v, (r) => r.miles), (r) => r.date).map((d) => d[1]).sort((a, b) => b - a);
+      e0 = 0; while (e0 < prior.length && prior[e0] >= e0 + 1) e0++;
+    }
+    const e1 = eg.status === 'ok' && eg.data.length ? eg.data[0].e_mi : null;
+    const ll = lg.status === 'ok' ? lg.data.filter((l) => l.title === 'Local Legend').length : null;
+    const prev = ag.status === 'ok' ? d3.sum(ag.data.filter((r) => r.date.slice(0, 4) === '2025' && /Ride/.test(r.sport_type || 'Ride')), (r) => r.miles) : null;
+    const hero = el('div', 'yr-hero');
+    const big1 = el('b', null, fmt(Math.round(isImp() ? mi : km)));
+    big1.append(el('small', null, ' ' + distU()));
+    hero.append(el('span', null, Math.round(km / GOAL_KM * 100) + '% of the 5,000 km goal'), big1);
+    if (prev) hero.append(el('span', 'yr-vs', (mi >= prev ? '+' : '−') + fmt(Math.abs(Math.round(fromMi(mi - prev)))) + ' ' + distU() + ' vs all of 2025'));
+    box.append(hero);
+    const grid = el('div', 'yr-grid');
+    const cell = (k, v, sub) => { const d = el('div'); d.append(el('span', null, k), el('b', null, v)); if (sub) d.append(el('small', null, sub)); grid.append(d); };
+    cell('Rides', fmt(rides.length), fmt(days.length) + ' riding days');
+    cell('Hours', fmt(Math.round(d3.sum(rides, (r) => r.moving_s) / 3600)));
+    cell('Climbing', fmt(Math.round(elevFt(d3.sum(rides, (r) => r.elev_ft)))) + ' ' + elevU());
+    if (longest) cell('Longest ride', fmt(Math.round(fromMi(longest.miles))) + ' ' + distU(), longest.name + ' · ' + dayFmt(asDate(longest.date)));
+    if (climbDay) cell('Most climbing', fmt(Math.round(elevFt(climbDay.elev_ft))) + ' ' + elevU(), climbDay.name + ' · ' + dayFmt(asDate(climbDay.date)));
+    if (bestM) cell('Best month', d3.timeFormat('%B')(asDate(bestM[0] + '-01')), fmt(Math.round(fromMi(bestM[1]))) + ' ' + distU());
+    cell('55+ mi days', fmt(big), 'toward Eddington 55');
+    if (e1 != null) cell('Eddington (mi)', String(e1), e0 != null ? (e1 - e0 >= 0 ? '+' : '') + (e1 - e0) + ' this year, from ' + e0 : null);
+    if (ll != null) cell('Local Legends', String(ll), 'as of the last update');
+    if (eg.status === 'ok' && eg.data.length) cell('Longest streak', eg.data[0].longest_run + ' ' + (eg.data[0].longest_run === 1 ? 'day' : 'days'));
+    box.append(grid);
+  });
+
+  // ---- Rain alerts: a phone notification the evening before a wet ride day ---------
+  const RA_KEY = 'hub.rainAlerts';
+  const raOn = () => { try { return localStorage.getItem(RA_KEY) === '1'; } catch { return false; } };
+  const raPrefs = async (on) => { try { const c = await caches.open('hub-prefs'); await c.put('/prefs/rain-alerts', new Response(JSON.stringify({ on }))); } catch {} };
+  const raCheck = async () => {
+    if (!raOn() || !('Notification' in window) || Notification.permission !== 'granted') return;
+    const now = new Date();
+    if (now.getHours() < 15) return;
+    const tom = isoD(d3.timeDay.offset(d3.timeDay.floor(now), 1));
+    try { if (localStorage.getItem('hub.rainAlerted') === tom) return; } catch {}
+    const mon = window.planner.monday(asDate(tom));
+    const wk = await window.planner.loadWeek(mon).catch(() => null);
+    const p = wk && wk.days.find((d) => d.date === tom);
+    if (!p || p.intensity === 'Rest' || !(nums(p.target_miles).slice(-1)[0] > 0) || /^(done|skipped)$/i.test(String(p.status))) return;
+    const w = (await window.planner.weather().catch(() => [])).find((r) => r.date === tom);
+    if (!w || w.pop < 50) return;
+    const reg = await navigator.serviceWorker.ready;
+    await reg.showNotification('Rain likely tomorrow', { body: `${p.session} · ${w.pop}% chance of rain. Open the hub to swap it to a drier day.`, tag: 'rain-' + tom, icon: 'icons/mountain-192.png', data: { url: './#training' } });
+    try { localStorage.setItem('hub.rainAlerted', tom); } catch {}
+  };
+  const raButton = document.querySelector('.ra-toggle');
+  const raShow = () => {
+    if (!raButton) return;
+    const on = raOn() && 'Notification' in window && Notification.permission === 'granted';
+    raButton.setAttribute('aria-pressed', String(on));
+    raButton.lastChild.textContent = on ? 'Rain alerts on' : 'Rain alerts off';
+  };
+  if (raButton) {
+    raButton.addEventListener('click', async () => {
+      if (raOn()) { try { localStorage.removeItem(RA_KEY); } catch {} await raPrefs(false); raShow(); return; }
+      if (!('Notification' in window)) { alert('This browser can\'t show notifications.'); return; }
+      const perm = await Notification.requestPermission();
+      if (perm !== 'granted') { alert('Notifications are blocked for the hub. Allow them in Chrome\'s site settings to get rain alerts.'); raShow(); return; }
+      try { localStorage.setItem(RA_KEY, '1'); } catch {}
+      await raPrefs(true);
+      try {
+        const reg = await navigator.serviceWorker.ready;
+        if ('periodicSync' in reg) await reg.periodicSync.register('rain-check', { minInterval: 6 * 3600 * 1000 });
+      } catch {}
+      raShow();
+      raCheck();
+    });
+    raShow();
+    raCheck();
+  }
+  // Monday recap shows Monday to Wednesday.
+  { const c = document.querySelector('#lastweek-card'); if (c) c.hidden = ![1, 2, 3].includes(new Date().getDay()); }
 
 }

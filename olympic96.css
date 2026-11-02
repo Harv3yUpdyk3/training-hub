@@ -238,9 +238,6 @@ html, body { overflow-x: clip; }
 .todo span.todo-s { font-size: 10px; }
 .todo span.todo-s.in-progress { color: #6fd3f5; }
 .todo span.todo-s.done { color: #7fd6c9; }
-.todo span.todo-s.waiting-on-you { background: rgba(244,70,47,.18); color: #ff8a77; }
-.todo span.todo-s.after-the-meter { background: rgba(149,87,169,.22); color: #c99ad8; }
-#enh-card h2::before { content: ""; display: inline-block; vertical-align: -2px; margin-right: 8px; -webkit-mask: var(--ic-stars) center / contain no-repeat; mask: var(--ic-stars) center / contain no-repeat; background: #00B1EA; width: 18px; height: 17px; }
 
 /* Card icons: a different Olympic-style pictogram per card (star, flame, wheel, medal...) */
 :root {

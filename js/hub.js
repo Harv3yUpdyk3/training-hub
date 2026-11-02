@@ -1335,26 +1335,6 @@ const ED_GOAL_MI = 55; // Will's Eddington goal, in miles
     ul.replaceChildren(...out);
   });
 
-  // Future enhancements for the hub itself, grouped Next / Soon / Later.
-  dash.draw('enh-list', (ul) => {
-    const g = dash.data('enhancements');
-    if (g.status !== 'ok') { ul.replaceChildren(); return; }
-    const out = [];
-    let stage = null;
-    [...g.data].sort((a, b) => a.order - b.order).forEach((r) => {
-      if (r.stage !== stage) { stage = r.stage; out.push(el('li', 'todo-g', stage)); }
-      const li = el('li');
-      li.dataset.key = String(r.order);
-      const t = el('div');
-      const head = el('b', null, r.item);
-      if (r.status) head.append(el('span', 'todo-s ' + r.status.toLowerCase().replace(/\s+/g, '-'), r.status));
-      t.append(head, el('span', null, r.detail));
-      li.append(t);
-      out.push(li);
-    });
-    ul.replaceChildren(...out);
-  });
-
   // Recent rides strip
   const isRain = (w) => /rain|drizzle|storm|shower/i.test(w || '');
   dash.draw('ride-strip', (box) => {

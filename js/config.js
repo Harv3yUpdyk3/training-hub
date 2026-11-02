@@ -22,7 +22,6 @@ window.HUB_CONFIG = {
     plan: { kind: 'week', fallback: 'data/plan.json' },
     roadmap: { kind: 'file', url: 'data/roadmap.json' },
     todo: { kind: 'file', url: 'data/todo.json' },
-    enhancements: { kind: 'file', url: 'data/enhancements.json' },
     zones: { kind: 'file', url: 'data/zones.json' },
     legends: { kind: 'file', url: 'data/legends.json' },
   },

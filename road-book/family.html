@@ -96,7 +96,7 @@ function render(){const now=parisNow();const ti=todayIdx(now);const d=DATA.days[
   h+=`<div class="card main"><p class="k">Where Will is</p><p class="where">${e?e[0]:(WHERE[d.d]||(d.stage?"On the road":d.title))}</p>${stageLine?`<p class="what">${stageLine}</p>`:""}</div>`;
   if(e){const tt=d.type==="tt";const t=dayMs(d.d)+hm(e[3]),diff=t-now;
     let live="";if(isToday)live=diff>0?`<p class="muted">Riders reach Will <span class="cd">in ${dur(diff)}</span>.</p>`:diff>-2*36e5?`<p class="muted"><span class="cd">Happening now, or just went past.</span></p>`:"";
-    h+=`<div class="card"><p class="k">How to watch from home</p><p class="what">Live on <b>Peacock</b>, with some stages on NBC or CNBC. Look for Will on the road at ${e[0]}${tt?"":", waving a US flag"}.</p>
+    h+=`<div class="card"><p class="k">How to watch from home</p><p class="what">Live on <b>Peacock</b>, with some stages on NBC or CNBC. Look for Will on the road at ${e[0]}.</p>
     ${e[2]!=="—"?`<div class="row"><span>Sponsor caravan passes Will</span><b>${et(e[2])}</b></div>`:""}
     <div class="row key"><span>${tt?"First rider passes Will":"Riders pass Will"}</span><b>${et(e[3])}</b></div>
     <div class="row"><span>${tt?"Last rider finishes":"Stage finishes"}</span><b>≈${et(e[4])}</b></div>${live}</div>`;}

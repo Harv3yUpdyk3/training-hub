@@ -959,6 +959,7 @@ const ED_GOAL_MI = 55; // Will's Eddington goal, in miles
     const right = el('div', 'nu-r');
     right.append(el('span', 'nu-i', r.intensity), el('b', null, rangeU(r.target_miles) + ' ' + distU()), el('span', null, 'HR ' + r.target_hr));
     box.append(left, right);
+    box.onclick = () => box.classList.toggle('open');
   });
 
   // Today's recap: once a ride is logged on a plan day, compare it with what was planned.
@@ -1314,14 +1315,24 @@ const ED_GOAL_MI = 55; // Will's Eddington goal, in miles
   dash.draw('todo-list', (ul) => {
     const g = dash.data('todo');
     if (g.status !== 'ok') { ul.replaceChildren(); return; }
-    ul.replaceChildren(...[...g.data].sort((a, b) => a.order - b.order).map((r) => {
+    // Grouped (Goals, Gear, Training, Trip prep), each item with a status chip and a target month.
+    const items = [...g.data].sort((a, b) => a.order - b.order);
+    const out = [];
+    let group = null;
+    items.forEach((r) => {
+      if (r.group && r.group !== group) { group = r.group; out.push(el('li', 'todo-g', group)); }
       const li = el('li');
       li.dataset.key = String(r.order);
       const t = el('div');
-      t.append(el('b', null, r.item), el('span', null, r.detail));
-      li.append(t, el('em', null, r.cost));
-      return li;
-    }));
+      const head = el('b', null, r.item);
+      if (r.status) head.append(el('span', 'todo-s ' + r.status.toLowerCase().replace(/\s+/g, '-'), r.status));
+      t.append(head, el('span', null, r.detail));
+      if (r.due) t.append(el('small', 'todo-due', 'Target: ' + r.due));
+      li.append(t);
+      if (r.cost && r.cost !== '—') li.append(el('em', null, r.cost));
+      out.push(li);
+    });
+    ul.replaceChildren(...out);
   });
 
   // Recent rides strip
@@ -1560,7 +1571,9 @@ const ED_GOAL_MI = 55; // Will's Eddington goal, in miles
     const g = dash.data('eddington');
     box.replaceChildren();
     if (failed(box, 'eddington') || g.status !== 'ok' || !g.data.length) return;
-    const rows = isImp() ? g.data[0].ladder_mi : g.data[0].ladder_km;
+    const all = isImp() ? g.data[0].ladder_mi : g.data[0].ladder_km;
+    const goalLvl = isImp() ? ED_GOAL_MI : Math.round(ED_GOAL_MI * 1.609344);
+    const rows = box.dataset.all === '1' ? all : all.filter((r, i) => i < 4 || r.level === goalLvl);
     box.append(...rows.map((r) => {
       const row = el('div', 'ed-step');
       const bar = el('i');
@@ -1572,6 +1585,12 @@ const ED_GOAL_MI = 55; // Will's Eddington goal, in miles
       row.append(el('b', 'ed-lvl', String(r.level)), el('span', 'ed-need', fmt(r.need) + ' more ' + (r.need === 1 ? 'day' : 'days') + ' of ' + r.level + '+ ' + distU()), track, el('span', 'ed-have', (goal ? 'Goal · ' : '') + r.have + ' / ' + r.level));
       return row;
     }));
+    if (all.length > rows.length || box.dataset.all === '1') {
+      const more = el('button', 'ed-more', box.dataset.all === '1' ? 'Show fewer' : 'Show all levels');
+      more.type = 'button';
+      more.addEventListener('click', () => { box.dataset.all = box.dataset.all === '1' ? '' : '1'; dash.draw('ed-ladder'); });
+      box.append(more);
+    }
   });
 
   // Month goal

@@ -1,0 +1,84 @@
+{
+ "week_start": "2026-11-09",
+ "updated_at": "2026-11-02T15:00:00Z",
+ "updated_by": "Claude",
+ "days": [
+  {
+   "order": 1,
+   "day": "Mon",
+   "date": "2026-11-09",
+   "session": "Rest",
+   "details": "Full rest after the Sunday long ride.",
+   "target_hr": "—",
+   "target_miles": "0",
+   "status": "Planned",
+   "intensity": "Rest"
+  },
+  {
+   "order": 2,
+   "day": "Tue",
+   "date": "2026-11-10",
+   "session": "Sweet spot 2 × 20 min",
+   "details": "15 min easy, then 2 × 20 min at the top of Zone 3 with 5 min easy between. Seated, steady cadence 85–95.",
+   "target_hr": "160–168 in the efforts",
+   "target_miles": "20–24",
+   "status": "Planned",
+   "intensity": "Tempo"
+  },
+  {
+   "order": 3,
+   "day": "Wed",
+   "date": "2026-11-11",
+   "session": "Easy Zone 2",
+   "details": "Conversational pace. Flat route, keep the HR strap on.",
+   "target_hr": "125–145",
+   "target_miles": "15–18",
+   "status": "Planned",
+   "intensity": "Endurance"
+  },
+  {
+   "order": 4,
+   "day": "Thu",
+   "date": "2026-11-12",
+   "session": "Hill repeats 5 × 3 min",
+   "details": "Warm up 20 min, then 5 × 3 min hard on a steady climb, roll back down to recover. Kennesaw prep.",
+   "target_hr": "170–180 on the climbs",
+   "target_miles": "16–20",
+   "status": "Planned",
+   "intensity": "Threshold"
+  },
+  {
+   "order": 5,
+   "day": "Fri",
+   "date": "2026-11-13",
+   "session": "Rest or easy spin",
+   "details": "Off, or 30–40 min very easy if the legs want it.",
+   "target_hr": "under 130",
+   "target_miles": "0–8",
+   "status": "Planned",
+   "intensity": "Rest"
+  },
+  {
+   "order": 6,
+   "day": "Sat",
+   "date": "2026-11-14",
+   "session": "Long Zone 2",
+   "details": "55+ mi for the Eddington count. Eat every 45 min, drink a bottle an hour. Moved to Saturday so Sunday is a rain backup.",
+   "target_hr": "130–150",
+   "target_miles": "55",
+   "status": "Planned",
+   "intensity": "Endurance"
+  },
+  {
+   "order": 7,
+   "day": "Sun",
+   "date": "2026-11-15",
+   "session": "Easy spin or rain backup",
+   "details": "If Saturday rains out, ride the long ride today. Otherwise 45–60 min easy or off.",
+   "target_hr": "under 135",
+   "target_miles": "0–12",
+   "status": "Planned",
+   "intensity": "Endurance"
+  }
+ ]
+}

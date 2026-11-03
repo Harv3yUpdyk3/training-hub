@@ -46,6 +46,36 @@
     place(false);
   }
 
+  // ---- Browser on a computer vs the phone app ----
+  // The installed phone app stays lean. A desktop browser (mouse, wide screen, not the installed
+  // app) also gets Lenis smooth scrolling and a copper spotlight that follows the mouse over cards.
+  const standalone = matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+  const desk = !standalone && matchMedia('(hover: hover) and (pointer: fine) and (min-width: 64rem)').matches;
+  document.documentElement.classList.add(standalone ? 'app' : desk ? 'desk' : 'web');
+  if (desk && !reduce) {
+    const s = document.createElement('script');
+    s.src = 'js/vendor/lenis.min.js';
+    s.onload = () => {
+      const lenis = new window.Lenis({ lerp: 0.12, wheelMultiplier: 1 });
+      const raf = (t) => { lenis.raf(t); requestAnimationFrame(raf); };
+      requestAnimationFrame(raf);
+      window.hubLenis = lenis;
+    };
+    document.head.append(s);
+    document.querySelectorAll('.sheet-in, .scroll').forEach((e) => e.setAttribute('data-lenis-prevent', ''));
+    let raf = 0, tgt = null, px = 0, py = 0;
+    document.addEventListener('pointermove', (e) => {
+      tgt = e.target.closest && e.target.closest('.card'); px = e.clientX; py = e.clientY;
+      if (!raf) raf = requestAnimationFrame(() => {
+        raf = 0;
+        if (!tgt) return;
+        const r = tgt.getBoundingClientRect();
+        tgt.style.setProperty('--mx', (px - r.left) + 'px');
+        tgt.style.setProperty('--my', (py - r.top) + 'px');
+      });
+    }, { passive: true });
+  }
+
   if (reduce) return;
   document.documentElement.classList.add('motion');
 

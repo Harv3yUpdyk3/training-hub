@@ -1,5 +1,6 @@
 // The hub's own charts and calculations, ported unchanged from the dashboard.
 const ED_GOAL_MI = 55; // Will's Eddington goal, in miles
+const ED_GOAL_KM = Math.round(ED_GOAL_MI * 1.609344); // the same goal in km (89)
 {
   const ridesLoader = {
     description: 'Strava returns activities a page at a time; this follows the pages and makes one row per activity.',
@@ -574,7 +575,7 @@ const ED_GOAL_MI = 55; // Will's Eddington goal, in miles
         run = dates.has(k) ? run + 1 : 0;
         if (run > best) { best = run; bestEnd = k; }
       });
-      return [{ e_mi: mi.e, e_km: km.e, next_mi: mi.ladder[0].need, next_km: km.ladder[0].need, ladder_mi: mi.ladder, ladder_km: km.ladder, ride_days: days.length, longest_run: best, longest_run_end: bestEnd }];
+      return [{ e_mi: mi.e, e_km: km.e, next_mi: mi.ladder[0].need, next_km: km.ladder[0].need, ladder_mi: mi.ladder, ladder_km: km.ladder, ride_days: days.length, days_100km: days.filter((v) => v * 1.609344 >= 100).length, longest_run: best, longest_run_end: bestEnd }];
     },
   });
 
@@ -2180,8 +2181,13 @@ const ED_GOAL_MI = 55; // Will's Eddington goal, in miles
       ring(mo ? mo.pct / 100 : null, 'var(--amethyst)', mo ? fmt(isImp() ? mo.mi : mo.km) : '—', mo ? 'of ' + fmt(isImp() ? mo.target_mi : mo.target_km) + ' ' + distU() : '', mo ? mo.month : 'This month'),
       // Week: miles so far against what the season goal needs per week (never below an even 1/52 share).
       ring(wk && need ? wDone / need : null, 'var(--stone-hi)', wk ? fmt(Math.round(wDone)) : '—', 'of ' + fmt(Math.round(need)) + ' ' + distU() + ' needed', 'Week'),
-      ring(ed ? ed.e_mi / ED_GOAL_MI : null, 'var(--sky)', ed ? String(ed.e_mi) : '—', 'of ' + ED_GOAL_MI + ' mi', 'Eddington'),
-      ring(goal ? goal.have / ED_GOAL_MI : null, 'var(--cerise)', goal ? String(goal.have) : '—', 'of ' + ED_GOAL_MI + ' days', ED_GOAL_MI + '-mi days'),
+      // In km the Eddington ring shows the km number against 89 km (55 mi), and the big-day ring counts 100 km days.
+      isImp()
+        ? ring(ed ? ed.e_mi / ED_GOAL_MI : null, 'var(--sky)', ed ? String(ed.e_mi) : '—', 'of ' + ED_GOAL_MI + ' mi', 'Eddington')
+        : ring(ed ? ed.e_km / ED_GOAL_KM : null, 'var(--sky)', ed ? String(ed.e_km) : '—', 'of ' + ED_GOAL_KM + ' km', 'Eddington'),
+      isImp()
+        ? ring(goal ? goal.have / ED_GOAL_MI : null, 'var(--cerise)', goal ? String(goal.have) : '—', 'of ' + ED_GOAL_MI + ' days', ED_GOAL_MI + '-mi days')
+        : ring(ed ? ed.days_100km / 100 : null, 'var(--cerise)', ed ? String(ed.days_100km) : '—', 'of 100 days', '100-km days'),
       ring(cl ? cl.pct_colombier / 100 : null, 'var(--orange)', cl ? cl.pct_colombier + '%' : '—', 'of the Colombier', 'Climb'),
     );
   });
@@ -2473,7 +2479,8 @@ const ED_GOAL_MI = 55; // Will's Eddington goal, in miles
     if (longest) cell('Longest ride', fmt(Math.round(fromMi(longest.miles))) + ' ' + distU(), longest.name + ' · ' + dayFmt(asDate(longest.date)));
     if (climbDay) cell('Most climbing', fmt(Math.round(elevFt(climbDay.elev_ft))) + ' ' + elevU(), climbDay.name + ' · ' + dayFmt(asDate(climbDay.date)));
     if (bestM) cell('Best month', d3.timeFormat('%B')(asDate(bestM[0] + '-01')), fmt(Math.round(fromMi(bestM[1]))) + ' ' + distU());
-    cell('55+ mi days', fmt(big), 'toward Eddington 55');
+    if (isImp()) cell('55+ mi days', fmt(big), 'toward Eddington 55');
+    else cell('100+ km days', fmt(days.filter((d) => d[1] * KM_MI >= 100).length));
     if (e1 != null) cell('Eddington (mi)', String(e1), e0 != null ? (e1 - e0 >= 0 ? '+' : '') + (e1 - e0) + ' this year, from ' + e0 : null);
     if (ll != null) cell('Local Legends', String(ll), 'as of the last update');
     if (eg.status === 'ok' && eg.data.length) cell('Longest streak', eg.data[0].longest_run + ' ' + (eg.data[0].longest_run === 1 ? 'day' : 'days'));

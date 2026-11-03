@@ -9,9 +9,9 @@
   "background_color": "#0b0d11",
   "theme_color": "#0b0d11",
   "icons": [
-    { "src": "icons/mountain-192.png", "sizes": "192x192", "type": "image/png" },
-    { "src": "icons/mountain-512.png", "sizes": "512x512", "type": "image/png" },
-    { "src": "icons/mountain-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+    { "src": "icons/homebase-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/homebase-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icons/homebase-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
   ],
   "shortcuts": [
     { "name": "Training", "url": "./#training" },

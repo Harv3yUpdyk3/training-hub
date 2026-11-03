@@ -1,7 +1,7 @@
 // Offline support: the app's own files load from cache and update in the
 // background; data files and Strava always try the network first.
-const CACHE = 'hub-v51';
-const SHELL = ['./', 'index.html', 'home.html', 'theme.css', 'hub.css', 'olympic96.css', 'manifest.webmanifest', 'js/d3.min.js', 'js/config.js', 'js/strava.js', 'js/runtime.js', 'js/planner.js', 'js/share.js', 'js/hub.js', 'js/app.js', 'js/motion.js', 'js/desk.js', 'js/vendor/lenis.min.js', 'icons/mountain-192.png', 'road-book/', 'road-book/icon-180.png'];
+const CACHE = 'hub-v52';
+const SHELL = ['./', 'index.html', 'home.html', 'theme.css', 'hub.css', 'olympic96.css', 'manifest.webmanifest', 'js/d3.min.js', 'js/config.js', 'js/strava.js', 'js/runtime.js', 'js/planner.js', 'js/share.js', 'js/hub.js', 'js/app.js', 'js/motion.js', 'js/desk.js', 'js/vendor/lenis.min.js', 'icons/homebase-192.png', 'road-book/', 'road-book/icon-180.png'];
 
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(SHELL)).then(() => self.skipWaiting()));
@@ -44,7 +44,7 @@ const rainCheck = async () => {
   const i = j ? j.daily.time.indexOf(tom) : -1;
   const pop = i >= 0 ? j.daily.precipitation_probability_max[i] : null;
   if (pop == null || pop < 50) return;
-  await self.registration.showNotification('Rain likely tomorrow', { body: p.session + ' · ' + pop + '% chance of rain. Open the hub to swap it to a drier day.', tag: 'rain-' + tom, icon: 'icons/mountain-192.png', data: { url: './#training' } });
+  await self.registration.showNotification('Rain likely tomorrow', { body: p.session + ' · ' + pop + '% chance of rain. Open the hub to swap it to a drier day.', tag: 'rain-' + tom, icon: 'icons/homebase-192.png', data: { url: './#training' } });
   await prefs.put('/prefs/alerted-' + tom, new Response('1'));
 };
 self.addEventListener('periodicsync', (e) => { if (e.tag === 'rain-check') e.waitUntil(rainCheck()); });

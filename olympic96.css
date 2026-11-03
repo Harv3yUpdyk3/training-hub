@@ -475,6 +475,26 @@ dialog.ride-dlg .card-h .note { display: none; }
 .desk .fog-on .fog { opacity: 1; }
 .desk .fog-btn { display: block; position: absolute; top: 10px; right: 12px; z-index: 2; padding: 4px 10px; border-radius: 999px; border: 1px solid rgba(246,238,219,.18); background: rgba(7,27,23,.5); color: #a3c2bd; font: 600 11.5px var(--font-anthropic-sans, system-ui); cursor: pointer; opacity: 0; transition: opacity .25s; }
 .desk #goal-hero:hover .fog-btn, .desk .fog-btn:focus-visible { opacity: 1; }
+/* The 2026 story (Dec 31 on) */
+.yr-play { margin-top: 14px; height: 40px; padding: 0 16px; border: 0; border-radius: 2px; background: var(--copper); color: #fff; font: 700 14px var(--font-anthropic-sans, system-ui); cursor: pointer; }
+dialog.story { width: 100vw; height: 100dvh; max-width: none; max-height: none; margin: 0; padding: 0; border: 0; background: var(--page); color: var(--cream); }
+dialog.story::backdrop { background: var(--page); }
+.story-sc { height: 100%; overflow-y: auto; scroll-snap-type: y mandatory; overscroll-behavior: contain; outline: none; }
+.story-bar { position: fixed; top: 0; left: 0; right: 0; height: 3px; background: var(--copper); transform: scaleX(0); transform-origin: left; z-index: 2; }
+.story-x { position: fixed; top: 14px; right: 14px; z-index: 3; width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--line); background: rgba(7,27,23,.7); color: var(--cream); font-size: 22px; cursor: pointer; }
+.story-ch { min-height: 100dvh; scroll-snap-align: start; display: grid; align-content: center; justify-items: start; gap: 10px; padding: 0 max(24px, 8vw); box-sizing: border-box; --t: var(--copper-hi); }
+.story-ch.stone { --t: var(--stone-hi); } .story-ch.sky { --t: var(--sky); } .story-ch.amethyst { --t: #c08ad2; } .story-ch.orange { --t: var(--orange); } .story-ch.cerise { --t: #f27aa8; }
+.story-k { font-size: 15px; font-weight: 600; color: #a3c2bd; }
+.story-v { font: 800 clamp(48px, 14vw, 140px)/0.95 var(--display); text-transform: uppercase; color: var(--t); font-variant-numeric: tabular-nums; }
+.story-v small { font-size: .35em; color: var(--cream); }
+.story-s { margin: 0; max-width: 34rem; font-size: 16px; color: #dfe8e2; }
+.story-ch.intro .story-v, .story-ch.outro .story-v { color: var(--cream); }
+.story-ch.outro .story-v { font-size: clamp(38px, 9vw, 96px); }
+.motion .story-ch > * { opacity: 0; transform: translateY(28px); transition: opacity .6s ease-out, transform .7s cubic-bezier(.2,.8,.2,1); }
+.motion .story-ch > :nth-child(2) { transition-delay: .08s; } .motion .story-ch > :nth-child(3) { transition-delay: .16s; }
+.motion .story-ch.in > * { opacity: 1; transform: none; }
+.story-ch { background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 90' preserveAspectRatio='none'%3E%3Cpath d='M0 90 L0 68 L0 68 L67 20 L133 59 L200 38 L267 63 L333 32 L400 61 L467 21 L533 69 L600 44 L600 90 Z' fill='%23005B55' fill-opacity='0.55'/%3E%3Cpath d='M0 90 L0 70 L0 70 L46 41 L92 79 L138 60 L185 72 L231 46 L277 73 L323 55 L369 74 L415 49 L462 74 L508 59 L554 76 L600 53 L600 90 Z' fill='%23B37E2C' fill-opacity='0.35'/%3E%3Cpath d='M0 90 L0 87 L0 87 L35 70 L71 86 L106 69 L141 84 L176 76 L212 88 L247 66 L282 86 L318 74 L353 82 L388 71 L424 83 L459 71 L494 84 L529 75 L565 84 L600 66 L600 90 Z' fill='%230c2823' fill-opacity='0.9'/%3E%3C/svg%3E") center bottom / 100% 22vh no-repeat; }
+.story-ch.intro, .story-ch.outro { background-size: 100% 38vh; }
 
 /* Card icons: a different Olympic-style pictogram per card (star, flame, wheel, medal...) */
 :root {

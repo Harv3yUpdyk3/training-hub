@@ -2476,7 +2476,40 @@ const ED_GOAL_MI = 55; // Will's Eddington goal, in miles
     if (ll != null) cell('Local Legends', String(ll), 'as of the last update');
     if (eg.status === 'ok' && eg.data.length) cell('Longest streak', eg.data[0].longest_run + ' ' + (eg.data[0].longest_run === 1 ? 'day' : 'days'));
     box.append(grid);
+    // From Dec 31 (or with ?story in the address to preview), the year plays as a story you scroll through.
+    if (done || /[?&]story\b/.test(location.search)) {
+      const play = el('button', 'yr-play', 'Play the 2026 story');
+      play.type = 'button';
+      play.addEventListener('click', () => openStory(hero, grid));
+      box.append(play);
+    }
   });
+
+  // The 2026 story: one chapter per screen, each rising in once as you scroll to it.
+  const openStory = (hero, grid) => {
+    const root = document.querySelector('.main') || document.body;
+    const dlg = el('dialog', 'story');
+    dlg.setAttribute('aria-label', 'Your 2026 story');
+    const bar = el('i', 'story-bar');
+    const x = el('button', 'story-x', '×'); x.type = 'button'; x.setAttribute('aria-label', 'Close');
+    const sc = el('div', 'story-sc');
+    const ch = (k, big, sub, tone) => { const c = el('section', 'story-ch' + (tone ? ' ' + tone : '')); c.append(el('span', 'story-k', k), el('b', 'story-v', big)); if (sub) c.append(el('p', 'story-s', sub)); sc.append(c); };
+    ch('Your 2026 on the bike', '2026', 'Scroll to play it back', 'intro');
+    ch('Ridden this year', hero.querySelector('b').textContent, [...hero.querySelectorAll('span')].map((n) => n.textContent).join(' · '), 'copper');
+    const tones = ['stone', 'sky', 'amethyst', 'orange', 'cerise', 'copper'];
+    [...grid.children].forEach((d, i) => ch(d.querySelector('span').textContent, d.querySelector('b').textContent, (d.querySelector('small') || {}).textContent || '', tones[i % tones.length]));
+    ch('Next up', 'France, July 2027', 'Col du Grand Colombier and Col du Tourmalet. The build starts now.', 'outro');
+    dlg.append(bar, x, sc);
+    root.append(dlg);
+    const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { root: sc, threshold: 0.45 });
+    sc.querySelectorAll('.story-ch').forEach((c) => io.observe(c));
+    sc.addEventListener('scroll', () => { const h = sc.scrollHeight - sc.clientHeight; bar.style.transform = 'scaleX(' + (h > 0 ? sc.scrollTop / h : 0) + ')'; }, { passive: true });
+    const shut = () => dlg.close();
+    x.addEventListener('click', shut);
+    dlg.addEventListener('close', () => { io.disconnect(); dlg.remove(); });
+    dlg.showModal();
+    sc.focus();
+  };
 
   // ---- Rain alerts: a phone notification the evening before a wet ride day ---------
   const RA_KEY = 'hub.rainAlerts';

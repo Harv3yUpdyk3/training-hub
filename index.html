@@ -159,7 +159,7 @@
       </div>
 
       <div class="card" id="week-strip-card">
-        <div class="card-h"><h2>This week</h2>
+        <div class="card-h"><h2>This week</h2><button type="button" class="share-btn" data-share="week">Share</button>
           <div class="legend"><span><i class="lg-rest"></i>Rest</span><span><i class="lg-end"></i>Endurance</span><span><i class="lg-tempo"></i>Tempo</span><span><i class="lg-thr"></i>Threshold</span><span><i class="lg-vo2"></i>VO2</span></div>
         </div>
         <p class="note"><span data-draw="wk-dates">—</span> · <span data-draw="wk-rides" data-source="week" data-row="0" data-field="rides">—</span> rides so far · planned <b data-draw="pw-lo" data-source="plan_week" data-row="0" data-field="plan_lo_km">—</b>–<b data-draw="pw-hi" data-source="plan_week" data-row="0" data-field="plan_hi_km">—</b> <span class="u-m">km</span><span class="u-i">mi</span>, ridden <b data-draw="pw-done" data-source="plan_week" data-row="0" data-field="ridden_km">—</b> <span class="u-m">km</span><span class="u-i">mi</span></p>
@@ -264,7 +264,7 @@
         <div class="yr" data-draw="year-review" data-source="rides rides_all eddington legends"></div>
       </div>
       <div class="card" id="ride-detail-card">
-        <div class="card-h"><h2>Ride detail</h2><span class="note">Tap any ride in the ride log</span></div>
+        <div class="card-h"><h2>Ride detail</h2><span class="note">Tap any ride in the ride log</span><button type="button" class="share-btn" data-share="ride">Share</button></div>
         <div class="rd-head" data-draw="rd-head" data-source="ride_log"></div>
         <div class="rd-map-wrap off"><div class="rd-map" data-draw="rd-map" data-nostate></div><p class="rd-map-k"><i class="s"></i>Start <i class="e"></i>Finish</p></div>
         <div class="rd-notes" data-draw="rd-notes" data-source="ride_detail"></div>
@@ -479,6 +479,7 @@
   </div>
 </div>
 <script src="js/planner.js"></script>
+<script src="js/share.js"></script>
 <script src="js/hub.js"></script>
 <script src="js/app.js"></script>
 <script src="js/motion.js"></script>

@@ -2511,6 +2511,42 @@ const ED_GOAL_MI = 55; // Will's Eddington goal, in miles
     sc.focus();
   };
 
+  // ---- Share card: this week, or the picked ride, as a 1080 × 1350 image ----
+  document.addEventListener('click', (ev) => {
+    const btn = ev.target.closest && ev.target.closest('.share-btn');
+    if (!btn || !window.hubShare) return;
+    if (btn.dataset.share === 'ride') {
+      const g = dash.data('ride_log');
+      if (g.status !== 'ok' || !g.data.length) return;
+      const id = dash.params().ride;
+      const r = g.data.find((x) => x.id === id) || d3.greatest(g.data, (x) => x.date);
+      const det = dash.data('ride_detail');
+      const dist = isImp() ? r.miles : r.km;
+      window.hubShare.share({
+        kicker: d3.timeFormat('%A, %B %-d, %Y')(asDate(r.date)), title: r.name,
+        big: f1(dist), unit: distU(),
+        poly: det.status === 'ok' && det.extra ? det.extra.polyline : null,
+        stats: [['Moving', hm(r.moving_s)], ['Climbing', fmt(isImp() ? r.elev_ft : r.elev_m) + ' ' + elevU()], ['Speed', f1(dist / (r.moving_s / 3600 || 1)) + ' ' + (isImp() ? 'mph' : 'km/h')]].concat(r.relative_effort != null ? [['Effort', fmt(r.relative_effort)]] : []),
+        file: 'ride-' + r.date,
+      }, btn);
+      return;
+    }
+    const g = dash.data('rides');
+    if (g.status !== 'ok') return;
+    const mon = asDate(window.planner.monday(new Date()));
+    const days = d3.range(7).map((i) => isoD(d3.timeDay.offset(mon, i)));
+    const rides = g.data.filter((r) => days.includes(r.date) && /Ride/.test(r.sport_type || 'Ride'));
+    const mi = d3.sum(rides, (r) => r.miles);
+    const longest = d3.max(rides, (r) => r.miles) || 0;
+    window.hubShare.share({
+      kicker: 'Week of ' + d3.timeFormat('%B %-d')(mon), title: 'My week on the bike',
+      big: fmt(Math.round(fromMi(mi))), unit: distU(),
+      days: days.map((d, i) => ({ k: 'MTWTFSS'[i], v: d3.sum(rides.filter((r) => r.date === d), (r) => r.miles) })),
+      stats: [['Rides', String(rides.length)], ['Time', hm(d3.sum(rides, (r) => r.moving_s))], ['Climbing', fmt(Math.round(elevFt(d3.sum(rides, (r) => r.elev_ft)))) + ' ' + elevU()], ['Longest', fmt(Math.round(fromMi(longest))) + ' ' + distU()]],
+      file: 'week-' + isoD(mon),
+    }, btn);
+  });
+
   // ---- Rain alerts: a phone notification the evening before a wet ride day ---------
   const RA_KEY = 'hub.rainAlerts';
   const raOn = () => { try { return localStorage.getItem(RA_KEY) === '1'; } catch { return false; } };

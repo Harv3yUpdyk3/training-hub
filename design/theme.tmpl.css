@@ -495,3 +495,8 @@ dialog.story::backdrop { background: var(--page); }
 .motion .story-ch.in > * { opacity: 1; transform: none; }
 .story-ch { background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 90' preserveAspectRatio='none'%3E%3Cpath d='M0 90 L0 68 L0 68 L67 20 L133 59 L200 38 L267 63 L333 32 L400 61 L467 21 L533 69 L600 44 L600 90 Z' fill='%23005B55' fill-opacity='0.55'/%3E%3Cpath d='M0 90 L0 70 L0 70 L46 41 L92 79 L138 60 L185 72 L231 46 L277 73 L323 55 L369 74 L415 49 L462 74 L508 59 L554 76 L600 53 L600 90 Z' fill='%23B37E2C' fill-opacity='0.35'/%3E%3Cpath d='M0 90 L0 87 L0 87 L35 70 L71 86 L106 69 L141 84 L176 76 L212 88 L247 66 L282 86 L318 74 L353 82 L388 71 L424 83 L459 71 L494 84 L529 75 L565 84 L600 66 L600 90 Z' fill='%230c2823' fill-opacity='0.9'/%3E%3C/svg%3E") center bottom / 100% 22vh no-repeat; }
 .story-ch.intro, .story-ch.outro { background-size: 100% 38vh; }
+/* Share buttons */
+.share-btn { margin-left: auto; flex: none; height: 30px; padding: 0 12px; border-radius: 999px; border: 1px solid rgba(179,126,44,.6); background: transparent; color: var(--copper-hi); font: 600 12.5px var(--font-anthropic-sans, system-ui); cursor: pointer; }
+.share-btn:hover { background: rgba(179,126,44,.14); }
+.share-btn:disabled { opacity: .6; }
+#week-strip-card .card-h { flex-wrap: wrap; } #week-strip-card .card-h .legend { flex-basis: 100%; }

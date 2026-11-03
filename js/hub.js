@@ -550,12 +550,14 @@ const ED_GOAL_MI = 55; // Will's Eddington goal, in miles
 
 
 
+  // Eddington counts bike rides but not e-bike rides (Will's call, Nov 3 2026).
+  const edRide = (r) => /Ride/.test(r.sport_type || 'Ride') && !/^E(Bike|MountainBike)Ride$/.test(r.sport_type || '');
   dash.calc('eddington', {
     inputs: ['rides_all', 'rides'],
     title: 'Eddington number, all time',
-    description: 'Ride distance per day over every Strava ride; Eddington E is the largest number with at least E days of E or more (in miles, and separately in km). For each next level, how many more days of that distance it needs. Also the longest run of consecutive riding days in 2026.',
+    description: 'Ride distance per day over every Strava ride except e-bike rides; Eddington E is the largest number with at least E days of E or more (in miles, and separately in km). For each next level, how many more days of that distance it needs. Also the longest run of consecutive riding days in 2026.',
     fn: (rides_all, rides) => {
-      const days = d3.rollups(rides_all.filter((r) => /Ride/.test(r.sport_type || 'Ride')), (v) => d3.sum(v, (r) => r.miles), (r) => r.date).map((d) => d[1]);
+      const days = d3.rollups(rides_all.filter(edRide), (v) => d3.sum(v, (r) => r.miles), (r) => r.date).map((d) => d[1]);
       const ed = (vals, extra = []) => {
         const s = vals.slice().sort((a, b) => b - a);
         let e = 0;
@@ -2451,7 +2453,7 @@ const ED_GOAL_MI = 55; // Will's Eddington goal, in miles
     const big = days.filter((d) => d[1] >= ED_GOAL_MI).length;
     let e0 = null;
     if (ag.status === 'ok') {
-      const prior = d3.rollups(ag.data.filter((r) => r.date < '2026-01-01' && /Ride/.test(r.sport_type || 'Ride')), (v) => d3.sum(v, (r) => r.miles), (r) => r.date).map((d) => d[1]).sort((a, b) => b - a);
+      const prior = d3.rollups(ag.data.filter((r) => r.date < '2026-01-01' && edRide(r)), (v) => d3.sum(v, (r) => r.miles), (r) => r.date).map((d) => d[1]).sort((a, b) => b - a);
       e0 = 0; while (e0 < prior.length && prior[e0] >= e0 + 1) e0++;
     }
     const e1 = eg.status === 'ok' && eg.data.length ? eg.data[0].e_mi : null;

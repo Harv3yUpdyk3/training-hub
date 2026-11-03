@@ -32,6 +32,7 @@
     act('Switch to km', '[data-units="metric"]');
     act('Switch to miles', '[data-units="imperial"]');
     act('Rain alerts on or off', '.ra-toggle');
+    act('Season panel backdrop on or off', '.fog-btn');
     try {
       const g = window.dash && dash.data('ride_log');
       if (g && g.status === 'ok') {
@@ -137,6 +138,54 @@
     };
     if (window.dash && dash.onData) dash.onData(fill);
     fill();
+  }
+
+  // ---------------- Optional fog backdrop behind the season panel (off by default) ----------------
+  // Soft blobs in the palette colours drift slowly on a tiny canvas that the browser blurs and
+  // stretches. Only runs while switched on, the panel is on screen and the tab is visible.
+  const hero = $('#goal-hero');
+  const FOG_KEY = 'hub.fog';
+  let fogOn = false;
+  try { fogOn = localStorage.getItem(FOG_KEY) === '1'; } catch (e) { /* storage blocked */ }
+  if (hero && !reduce) {
+    const cv = el('canvas', 'fog');
+    cv.width = 96; cv.height = 40;
+    cv.setAttribute('aria-hidden', 'true');
+    hero.prepend(cv);
+    const btn = el('button', 'fog-btn');
+    btn.type = 'button';
+    hero.append(btn);
+    const ctx = cv.getContext('2d');
+    const blobs = [['0,91,85', .55], ['179,126,44', .35], ['0,177,234', .22], ['149,87,169', .25], ['0,91,85', .5]].map(([c, a], i) => ({ c, a, x: Math.random(), y: Math.random(), r: .35 + (i % 3) * .1, vx: (Math.random() - .5) * .00035, vy: (Math.random() - .5) * .0005 }));
+    let seen = true, raf = 0;
+    const frame = () => {
+      raf = 0;
+      if (!fogOn || !seen || document.hidden) return;
+      ctx.clearRect(0, 0, cv.width, cv.height);
+      blobs.forEach((b) => {
+        b.x += b.vx; b.y += b.vy;
+        if (b.x < -.1 || b.x > 1.1) b.vx *= -1;
+        if (b.y < -.2 || b.y > 1.2) b.vy *= -1;
+        const gx = b.x * cv.width, gy = b.y * cv.height, gr = b.r * cv.width;
+        const gd = ctx.createRadialGradient(gx, gy, 0, gx, gy, gr);
+        gd.addColorStop(0, `rgba(${b.c},${b.a})`); gd.addColorStop(1, `rgba(${b.c},0)`);
+        ctx.fillStyle = gd; ctx.fillRect(0, 0, cv.width, cv.height);
+      });
+      raf = requestAnimationFrame(frame);
+    };
+    const kick = () => { if (!raf && fogOn) raf = requestAnimationFrame(frame); };
+    const apply = () => {
+      hero.classList.toggle('fog-on', fogOn);
+      btn.textContent = fogOn ? 'Backdrop on' : 'Backdrop off';
+      btn.setAttribute('aria-pressed', String(fogOn));
+      try { localStorage.setItem(FOG_KEY, fogOn ? '1' : '0'); } catch (e) { /* storage blocked */ }
+      kick();
+    };
+    btn.addEventListener('click', () => { fogOn = !fogOn; apply(); });
+    new IntersectionObserver((es) => { seen = es[0].isIntersecting; kick(); }).observe(hero);
+    document.addEventListener('visibilitychange', kick);
+    window.hubToggleFog = () => btn.click();
+    apply();
   }
 
   // ---------------- Ride detail as a dialog ----------------

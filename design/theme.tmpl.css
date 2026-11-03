@@ -468,3 +468,10 @@ dialog.ride-dlg .card-h .note { display: none; }
 .ll-i:not(.ll)::before { background: #9fb5b0; }
 .ll-i b { font-weight: 600; color: var(--cream); }
 .ll-i small { font-size: 12px; color: #a3c2bd; }
+/* Desktop: optional fog backdrop on the season panel */
+.fog, .fog-btn { display: none; }
+.desk #goal-hero { isolation: isolate; }
+.desk .fog { display: block; position: absolute; inset: 8px; width: calc(100% - 16px); height: calc(100% - 16px); z-index: -1; filter: blur(18px) saturate(1.1); opacity: 0; transition: opacity 1.2s ease; pointer-events: none; }
+.desk .fog-on .fog { opacity: 1; }
+.desk .fog-btn { display: block; position: absolute; top: 10px; right: 12px; z-index: 2; padding: 4px 10px; border-radius: 999px; border: 1px solid rgba(246,238,219,.18); background: rgba(7,27,23,.5); color: #a3c2bd; font: 600 11.5px var(--font-anthropic-sans, system-ui); cursor: pointer; opacity: 0; transition: opacity .25s; }
+.desk #goal-hero:hover .fog-btn, .desk .fog-btn:focus-visible { opacity: 1; }

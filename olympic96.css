@@ -373,7 +373,6 @@ html.lenis, html.lenis body { height: auto; }
 .desk .mag { transition: transform .25s cubic-bezier(.2,.8,.2,1); }
 .desk .ph h1.type .ch { display: inline-block; animation: ch-in .5s cubic-bezier(.2,.8,.2,1) both; animation-delay: calc(var(--i) * 28ms); }
 @keyframes ch-in { from { opacity: 0; transform: translateY(.35em); filter: blur(4px); } }
-.desk .tabs { background: rgba(15,47,41,.78); -webkit-backdrop-filter: blur(14px) saturate(1.2); backdrop-filter: blur(14px) saturate(1.2); }
 @property --ang { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
 .desk .nextup { position: relative; isolation: isolate; }
 .desk .nextup::after { content: ""; position: absolute; inset: 0; border-radius: inherit; padding: 1.5px; pointer-events: none; z-index: 2;
@@ -381,10 +380,21 @@ html.lenis, html.lenis body { height: auto; }
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
   animation: trail 6s linear infinite; }
 @keyframes trail { to { --ang: 360deg; } }
-.desk .nextup .nu-k { background: linear-gradient(90deg, var(--copper-hi) 0%, #fff6dc 45%, var(--copper-hi) 60%) 0 0 / 220% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: shimmer 3.2s ease-in-out infinite; }
-@keyframes shimmer { from { background-position: 120% 0; } to { background-position: -100% 0; } }
 .desk #france > .ph:first-child { padding-bottom: 54px; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 90' preserveAspectRatio='none'%3E%3Cpath d='M0 90 L0 68 L0 68 L67 20 L133 59 L200 38 L267 63 L333 32 L400 61 L467 21 L533 69 L600 44 L600 90 Z' fill='%23005B55' fill-opacity='0.55'/%3E%3Cpath d='M0 90 L0 70 L0 70 L46 41 L92 79 L138 60 L185 72 L231 46 L277 73 L323 55 L369 74 L415 49 L462 74 L508 59 L554 76 L600 53 L600 90 Z' fill='%23B37E2C' fill-opacity='0.35'/%3E%3Cpath d='M0 90 L0 87 L0 87 L35 70 L71 86 L106 69 L141 84 L176 76 L212 88 L247 66 L282 86 L318 74 L353 82 L388 71 L424 83 L459 71 L494 84 L529 75 L565 84 L600 66 L600 90 Z' fill='%230c2823' fill-opacity='0.9'/%3E%3C/svg%3E") center bottom / 100% 70px no-repeat; }
 .desk .g21 { grid-template-columns: 1fr; } .ph h1 .chw { display: inline; }
+
+/* ---- Review 3 (Impeccable craft floor + taste app-screen rules): browser surfaces, size floor ---- */
+::selection { background: rgba(179,126,44,.45); color: #fff; }
+html { caret-color: var(--copper-hi); scrollbar-color: #2c5a50 #0c2823; accent-color: var(--copper); }
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: #0c2823; }
+::-webkit-scrollbar-thumb { background: #2c5a50; border-radius: 10px; border: 2px solid #0c2823; }
+:focus-visible { outline: 2px solid var(--copper-hi); outline-offset: 2px; border-radius: 3px; }
+.tbl td.num, .tbl th.num, .num { font-variant-numeric: tabular-nums; }
+a { text-underline-offset: 3px; }
+.ring-l { font-size: 10.5px; letter-spacing: .02em; }
+.todo-s, .todo span.todo-s, .tr-months span { font-size: 11px; }
+.tr-when, .wx-plan, .ring-mid small, .ring-main .ring-mid small { font-size: 11px; }
 
 /* Card icons: a different Olympic-style pictogram per card (star, flame, wheel, medal...) */
 :root {

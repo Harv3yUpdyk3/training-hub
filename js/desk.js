@@ -107,6 +107,38 @@
     mastR.prepend(b);
   }
 
+  // ---------------- Local Legends ticker under the masthead ----------------
+  const mast = $('.mast');
+  if (mast) {
+    const tick = el('div', 'll-tick');
+    tick.setAttribute('aria-label', 'Your crowns');
+    const track = el('div', 'll-track');
+    tick.append(track);
+    mast.append(tick);
+    let shownKey = '';
+    const fill = () => {
+      let g;
+      try { g = window.dash && dash.data('legends'); } catch (e) { return; }
+      if (!g || g.status !== 'ok' || !g.data.length) return;
+      const key = JSON.stringify(g.data.map((r) => [r.segment, r.title, r.ll_efforts_90d]));
+      if (key === shownKey) return;
+      shownKey = key;
+      const run = () => g.data.map((r) => {
+        const i = el('span', 'll-i' + (r.title === 'Local Legend' ? ' ll' : ''));
+        i.append(el('b', null, r.segment), el('small', null, r.title + (r.ll_efforts_90d ? ' · ' + r.ll_efforts_90d + ' efforts in 90 days' : '')));
+        return i;
+      });
+      // Two copies so the strip loops seamlessly.
+      const a = el('div', 'll-run'), b = el('div', 'll-run');
+      a.append(...run()); b.append(...run()); b.setAttribute('aria-hidden', 'true');
+      track.replaceChildren(a, b);
+      track.style.setProperty('--ll-dur', Math.max(30, g.data.length * 7) + 's');
+      tick.classList.add('on');
+    };
+    if (window.dash && dash.onData) dash.onData(fill);
+    fill();
+  }
+
   // ---------------- Ride detail as a dialog ----------------
   const card = $('#ride-detail-card');
   if (!card) return;

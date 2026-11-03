@@ -1252,6 +1252,68 @@ const ED_GOAL_MI = 55; // Will's Eddington goal, in miles
     e.classList.toggle('good', v != null && v < 0);
     e.classList.toggle('worse', v != null && v > 0);
   });
+  // Climb compare: race two Hascall efforts side by side. Drag the slider (or press Play) to see
+  // where each one was at the same second, and the gap between them.
+  const ccPick = { a: null, b: null };
+  const ccDraw = (box) => {
+    const g = dash.data('hascall');
+    if (g.status !== 'ok' || g.data.length < 2) { box.replaceChildren(); return; }
+    const list = [...g.data].sort((x, y) => d3.ascending(x.date, y.date) || d3.ascending(x.effort_id, y.effort_id));
+    const perDay = new Map();
+    const opts = list.map((e) => { const n = (perDay.get(e.date) || 0) + 1; perDay.set(e.date, n); return { e, label: d3.timeFormat('%b %-d')(asDate(e.date)) + ' #' + n + ' · ' + mmss(e.time_s) + (e.avg_hr ? ' · ' + Math.round(e.avg_hr) + ' bpm' : '') }; }).reverse();
+    const ids = opts.map((o) => o.e.effort_id);
+    const best = d3.least(list, (e) => e.time_s).effort_id;
+    if (!ids.includes(ccPick.a)) ccPick.a = best;
+    if (!ids.includes(ccPick.b) || ccPick.b === ccPick.a) ccPick.b = ids.find((i) => i !== ccPick.a);
+    const key = ids.join() + '|' + ccPick.a + '|' + ccPick.b + '|' + isImp();
+    if (box.dataset.key === key) return;
+    box.dataset.key = key;
+    box.replaceChildren();
+    const A = opts.find((o) => o.e.effort_id === ccPick.a).e, B = opts.find((o) => o.e.effort_id === ccPick.b).e;
+    const len = Number(A.distance_m) || 686;
+    const head = el('div', 'cc-h');
+    head.append(el('b', null, 'Climb compare'), el('span', 'note', 'Two efforts on Full Hascall Hill, racing each other'));
+    const sel = (which, cls) => {
+      const s = el('select', 'cc-sel ' + cls);
+      s.setAttribute('aria-label', which === 'a' ? 'First effort' : 'Second effort');
+      opts.forEach((o) => { const op = el('option', null, o.label); op.value = o.e.effort_id; if (o.e.effort_id === ccPick[which]) op.selected = true; s.append(op); });
+      s.addEventListener('change', () => { ccPick[which] = s.value; box.dataset.key = ''; ccDraw(box); });
+      return s;
+    };
+    const lane = (e, cls) => {
+      const l = el('div', 'cc-lane ' + cls);
+      const tr = el('div', 'cc-track'); const fill = el('i'); const dot = el('span', 'cc-dot');
+      tr.append(fill, dot);
+      l.append(tr);
+      return { l, fill, dot, e };
+    };
+    const la = lane(A, 'a'), lb = lane(B, 'b');
+    const pickRow = el('div', 'cc-picks');
+    pickRow.append(sel('a', 'a'), sel('b', 'b'));
+    const max = Math.max(A.time_s, B.time_s);
+    const range = el('input', 'cc-range'); range.type = 'range'; range.min = 0; range.max = max; range.step = 1; range.value = max;
+    range.setAttribute('aria-label', 'Seconds into the climb');
+    const play = el('button', 'cc-play', 'Play'); play.type = 'button';
+    const read = el('p', 'cc-read');
+    const set = (t) => {
+      [la, lb].forEach((z) => { const f = Math.min(1, t / z.e.time_s); z.fill.style.width = (f * 100) + '%'; z.dot.style.left = (f * 100) + '%'; });
+      const fa = Math.min(1, t / A.time_s), fb = Math.min(1, t / B.time_s), gap = Math.abs(fa - fb) * len;
+      const lead = fa === fb ? null : fa > fb ? 'First' : 'Second';
+      read.textContent = fa === 1 && fb === 1 ? 'Both at the top · finish gap ' + Math.abs(A.time_s - B.time_s) + ' s' : mmss(Math.round(t)) + ' in · ' + (lead ? lead + ' effort ahead by ' + (isImp() ? Math.round(gap * 3.28084) + ' ft' : Math.round(gap) + ' m') : 'level') + ' · finish gap ' + Math.abs(A.time_s - B.time_s) + ' s';
+    };
+    range.addEventListener('input', () => set(+range.value));
+    let anim = 0;
+    play.addEventListener('click', () => {
+      cancelAnimationFrame(anim);
+      const t0 = performance.now(), dur = 4000;
+      const step = (now) => { const p = Math.min(1, (now - t0) / dur); range.value = Math.round(p * max); set(p * max); if (p < 1 && box.isConnected) anim = requestAnimationFrame(step); };
+      anim = requestAnimationFrame(step);
+    });
+    const ctl = el('div', 'cc-ctl'); ctl.append(play, range);
+    box.append(head, pickRow, la.l, lb.l, ctl, read);
+    set(max);
+  };
+  dash.draw('climb-compare', ccDraw);
   dash.draw('hascall-scatter', (box) => {
     const g = dash.data('hascall');
     box.replaceChildren();

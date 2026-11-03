@@ -182,7 +182,7 @@
   // ---- One activity -----------------------------------------------------
   const RANK = { 1: 'SegmentPersonalRecordGold', 2: 'SegmentPersonalRecordSilver', 3: 'SegmentPersonalRecordBronze' };
   const performance = (id) => once('perf' + id, async () => {
-    const key = 'hub.perf.' + id;
+    const key = 'hub.perf2.' + id;
     const kept = store.get(key);
     if (kept) return kept;
     const a = await api(`/activities/${id}?include_all_efforts=true`);
@@ -204,6 +204,7 @@
       max_heartrate: a.max_heartrate ?? null,
       average_cadence: a.average_cadence ?? null,
       calories: a.calories ?? null,
+      polyline: (a.map && (a.map.summary_polyline || a.map.polyline)) || null,
       segment_efforts: efforts.map(({ pr_rank, ...e }) => e),
       pr_achievements: efforts.filter((e) => RANK[e.pr_rank]).map((e) => ({ entity_id: e.id, achievement_type: RANK[e.pr_rank] })),
     };

@@ -461,6 +461,7 @@ const ED_GOAL_MI = 55; // Will's Eddington goal, in miles
       return {
         columns: ['effort_id', 'segment', 'distance_m', 'elev_m', 'time_s', 'avg_hr', 'medal'],
         rows: p.segment_efforts.map((e) => ({ effort_id: String(e.id), segment: String(e.segment_name || '').trim(), distance_m: Number(e.distance) || 0, elev_m: Number(e.elev_gain) || 0, time_s: Number(e.elapsed_time) || 0, avg_hr: e.avg_hr == null ? null : Number(e.avg_hr), medal: medals.get(String(e.id)) ?? null })),
+        extra: { polyline: p.polyline || null },
         meta: [note('Avg HR', p.has_heartrate ? Math.round(p.average_heartrate) : null), note('Max HR', p.has_heartrate ? p.max_heartrate : null), note('Cadence', p.average_cadence == null ? null : Math.round(p.average_cadence)), note('Calories', p.calories)].filter(Boolean),
       };
     },
@@ -1695,6 +1696,50 @@ const ED_GOAL_MI = 55; // Will's Eddington goal, in miles
     box.append(...(g.meta || []).map((m) => { const c = el('span', 'pill'); c.append(document.createTextNode(m.label + ' '), el('b', null, m.value)); return c; }));
     const s = el('span', 'pill'); s.append(document.createTextNode('Segments '), el('b', null, String(g.data.length)), document.createTextNode(' · PRs '), el('b', null, String(prs)));
     box.append(s);
+  });
+  // Route map: Strava's summary line for the picked ride, drawn as a simple outline (no map tiles).
+  const decodePoly = (str) => {
+    const pts = []; let i = 0, lat = 0, lng = 0;
+    while (i < str.length) {
+      for (const k of [0, 1]) {
+        let b, shift = 0, res = 0;
+        do { b = str.charCodeAt(i++) - 63; res |= (b & 0x1f) << shift; shift += 5; } while (b >= 0x20 && i < str.length);
+        const d = res & 1 ? ~(res >> 1) : res >> 1;
+        if (k === 0) lat += d; else lng += d;
+      }
+      pts.push([lat / 1e5, lng / 1e5]);
+    }
+    return pts;
+  };
+  dash.draw('rd-map', (box) => {
+    const g = dash.data('ride_detail');
+    const line = g.status === 'ok' && g.extra && g.extra.polyline;
+    const card = box.closest('.rd-map-wrap');
+    if (!line) { box.replaceChildren(); if (card) card.classList.add('off'); box.dataset.key = ''; return; }
+    if (card) card.classList.remove('off');
+    if (box.dataset.key === line.slice(0, 40) + line.length && box.firstChild) return;
+    box.dataset.key = line.slice(0, 40) + line.length;
+    box.replaceChildren();
+    const pts = decodePoly(line);
+    if (pts.length < 2) return;
+    const k = Math.cos(d3.mean(pts, (p) => p[0]) * Math.PI / 180);
+    const xy = pts.map(([la, ln]) => [ln * k, -la]);
+    const w = box.clientWidth || 320, h = Math.round(Math.min(260, Math.max(170, w * 0.55))), pad = 14;
+    const [x0, x1] = d3.extent(xy, (p) => p[0]), [y0, y1] = d3.extent(xy, (p) => p[1]);
+    const sc = Math.min((w - 2 * pad) / ((x1 - x0) || 1e-6), (h - 2 * pad) / ((y1 - y0) || 1e-6));
+    const ox = (w - (x1 - x0) * sc) / 2, oy = (h - (y1 - y0) * sc) / 2;
+    const P = xy.map(([x, y]) => [ox + (x - x0) * sc, oy + (y - y0) * sc]);
+    const svg = d3.select(box).append('svg').attr('viewBox', `0 0 ${w} ${h}`).attr('width', '100%').attr('role', 'img').attr('aria-label', 'Route of the picked ride');
+    const path = 'M' + P.map((p) => p[0].toFixed(1) + ',' + p[1].toFixed(1)).join('L');
+    svg.append('path').attr('d', path).attr('fill', 'none').attr('stroke', 'rgba(0,0,0,.35)').attr('stroke-width', 6).attr('stroke-linejoin', 'round').attr('stroke-linecap', 'round');
+    const route = svg.append('path').attr('d', path).attr('fill', 'none').attr('stroke', css('--copper-hi') || '#d9a85a').attr('stroke-width', 2.6).attr('stroke-linejoin', 'round').attr('stroke-linecap', 'round');
+    svg.append('circle').attr('cx', P[0][0]).attr('cy', P[0][1]).attr('r', 5).attr('fill', '#00B1EA').attr('stroke', '#0c2823').attr('stroke-width', 2);
+    svg.append('circle').attr('cx', P[P.length - 1][0]).attr('cy', P[P.length - 1][1]).attr('r', 5).attr('fill', '#F4462F').attr('stroke', '#0c2823').attr('stroke-width', 2);
+    const de = document.documentElement;
+    if (de.classList.contains('desk') && de.classList.contains('motion')) {
+      const len = route.node().getTotalLength();
+      route.node().animate([{ strokeDasharray: len, strokeDashoffset: len }, { strokeDasharray: len, strokeDashoffset: 0 }], { duration: 1600, easing: 'cubic-bezier(.3,.8,.2,1)' });
+    }
   });
   dash.draw('rd-segs', rowsDraw('ride_segs', {
     key: 'effort_id',

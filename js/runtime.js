@@ -34,7 +34,7 @@
 
   const shape = (out) => {
     if (Array.isArray(out)) return { data: out, columns: out.length ? Object.keys(out[0]) : [], meta: [] };
-    if (out && Array.isArray(out.rows)) return { data: out.rows, columns: out.columns || [], meta: out.meta || [], cut: !!out.cut };
+    if (out && Array.isArray(out.rows)) return { data: out.rows, columns: out.columns || [], meta: out.meta || [], cut: !!out.cut, extra: out.extra || null };
     if (out && Array.isArray(out.data)) return { data: out.data, columns: out.columns || [], meta: out.meta || [] };
     return { data: out, columns: [], meta: [] };
   };

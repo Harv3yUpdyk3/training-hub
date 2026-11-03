@@ -76,6 +76,95 @@
     }, { passive: true });
   }
 
+
+  // ---- Desktop-only extras (ideas from Motion Primitives, React Bits and GSAP ScrollTrigger) ----
+  if (desk && !reduce) {
+    // Tilt: the season panel and the two France climb cards lean toward the mouse.
+    document.querySelectorAll('#goal-hero, #colombier-card, #tourmalet-card').forEach((c) => {
+      c.classList.add('tilt');
+      let f = 0;
+      c.addEventListener('pointermove', (e) => {
+        if (f) return;
+        f = requestAnimationFrame(() => {
+          f = 0;
+          const r = c.getBoundingClientRect(), x = (e.clientX - r.left) / r.width - 0.5, y = (e.clientY - r.top) / r.height - 0.5;
+          const k = c.id === 'goal-hero' ? 3 : 6;
+          c.style.transform = `perspective(1100px) rotateX(${(-y * k).toFixed(2)}deg) rotateY(${(x * k).toFixed(2)}deg)`;
+        });
+      });
+      c.addEventListener('pointerleave', () => { c.style.transform = ''; });
+    });
+
+    // Magnetic buttons in the masthead: they drift a few pixels toward the mouse.
+    document.querySelectorAll('.mast .mchip, .mast .sync, .mast .units, .ra-toggle').forEach((b) => {
+      b.classList.add('mag');
+      b.addEventListener('pointermove', (e) => {
+        const r = b.getBoundingClientRect();
+        b.style.transform = `translate(${((e.clientX - r.left - r.width / 2) * 0.18).toFixed(1)}px, ${((e.clientY - r.top - r.height / 2) * 0.25).toFixed(1)}px)`;
+      });
+      b.addEventListener('pointerleave', () => { b.style.transform = ''; });
+    });
+
+    // Page titles type in letter by letter each time a tab opens.
+    const split = (h) => {
+      if (h.dataset.split) return;
+      h.dataset.split = '1';
+      const text = h.textContent;
+      h.setAttribute('aria-label', text);
+      h.textContent = '';
+      const wrap = document.createElement('span');
+      wrap.className = 'chw';
+      h.append(wrap);
+      [...text].forEach((ch, i) => {
+        const sp = document.createElement('span');
+        sp.className = 'ch';
+        sp.setAttribute('aria-hidden', 'true');
+        sp.style.setProperty('--i', i);
+        sp.textContent = ch === ' ' ? ' ' : ch;
+        wrap.append(sp);
+      });
+    };
+    const reveal = (sec) => sec.querySelectorAll('.ph h1').forEach((h) => { split(h); h.classList.remove('type'); h.offsetWidth; h.classList.add('type'); });
+    document.querySelectorAll('.hub-page').forEach((sec) => {
+      new MutationObserver(() => {
+        if (sec.hidden) return;
+        if (window.hubLenis) window.hubLenis.scrollTo(0, { immediate: true, force: true });
+        reveal(sec);
+      }).observe(sec, { attributes: true, attributeFilter: ['hidden'] });
+      if (!sec.hidden) reveal(sec);
+    });
+
+    // Chart lines draw themselves in the first time a chart scrolls into view.
+    const drawIn = (chart) => {
+      const svg = chart.querySelector('svg');
+      if (!svg) return false;
+      svg.querySelectorAll('path').forEach((p) => {
+        const cs = getComputedStyle(p);
+        if (cs.fill !== 'none' || cs.stroke === 'none' || cs.strokeDasharray !== 'none') return;
+        let len = 0;
+        try { len = p.getTotalLength(); } catch {}
+        if (len < 80) return;
+        p.animate([{ strokeDasharray: len, strokeDashoffset: len }, { strokeDasharray: len, strokeDashoffset: 0 }], { duration: 1400, easing: 'cubic-bezier(.3,.8,.2,1)' });
+      });
+      svg.querySelectorAll('rect').forEach((r, i) => {
+        if (+r.getAttribute('height') < 4 || +r.getAttribute('width') > 200) return;
+        r.animate([{ transform: 'scaleY(0)' }, { transform: 'scaleY(1)' }], { duration: 700, delay: Math.min(i, 30) * 18, easing: 'cubic-bezier(.3,.8,.2,1)', fill: 'backwards' });
+        r.style.transformBox = 'fill-box'; r.style.transformOrigin = '50% 100%';
+      });
+      return true;
+    };
+    const cio = new IntersectionObserver((es) => es.forEach((e) => {
+      if (!e.isIntersecting) return;
+      cio.unobserve(e.target);
+      if (!drawIn(e.target)) {
+        const mo = new MutationObserver(() => { if (drawIn(e.target)) mo.disconnect(); });
+        mo.observe(e.target, { childList: true });
+        setTimeout(() => mo.disconnect(), 15000);
+      }
+    }), { threshold: 0.25 });
+    document.querySelectorAll('.main .chart:not(.tiny):not(.heat-svg)').forEach((c) => cio.observe(c));
+  }
+
   if (reduce) return;
   document.documentElement.classList.add('motion');
 

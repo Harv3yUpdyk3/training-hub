@@ -46,12 +46,69 @@
     place(false);
   }
 
+  // ---- Sliding indicator on every small switch (units, 2026 / All time, bike filter) ----
+  // Switches that are redrawn start their pill where the old one was, then slide.
+  const lastPos = new Map();
+  const placeU = (g, animate) => {
+    const on = g.querySelector('button[aria-pressed="true"]');
+    let pill = g.querySelector(':scope > .u-pill');
+    if (!pill) {
+      pill = document.createElement('span');
+      pill.className = 'u-pill';
+      g.prepend(pill);
+      g.classList.add('slide');
+      const was = lastPos.get(g.className);
+      if (was) { pill.style.transition = 'none'; Object.assign(pill.style, was); pill.offsetWidth; pill.style.transition = ''; animate = true; }
+    }
+    if (!on) { pill.style.opacity = '0'; return; }
+    if (!animate || reduce) pill.style.transition = 'none';
+    const pos = { opacity: '1', width: on.offsetWidth + 'px', height: on.offsetHeight + 'px', transform: `translate(${on.offsetLeft}px, ${on.offsetTop}px)` };
+    Object.assign(pill.style, pos);
+    lastPos.set(g.className, pos);
+    if (!animate || reduce) { pill.offsetWidth; pill.style.transition = ''; }
+  };
+  const allU = (animate) => document.querySelectorAll('.units').forEach((g) => { if (g.offsetParent) placeU(g, animate); });
+  let uq = false;
+  new MutationObserver(() => {
+    if (uq) return;
+    uq = true;
+    requestAnimationFrame(() => { uq = false; allU(true); });
+  }).observe(document.body, { subtree: true, attributes: true, attributeFilter: ['aria-pressed'], childList: true });
+  addEventListener('resize', () => allU(false));
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => allU(false));
+
+  // ---- Numbers scramble briefly when switching km and mi ----
+  if (!reduce) {
+    const SCR = '[data-draw="km-done"], .ring-mid b, .hrow b, .lw-stats b, .rd-stats b, .kpi-v > span, .yr-hero b, .sim-v b';
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest || !e.target.closest('[data-units]')) return;
+      setTimeout(() => document.querySelectorAll(SCR).forEach((el) => {
+        if (!el.offsetParent) return;
+        const node = [...el.childNodes].find((n) => n.nodeType === 3 && /\d/.test(n.nodeValue));
+        if (!node) return;
+        const final = node.nodeValue, t0 = performance.now();
+        let last = final;
+        const step = (now) => {
+          if (!node.isConnected || node.nodeValue !== last) return;
+          const p = (now - t0) / 380;
+          if (p >= 1) { node.nodeValue = last = final; return; }
+          const keep = Math.floor(p * final.length);
+          last = [...final].map((c, i) => (i < keep || !/\d/.test(c) ? c : String((Math.random() * 10) | 0))).join('');
+          node.nodeValue = last;
+          requestAnimationFrame(step);
+        };
+        requestAnimationFrame(step);
+      }), 60);
+    });
+  }
+
   // ---- Browser on a computer vs the phone app ----
   // The installed phone app stays lean. A desktop browser (mouse, wide screen, not the installed
   // app) also gets Lenis smooth scrolling, gentle tilt, magnetic buttons and charts that draw in.
   const standalone = matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
   const desk = !standalone && matchMedia('(hover: hover) and (pointer: fine) and (min-width: 64rem)').matches;
   document.documentElement.classList.add(standalone ? 'app' : desk ? 'desk' : 'web');
+  if (desk) { const d = document.createElement('script'); d.src = 'js/desk.js'; document.head.append(d); }
   if (desk && !reduce) {
     const s = document.createElement('script');
     s.src = 'js/vendor/lenis.min.js';

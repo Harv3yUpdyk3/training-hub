@@ -706,23 +706,26 @@ const ED_GOAL_MI = 55; // Will's Eddington goal, in miles
   }));
   // Picking a ride (ticker card or log row) loads its detail at the top of the Rides tab.
   let autoRide = false;
-  const pickRide = (id) => {
+  const pickRide = (id, from) => {
     if (!id || !show('rides')) return;
     autoRide = true;
     dash.setParams({ ride: id });
+    // Desktop opens the detail as a dialog that grows out of the row; the phone scrolls up to it.
+    if (window.hubRideDialog && window.hubRideDialog(from)) return;
     document.querySelectorAll('#ride-detail-card').forEach((c) => c.scrollIntoView({ block: 'start' }));
   };
+  window.hubPickRide = pickRide;
   document.querySelectorAll('.rstrip').forEach((s) => s.addEventListener('click', (ev) => {
     const card = ev.target.closest('.rcard');
-    if (card) pickRide(card.dataset.key);
+    if (card) pickRide(card.dataset.key, card);
   }));
   document.querySelectorAll('.rstrip').forEach((s) => s.addEventListener('keydown', (ev) => {
     const card = ev.target.closest('.rcard');
-    if (card && (ev.key === 'Enter' || ev.key === ' ')) { ev.preventDefault(); pickRide(card.dataset.key); }
+    if (card && (ev.key === 'Enter' || ev.key === ' ')) { ev.preventDefault(); pickRide(card.dataset.key, card); }
   }));
   document.querySelectorAll('tbody[data-draw="ride-rows"]').forEach((tb) => tb.addEventListener('click', (ev) => {
     const tr = ev.target.closest('tr[data-key]');
-    if (tr) pickRide(tr.dataset.key);
+    if (tr) pickRide(tr.dataset.key, tr);
   }));
   // The stored default ride is a fixed id; once rides load, start on the newest one instead.
   dash.onData(() => {

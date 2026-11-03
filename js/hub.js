@@ -2036,6 +2036,7 @@ const ED_GOAL_MI = 55; // Will's Eddington goal, in miles
       c.setAttribute('class', cls);
       if (stroke) c.style.stroke = stroke;
       if (f != null) c.setAttribute('stroke-dasharray', (Math.max(0, Math.min(1, f)) * C).toFixed(1) + ' ' + C.toFixed(1));
+      if (f != null) c.style.setProperty('--len', (Math.max(0, Math.min(1, f)) * C).toFixed(1));
       svg.append(c);
     };
     arc('ring-track', null, color);

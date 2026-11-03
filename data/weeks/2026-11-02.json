@@ -1,29 +1,29 @@
 {
  "week_start": "2026-11-02",
- "updated_at": "2026-11-01T18:15:54Z",
+ "updated_at": "2026-11-03T12:48:02Z",
  "updated_by": "Claude",
  "days": [
   {
    "order": 1,
    "day": "Mon",
    "date": "2026-11-02",
-   "session": "Threshold 3 × 10 min",
-   "details": "20 min easy warm-up, then 3 × 10 min at threshold with 5 min easy between. Steady and seated, like a long climb. Easy spin home.",
-   "target_hr": "169–178 in the efforts",
-   "target_miles": "18–22",
-   "status": "Planned",
-   "intensity": "Threshold"
+   "session": "Rest",
+   "details": "Off. The threshold session moved to Tuesday afternoon.",
+   "target_hr": "—",
+   "target_miles": "0",
+   "status": "Done",
+   "intensity": "Rest"
   },
   {
    "order": 2,
    "day": "Tue",
    "date": "2026-11-03",
-   "session": "Rest",
-   "details": "Off after Monday's threshold session.",
-   "target_hr": "—",
-   "target_miles": "0",
+   "session": "Threshold 3 × 10 min",
+   "details": "20 min easy warm-up, then 3 × 10 min at threshold with 5 min easy between. Steady and seated, like a long climb. Easy spin home. Moved from Monday.",
+   "target_hr": "169–178 in the efforts",
+   "target_miles": "18–22",
    "status": "Planned",
-   "intensity": "Rest"
+   "intensity": "Threshold"
   },
   {
    "order": 3,

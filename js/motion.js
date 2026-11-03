@@ -1,6 +1,6 @@
 // Light motion, borrowed as ideas (not code) from Motion Primitives, React Bits and GSAP-style
-// count-ups: numbers count up the first time they show, rings draw in, cards ease in as they
-// scroll into view, the active tab's pill slides, and a thin bar under the tabs shows scroll
+// count-ups. One authored moment per screen: numbers count up the first time they show and rings
+// draw in; otherwise only the active tab's pill slides and a thin bar under the tabs shows scroll
 // position. No libraries, nothing runs continuously, and all of it is off when the phone asks
 // for reduced motion.
 (() => {
@@ -48,7 +48,7 @@
 
   // ---- Browser on a computer vs the phone app ----
   // The installed phone app stays lean. A desktop browser (mouse, wide screen, not the installed
-  // app) also gets Lenis smooth scrolling and a copper spotlight that follows the mouse over cards.
+  // app) also gets Lenis smooth scrolling, gentle tilt, magnetic buttons and charts that draw in.
   const standalone = matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
   const desk = !standalone && matchMedia('(hover: hover) and (pointer: fine) and (min-width: 64rem)').matches;
   document.documentElement.classList.add(standalone ? 'app' : desk ? 'desk' : 'web');
@@ -63,17 +63,6 @@
     };
     document.head.append(s);
     document.querySelectorAll('.sheet-in, .scroll').forEach((e) => e.setAttribute('data-lenis-prevent', ''));
-    let raf = 0, tgt = null, px = 0, py = 0;
-    document.addEventListener('pointermove', (e) => {
-      tgt = e.target.closest && e.target.closest('.card'); px = e.clientX; py = e.clientY;
-      if (!raf) raf = requestAnimationFrame(() => {
-        raf = 0;
-        if (!tgt) return;
-        const r = tgt.getBoundingClientRect();
-        tgt.style.setProperty('--mx', (px - r.left) + 'px');
-        tgt.style.setProperty('--my', (py - r.top) + 'px');
-      });
-    }, { passive: true });
   }
 
 
@@ -105,33 +94,11 @@
       b.addEventListener('pointerleave', () => { b.style.transform = ''; });
     });
 
-    // Page titles type in letter by letter each time a tab opens.
-    const split = (h) => {
-      if (h.dataset.split) return;
-      h.dataset.split = '1';
-      const text = h.textContent;
-      h.setAttribute('aria-label', text);
-      h.textContent = '';
-      const wrap = document.createElement('span');
-      wrap.className = 'chw';
-      h.append(wrap);
-      [...text].forEach((ch, i) => {
-        const sp = document.createElement('span');
-        sp.className = 'ch';
-        sp.setAttribute('aria-hidden', 'true');
-        sp.style.setProperty('--i', i);
-        sp.textContent = ch === ' ' ? ' ' : ch;
-        wrap.append(sp);
-      });
-    };
-    const reveal = (sec) => sec.querySelectorAll('.ph h1').forEach((h) => { split(h); h.classList.remove('type'); h.offsetWidth; h.classList.add('type'); });
+    // Smooth-scroll back to the top when a tab opens.
     document.querySelectorAll('.hub-page').forEach((sec) => {
       new MutationObserver(() => {
-        if (sec.hidden) return;
-        if (window.hubLenis) window.hubLenis.scrollTo(0, { immediate: true, force: true });
-        reveal(sec);
+        if (!sec.hidden && window.hubLenis) window.hubLenis.scrollTo(0, { immediate: true, force: true });
       }).observe(sec, { attributes: true, attributeFilter: ['hidden'] });
-      if (!sec.hidden) reveal(sec);
     });
 
     // Chart lines draw themselves in the first time a chart scrolls into view.
@@ -167,21 +134,6 @@
 
   if (reduce) return;
   document.documentElement.classList.add('motion');
-
-  // ---- Cards ease in as they enter the view, staggered within each batch ----
-  if ('IntersectionObserver' in window) {
-    const io = new IntersectionObserver((entries) => {
-      let n = 0;
-      entries.forEach((e) => {
-        if (!e.isIntersecting) return;
-        e.target.style.transitionDelay = Math.min(n++, 5) * 60 + 'ms';
-        e.target.classList.add('in');
-        io.unobserve(e.target);
-        setTimeout(() => { e.target.style.transitionDelay = ''; e.target.classList.remove('iv', 'in'); }, 900);
-      });
-    }, { rootMargin: '0px 0px -6% 0px' });
-    document.querySelectorAll('.main .card, .main .nextup, .main .hero, .main .ph').forEach((c) => { c.classList.add('iv'); io.observe(c); });
-  }
 
   // ---- Count-up numbers: the first time a headline number appears ----
   const seen = new Set();

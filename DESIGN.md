@@ -44,16 +44,18 @@ Rules:
 
 ## 4. Components
 
-- **Card:** `--panel96` surface, a 4px left stripe in the card's tone, a faint gold hairline, and one Olympic pictogram before the uppercase title. One card per subject; no nested cards.
+- **Card:** `--panel96` surface, a faint gold hairline, and one Olympic pictogram in the card's tone before the uppercase title. No coloured side stripe. One card per subject; no nested cards.
 - **Rings:** the season goal is the big ring in the hero. The six small rings sit in one row: month, week vs needed per week, Eddington out of 55, 55-mile days, longest climb vs the Colombier. Rings draw in once on first load.
 - **Tabs:** Today, Plan, Rides, Segments, Trips. Each tab has its own colour (copper, stone, sky, orange, amethyst), shown by a pill that slides between tabs.
 - **Plan rows:** day, session, details (clamped), target miles, intensity colour, weather chip.
-- **Chips:** small rounded pills inside rows only, never above a heading.
+- **Chips:** small rounded pills inside rows only, never above a heading. No eyebrow labels above titles.
+- **Small labels:** sentence case in the text face, not tracked uppercase. Only card titles, page titles and tabs are uppercase.
+- **States:** every data card says why it is blank: Loading…, couldn't load (with a retry hint), Connect Strava, or Nothing here yet.
 - **Buttons:** copper fill for the one primary action; outlined for the rest.
 
 ## 5. Layout
 
-- Phone first: 16px gutters, one column, touch targets of 44px or more, nothing scrolls sideways. Wide tables stack into two-line rows.
+- Phone first: 16px gutters, one column, touch targets of 44px or more, nothing scrolls sideways. Wide tables become two-line rows on phones: the name on line one, the figures inline on line two.
 - Desktop (64rem and up, mouse, not the installed app): two columns on Today, Plan and Trips; the hero, weather, distance and calendar span both.
 - The two charts Will checks most (Distance and the ride calendar) live on Today.
 
@@ -64,8 +66,9 @@ Rules:
 
 ## 7. Motion
 
-- Phone: numbers count up once, rings draw in once, cards ease in as they scroll into view, the tab pill slides, a thin bar under the tabs shows scroll position.
-- Desktop adds Lenis smooth scrolling, a soft spotlight and tilt on cards, magnetic masthead buttons, page titles that type in, chart lines that draw in, and a trail around Next up.
+- The authored moment: numbers count up once and rings draw in once. Cards don't animate in.
+- Phone also: the tab pill slides and a thin bar under the tabs shows scroll position.
+- Desktop adds Lenis smooth scrolling, a gentle tilt on the season panel and climb cards, a lift on hover, magnetic masthead buttons and chart lines that draw in. No spotlight glows or looping trails.
 - One authored moment per screen is the aim; don't add a new effect without removing a weaker one.
 - Everything is off under reduced motion. Nothing loops on the phone.
 
@@ -95,6 +98,8 @@ Don't:
 | 72rem and up | Two-column Today, Plan and Trips |
 
 ## 10. Agent prompt guide
+
+- Read PRODUCT.md first for who the hub is for and what it must never do.
 
 - Theme source: `design/theme.tmpl.css`, built into `olympic96.css` by `python3 design/gen.py`; per-card icons and colours are in `design/icons.py`. Edit the template, then regenerate. Never hand-edit `olympic96.css`.
 - Motion lives in `js/motion.js`; the desktop check is the `desk` class on `<html>`.

@@ -138,10 +138,39 @@
       onDataFns.forEach((fn) => { try { fn(); } catch (err) { console.error(err); } });
       document.querySelectorAll('[data-draw]').forEach((el) => { if (visible(el)) runDraw(el.dataset.draw, el); });
       labelTables();
+      markStates();
       watchCharts();
     } finally { rendering = false; }
     window.hubStatus && window.hubStatus.update(state);
   };
+
+  // Every data-backed table, chart or panel that drew nothing says why: still loading, could not
+  // load, needs Strava, or (tables and charts only) has nothing to show yet.
+  const STATE_TXT = {
+    loading: 'Loading…',
+    error: "Couldn't load this right now. Tap the sync button to try again.",
+    connect: 'Connect Strava to fill this in.',
+    empty: 'Nothing here yet.',
+  };
+  const markStates = () => document.querySelectorAll('[data-source]').forEach((el) => {
+    if (!visible(el) || el.hasAttribute('data-nostate') || el.closest('[data-nostate]')) return;
+    const isTable = el.tagName === 'TABLE';
+    const body = isTable ? el.tBodies[0] : el;
+    if (!body) return;
+    const host = isTable && el.parentElement.classList.contains('scroll') ? el.parentElement : el;
+    let note = host.nextElementSibling && host.nextElementSibling.classList.contains('st-note') ? host.nextElementSibling : null;
+    const blank = !body.children.length && !body.textContent.trim();
+    let k = null;
+    if (blank) {
+      const g = dataOf(el.dataset.source);
+      if (g.status === 'ok') k = isTable || el.classList.contains('chart') ? 'empty' : null;
+      else if (g.status !== 'missing') k = STATE_TXT[g.status] ? g.status : 'error';
+    }
+    if (!k) { if (note) note.remove(); return; }
+    if (!note) { note = document.createElement('p'); note.className = 'st-note'; host.after(note); }
+    note.dataset.st = k;
+    if (note.textContent !== STATE_TXT[k]) note.textContent = STATE_TXT[k];
+  });
 
   // On phones, wide tables become stacked cards: each cell is labelled with its column.
   const labelTables = () => document.querySelectorAll('table.stack').forEach((t) => {

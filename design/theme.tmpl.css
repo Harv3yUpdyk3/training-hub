@@ -500,3 +500,7 @@ dialog.story::backdrop { background: var(--page); }
 .share-btn:hover { background: rgba(179,126,44,.14); }
 .share-btn:disabled { opacity: .6; }
 #week-strip-card .card-h { flex-wrap: wrap; } #week-strip-card .card-h .legend { flex-basis: 100%; }
+
+/* Home Base icon as the Home button */
+.mast .logo.hb { background: none; transform: none; overflow: hidden; border-radius: 8px; }
+.mast .logo.hb svg { width: 100%; height: 100%; transform: none; }

@@ -2573,7 +2573,7 @@ const ED_GOAL_KM = Math.round(ED_GOAL_MI * 1.609344); // the same goal in km (89
     const w = (await window.planner.weather().catch(() => [])).find((r) => r.date === tom);
     if (!w || w.pop < 50) return;
     const reg = await navigator.serviceWorker.ready;
-    await reg.showNotification('Rain likely tomorrow', { body: `${p.session} · ${w.pop}% chance of rain. Open the hub to swap it to a drier day.`, tag: 'rain-' + tom, icon: 'icons/mountain-192.png', data: { url: './#training' } });
+    await reg.showNotification('Rain likely tomorrow', { body: `${p.session} · ${w.pop}% chance of rain. Open the hub to swap it to a drier day.`, tag: 'rain-' + tom, icon: 'icons/homebase-192.png', data: { url: './#training' } });
     try { localStorage.setItem('hub.rainAlerted', tom); } catch {}
   };
   const raButton = document.querySelector('.ra-toggle');

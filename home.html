@@ -6,8 +6,8 @@
 <title>Home Base</title>
 <meta name="theme-color" content="#0b0d11">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="icon" href="icons/mountain-192.png">
-<link rel="apple-touch-icon" href="icons/mountain-192.png">
+<link rel="icon" href="icons/homebase-192.png">
+<link rel="apple-touch-icon" href="icons/homebase-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Saira+Condensed:ital,wght@0,600;0,700;0,800;1,800&display=swap">
@@ -29,18 +29,24 @@
   .tile b { display: block; font: 800 22px/1.05 var(--display); letter-spacing: .03em; text-transform: uppercase; }
   .tile small { display: block; color: var(--color-fg-muted); font-size: 13px; margin-top: 3px; }
   .go { color: var(--color-fg-muted); font-size: 22px; }
+  .ic.hb { background: none; overflow: hidden; }
+  .ic.hb svg { width: 56px; height: 56px; }
+  .mast h1 { display: flex; align-items: center; gap: 10px; }
+  .hbm svg { display: block; width: 34px; height: 34px; }
   .ext { font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--color-fg-muted); }
 </style>
 </head>
 <body>
-<header class="mast"><h1>Home Base</h1><p id="sub">Everything in one place</p></header>
+<header class="mast"><h1><span class="hbm"><svg  viewBox="0 0 512 512" aria-hidden="true"><defs><clipPath id="rc-m"><rect width="512" height="512" rx="110"/></clipPath><pattern id="pois-m" width="52" height="52" patternUnits="userSpaceOnUse"><rect width="52" height="52" fill="#fff"/><circle cx="13" cy="13" r="10" fill="#EF4135"/><circle cx="39" cy="39" r="10" fill="#EF4135"/></pattern></defs><g clip-path="url(#rc-m)"><rect width="512" height="512" fill="#1c2024"/><g transform="translate(256 262) scale(1.16) translate(-256 285) scale(1 -1) scale(1 -1) translate(0 -570)"><path d="M49 410 210 140l86 148 44-66 124 188z" fill="#FFD100"/><path d="M210 140 296 288 340 222 464 410H253z" fill="#D9AE00"/><path d="M210 140 150 241l28-15 22 24 26-28 42 18z" fill="url(#pois-m)"/><path d="M340 222 314 261l14-6 12 14 14-12 22 12z" fill="url(#pois-m)"/><path d="M-40 410 Q140 372 256 392 T552 380 V600 H-40z" fill="#00A859"/>
+</g></g></svg></span>Home Base</h1><p id="sub">Everything in one place</p></header>
 <main>
   <a class="tile" href="./" style="--c:#B37E2C">
     <span class="ic"><svg viewBox="0 0 48 38" aria-hidden="true" style="width:36px;height:29px"><g fill="#fff" stroke="#fff" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="28" r="7.5" fill="none" stroke-width="3.6"/><circle cx="38" cy="28" r="7.5" fill="none" stroke-width="3.6"/><path d="M10 28 19 17h13l6 11M19 17l4 11 9-11" fill="none" stroke-width="2.6"/><circle cx="35" cy="5.5" r="4" stroke="none"/><path d="M16 15c3-6 9-9 16-8l1 4c-6 0-10 2-13 6z" stroke="none"/><path d="M31 9l5 7" fill="none" stroke-width="3.4"/><path d="M18 15l8 5-3 7" fill="none" stroke-width="4.2"/></g></svg></span>
     <span><b>Training</b><small>Rides, plan and the road to France, live from Strava</small></span><span class="go" aria-hidden="true">›</span>
   </a>
   <a class="tile" href="road-book/" style="--c:#1c2024">
-    <span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 20 9 7l4 7 2-3 7 9z" fill="#f2c200"/><path d="M9 7 7.6 9.4l.9-.4.6.7.7-.8.9.3z" fill="#fff"/></svg></span>
+    <span class="ic hb"><svg  viewBox="0 0 512 512" aria-hidden="true"><defs><clipPath id="rc-ic"><rect width="512" height="512" rx="110"/></clipPath><pattern id="pois-ic" width="52" height="52" patternUnits="userSpaceOnUse"><rect width="52" height="52" fill="#fff"/><circle cx="13" cy="13" r="10" fill="#EF4135"/><circle cx="39" cy="39" r="10" fill="#EF4135"/></pattern></defs><g clip-path="url(#rc-ic)"><rect width="512" height="512" fill="#1c2024"/><g transform="translate(256 262) scale(1.16) translate(-256 285) scale(1 -1) scale(1 -1) translate(0 -570)"><path d="M49 410 210 140l86 148 44-66 124 188z" fill="#FFD100"/><path d="M210 140 296 288 340 222 464 410H253z" fill="#D9AE00"/><path d="M210 140 150 241l28-15 22 24 26-28 42 18z" fill="url(#pois-ic)"/><path d="M340 222 314 261l14-6 12 14 14-12 22 12z" fill="url(#pois-ic)"/><path d="M-40 410 Q140 372 256 392 T552 380 V600 H-40z" fill="#00A859"/>
+</g></g></svg></span>
     <span><b>Road Book</b><small>Tour de France 2027: days, rides, bookings</small></span><span class="go" aria-hidden="true">›</span>
   </a>
   <a class="tile" href="road-book/family.html" style="--c:#c8102e">

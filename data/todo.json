@@ -5,7 +5,6 @@
  {"order": 4, "group": "Gear", "item": "Power meter", "detail": "SRAM Force E1 XPLR power meter crank arm (left side, keeps your 40T). Match your crank length.", "cost": "about $240", "status": "To do", "due": "Nov 2026"},
  {"order": 5, "group": "Gear", "item": "Install", "detail": "Shop fit, or DIY with an 8 mm hex key and a torque wrench. Pair it and run a zero offset.", "cost": "about $20–50 (estimate)", "status": "To do", "due": "Nov 2026"},
  {"order": 6, "group": "Gear", "item": "Indoor trainer", "detail": "Rain cost you three weekend rides in two weeks. A smart trainer or rollers turns rain days into Zone 2 or threshold sessions instead of zero.", "cost": "about $300–700 (estimate)", "status": "To do", "due": "Dec 2026"},
- {"order": 7, "group": "Gear", "item": "Lights", "detail": "Front and rear lights for dark base-season evenings on the Silver Comet and the road.", "cost": "about $60–120 (estimate)", "status": "To do", "due": "Nov 2026"},
  {"order": 8, "group": "Training", "item": "Heart rate strap", "detail": "Wear it every ride.", "cost": "—", "status": "In progress", "due": "Every ride"},
  {"order": 9, "group": "Training", "item": "FTP test", "detail": "20-minute test in the first week with the meter, then power targets get redone.", "cost": "—", "status": "To do", "due": "After the meter"},
  {"order": 10, "group": "Training", "item": "Strength, twice a week", "detail": "20–30 min: squats, split squats, step-ups, core. It pays off on 1,300 m climbs. Keep it on easy or rest days.", "cost": "—", "status": "To do", "due": "Base, Nov–Feb"},

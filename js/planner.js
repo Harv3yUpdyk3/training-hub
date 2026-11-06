@@ -56,7 +56,7 @@
   };
 
   const saveWeek = async (week) => {
-    const doc = { week_start: week.week_start, updated_at: new Date().toISOString(), updated_by: 'Will', days: week.days };
+    const doc = { week_start: week.week_start, updated_at: new Date().toISOString(), updated_by: 'Will', ...(week.base_mi != null ? { base_mi: week.base_mi, rebalanced_at: week.rebalanced_at } : {}), days: week.days };
     put(LOCAL(week.week_start), doc);
     if (!token()) return { where: 'device', doc };
     let sha = week._sha;
@@ -122,7 +122,7 @@
     const total = week.days.reduce((a, d) => { const n = String(d.target_miles).split('–').map(Number).filter(Number.isFinite); return [a[0] + (n[0] || 0), a[1] + (n[n.length - 1] || 0)]; }, [0, 0]);
     status((week._local ? 'Saved on this device only. ' : '') + 'Planned ' + total[0] + (total[1] !== total[0] ? '–' + total[1] : '') + ' mi', week._local ? 'warn' : '');
     week.days.forEach((d, i) => {
-      const row = el('button', 'pw-day' + (String(d.status).toLowerCase() === 'done' ? ' done' : ''));
+      const row = el('button', 'pw-day' + (String(d.status).toLowerCase() === 'done' ? ' done' : String(d.status).toLowerCase() === 'skipped' ? ' skipped' : ''));
       row.type = 'button';
       row.style.setProperty('--int', `var(${INT_COLOR[d.intensity] || '--cds-chart-muted'})`);
       const left = el('span', 'pw-when');
@@ -138,6 +138,7 @@
       list.append(row);
     });
     rainSwap();
+    rebalanceOffer();
   };
 
   // Rain swap: when the long ride sits on a wet day and a drier day is left this week, one tap trades the two days and saves.
@@ -169,6 +170,200 @@
     $('.pw-save').click();
   };
 
+  // ---- Missed-day rebalance -------------------------------------------
+  // When a day is missed (rain, errands, tired), spread the lost miles over the days
+  // still to come so the week still fills the Week ring (what the 5,000 km goal needs
+  // this week, never below an even 1/52 share). Coaching rules:
+  //  - a missed hard session moves to one open day with no hard day either side,
+  //    never onto the long ride or the day before it; if none fits, it waits for next week;
+  //  - extra miles go first to Zone 2 days (up to 35 mi), then the long ride (55+ mi
+  //    for the Eddington goal, up to 62), then rest days become easy rides
+  //    (the day before the long ride stays a short spin), keeping one day off,
+  //    then the long ride up to 70;
+  //  - anything still short is reported, not crammed in.
+  const HARD = /^(Tempo|Threshold|VO2)$/;
+  const CAP = { endurance: 35, longSoft: 62, long: 70, restToRide: 30, preLong: 15, longMin: 55 };
+  const nums = (s) => String(s ?? '').split(/[–-]/).map(Number).filter(Number.isFinite);
+  const lo = (d) => (nums(d.target_miles)[0] || 0);
+  const hi = (d) => { const n = nums(d.target_miles); return n.length ? n[n.length - 1] : 0; };
+  const isDone = (d) => /^done$/i.test(String(d.status || ''));
+  const isSkipped = (d) => /^skipped$/i.test(String(d.status || ''));
+
+  // Strava rides by date this week, and the miles the season goal needs this week.
+  const liveNumbers = () => {
+    const D = window.dash;
+    const g = D && D.data('rides');
+    const byDate = g && g.status === 'ok' ? d3.rollup(g.data, (v) => d3.sum(v, (r) => r.miles), (r) => r.date) : null;
+    const y = D && D.data('ytd');
+    const yr = y && y.status === 'ok' && y.data.length ? y.data[0] : null;
+    const need = yr ? Math.round(Math.max(yr.km_per_week, 5000 / 52) / 1.609344) : null;
+    return { byDate, need };
+  };
+
+  const rebalance = (src) => {
+    const w = JSON.parse(JSON.stringify(src));
+    const days = w.days, today = iso(new Date());
+    const { byDate, need } = liveNumbers();
+    const rodeOn = (d) => (byDate ? byDate.get(d.date) || 0 : 0);
+    const changes = [];
+    const fmtMi = (n) => Math.round(n) + ' mi';
+
+    // Past days still marked Planned with no ride on Strava count as missed.
+    if (byDate) days.forEach((d) => {
+      if (d.date < today && !isDone(d) && !isSkipped(d) && lo(d) > 0 && !rodeOn(d)) {
+        d.status = 'Skipped'; d.actual = 'No ride'; d.actual_short = '—';
+        changes.push({ day: d.day, text: 'marked missed (no ride on Strava)' });
+      }
+    });
+
+    // The week's mileage target: what the season needs, or the plan as first written if that was higher.
+    if (w.base_mi == null) w.base_mi = Math.round(d3.sum(src.days, lo));
+    const target = Math.max(need || 0, w.base_mi);
+    const actualMi = (d) => { const m = /([\d.]+)\s*mi\b/.exec(d.actual || ''); return m ? Number(m[1]) : lo(d); };
+    const ridden = byDate ? d3.sum(days, rodeOn) : d3.sum(days.filter(isDone), actualMi);
+    const openDays = days.filter((d) => d.date >= today && !isDone(d) && !isSkipped(d) && !(d.date === today && rodeOn(d) > 0));
+    let longDay = openDays.find(isLong);
+    const hardOn = (date) => days.some((d) => d.date === date && HARD.test(d.intensity) && !isSkipped(d));
+
+    // 0. A missed long ride moves to the latest open day that isn't a hard session.
+    const missedLong = days.find((d) => isSkipped(d) && isLong(d) && !d.moved_to);
+    if (missedLong && !longDay) {
+      const slot = [...openDays].reverse().find((d) => !HARD.test(d.intensity));
+      if (slot) {
+        const was = slot.session;
+        ['session', 'details', 'target_hr', 'intensity'].forEach((k) => { slot[k] = missedLong[k]; });
+        slot.target_miles = String(Math.max(CAP.longMin, lo(missedLong)));
+        slot.details = (slot.details || '') + ` Moved from ${missedLong.day}.`;
+        missedLong.moved_to = slot.day;
+        longDay = slot;
+        changes.push({ day: slot.day, text: `${was} → ${slot.session} (${slot.target_miles} mi), moved from ${missedLong.day}` });
+      }
+    }
+    const preLong = longDay ? days.find((d) => d.date === addDays(longDay.date, -1)) : null;
+
+    // 1. Move one missed hard session.
+    const missedHard = days.find((d) => isSkipped(d) && HARD.test(d.intensity) && !d.moved_to);
+    if (missedHard) {
+      const slot = openDays.find((d) => d !== longDay && d !== preLong && !HARD.test(d.intensity)
+        && !hardOn(addDays(d.date, -1)) && !hardOn(addDays(d.date, 1)));
+      if (slot) {
+        const was = slot.session, miles = Math.max(hi(missedHard), lo(slot));
+        slot.session = missedHard.session;
+        slot.intensity = missedHard.intensity;
+        slot.target_hr = missedHard.target_hr;
+        slot.details = (missedHard.details || '').replace(/\s*(Moved from[^.]*\.|Not ridden\.)/g, '').trim()
+          + ` Moved from ${missedHard.day} after it was missed` + (miles > hi(missedHard) ? `; ride the rest of the ${miles} mi easy.` : '.');
+        slot.target_miles = String(miles);
+        missedHard.moved_to = slot.day;
+        changes.push({ day: slot.day, text: `${was} → ${slot.session} (${fmtMi(miles)}), moved from ${missedHard.day}` });
+      } else {
+        missedHard.moved_to = 'next week';
+        changes.push({ day: missedHard.day, text: `${missedHard.session} has no safe slot left this week, so it waits for next week` });
+      }
+    }
+
+    // 2. Fill the gap. Long ride first gets up to its 55-mile floor.
+    const before = new Map(openDays.map((d) => [d, d.target_miles]));
+    const planned = () => d3.sum(openDays, lo);
+    let gap = Math.round(target - ridden - planned());
+    const setMi = (d, n) => { d.target_miles = String(Math.round(n)); };
+    const add = (d, cap) => { if (gap <= 0) return; const room = Math.max(0, cap - lo(d)); const put = Math.min(room, gap); if (put > 0) { setMi(d, lo(d) + put); gap -= put; } };
+    if (longDay && lo(longDay) < CAP.longMin) { const put = CAP.longMin - lo(longDay); setMi(longDay, CAP.longMin); gap -= put; }
+    // Zone 2 days share the extra evenly, a few miles at a time.
+    const z2 = openDays.filter((d) => d !== longDay && d.intensity === 'Endurance');
+    for (let pass = 0; gap > 0 && pass < 20; pass++) {
+      let moved = false;
+      z2.forEach((d) => { if (gap > 0 && lo(d) < CAP.endurance) { const step = Math.min(3, CAP.endurance - lo(d), gap); setMi(d, lo(d) + step); gap -= step; moved = true; } });
+      if (!moved) break;
+    }
+    if (longDay) add(longDay, CAP.longSoft);
+    // Rest days become easy rides, keeping at least one day off in the week.
+    const restLeft = () => days.filter((d) => d.intensity === 'Rest' && lo(d) === 0 && hi(d) <= 10 && !rodeOn(d)).length;
+    openDays.filter((d) => d.intensity === 'Rest').sort((a, b) => (a === preLong) - (b === preLong)).forEach((d) => {
+      if (gap <= 0 || restLeft() <= 1) return;
+      const cap = d === preLong ? CAP.preLong : CAP.restToRide;
+      const prevHard = hardOn(addDays(d.date, -1)) || hardOn(addDays(d.date, 1));
+      const put = Math.min(gap, cap);
+      if (put < 5) return;
+      d.session = d === preLong || prevHard ? 'Easy spin' : 'Zone 2 endurance';
+      d.intensity = 'Endurance';
+      d.target_hr = d === preLong || prevHard ? 'under 125' : '130–150, cap 153';
+      d.details = d === preLong ? 'Short and easy to keep the legs fresh for tomorrow\'s long ride.' : 'Steady and conversational. Added to make up missed miles.';
+      setMi(d, put); gap -= put;
+    });
+    if (longDay) add(longDay, CAP.long);
+
+    // Say what changed, and note it on each day.
+    openDays.forEach((d) => {
+      const was = before.get(d);
+      if (d.target_miles === was) return;
+      if (!/Rebalanced/.test(d.details || '')) d.details = ((d.details || '') + ` Rebalanced from ${was === '0' ? 'rest' : was + ' mi'}.`).trim();
+      const already = changes.find((c) => c.day === d.day);
+      const text = `${was === '0' ? 'rest' : was + ' mi'} → ${d.target_miles} mi` + (d.session !== 'Rest' ? ' ' + d.session : '');
+      if (already) already.text += `; ${text}`; else changes.push({ day: d.day, text });
+    });
+    const order = new Map(DAYS.map((d, i) => [d, i]));
+    changes.sort((a, b) => order.get(a.day) - order.get(b.day));
+    w.rebalanced_at = new Date().toISOString();
+    return { week: w, changes, target, ridden: Math.round(ridden), short: Math.max(0, Math.round(gap)), need };
+  };
+
+  // A banner offers a rebalance when this week has missed days and the plan falls short.
+  const rebalanceOffer = () => {
+    let b = $('.pw-rebal');
+    if (!b) { b = el('button', 'pw-rebal'); b.type = 'button'; $('.pw-days').before(b); b.addEventListener('click', () => applyRebalance()); }
+    b.hidden = true;
+    if (!week || start !== monday() || dirty) return;
+    const r = rebalance(week);
+    const missed = week.days.filter(isSkipped).length + r.changes.filter((c) => /marked missed/.test(c.text)).length;
+    if (!missed || !r.changes.length) return;
+    const behind = Math.max(0, r.target - r.ridden - d3.sum(week.days.filter((d) => d.date >= iso(new Date()) && !isDone(d) && !isSkipped(d)), lo));
+    b.replaceChildren(el('b', null, 'Rebalance the week'), el('span', null, behind > 0
+      ? `Missed days leave you ${behind} mi short of ${r.target} mi this week. Tap to spread them over the days left.`
+      : 'Missed days this week. Tap to move the missed session to a day that still works.'));
+    b.hidden = false;
+  };
+
+  let undo = null;
+  const applyRebalance = async () => {
+    const r = rebalance(week);
+    undo = JSON.parse(JSON.stringify(week));
+    week = { ...r.week, _sha: week._sha, _local: week._local };
+    dirty = true;
+    showResult(r);
+    render();
+    $('.pw-save').click();
+  };
+  const showResult = (r) => {
+    let box = $('.pw-rb');
+    if (!box) { box = el('div', 'pw-rb'); box.setAttribute('role', 'status'); $('.pw-days').before(box); }
+    const head = el('div', 'pw-rb-h');
+    head.append(el('b', null, 'Week rebalanced'), el('span', null, `Target ${r.target} mi · ridden ${r.ridden}`));
+    const ul = el('ul');
+    if (!r.changes.length) ul.append(el('li', null, 'Nothing needed to change: the days left already cover the week.'));
+    r.changes.forEach((c) => { const li = el('li'); li.append(el('b', null, c.day + ' '), document.createTextNode(c.text)); ul.append(li); });
+    const foot = el('p', 'pw-rb-f', r.short > 0
+      ? `Still ${r.short} mi short after capping rides at ${CAP.endurance} mi (long ride ${CAP.long}). That spreads over the weeks left, about ${Math.max(1, Math.round(r.short / Math.max(1, (Date.UTC(2027, 0, 1) - Date.now()) / 6048e5)))} mi more per week.`
+      : 'The week still hits its target.');
+    const btns = el('div', 'pw-rb-b');
+    const u = el('button', null, 'Undo'); u.type = 'button';
+    u.addEventListener('click', () => { if (!undo) return; week = { ...undo, _sha: week._sha }; undo = null; box.remove(); dirty = true; render(); $('.pw-save').click(); });
+    const x = el('button', null, 'OK'); x.type = 'button';
+    x.addEventListener('click', () => { undo = null; box.remove(); });
+    btns.append(u, x);
+    box.replaceChildren(head, ul, foot, btns);
+  };
+
+  // "Missed it" in the day editor: mark the day with a reason, then rebalance.
+  const missDay = (reason) => {
+    const d = week.days[editing];
+    d.status = 'Skipped';
+    d.actual = reason === 'Rain' ? 'Rained out' : 'Missed: ' + reason.toLowerCase();
+    d.actual_short = reason === 'Rain' ? 'Rain' : '—';
+    closeEditor();
+    applyRebalance();
+  };
+
   const load = async () => {
     status('Loading…');
     dirty = false;
@@ -185,6 +380,7 @@
     const d = week.days[i];
     sheet.querySelector('.ps-title').textContent = d.day + ' · ' + fmtDay(asDate(d.date));
     ['session', 'details', 'target_miles', 'target_hr', 'intensity', 'status', 'actual'].forEach((n) => { f(n).value = d[n] ?? ''; });
+    sheet.querySelector('.ps-miss').hidden = isDone(d) || isSkipped(d) || start !== monday();
     sheet.hidden = false;
     f('session').focus();
   };
@@ -194,6 +390,7 @@
   sheet.querySelector('.ps-rest').addEventListener('click', () => {
     f('session').value = 'Rest'; f('intensity').value = 'Rest'; f('target_miles').value = '0'; f('target_hr').value = '—'; f('details').value = 'Off.';
   });
+  sheet.querySelectorAll('.ps-miss button').forEach((b) => b.addEventListener('click', () => missDay(b.dataset.why)));
   sheet.querySelector('.ps-done').addEventListener('click', () => {
     const d = week.days[editing];
     ['session', 'details', 'target_miles', 'target_hr', 'intensity', 'status', 'actual'].forEach((n) => { d[n] = f(n).value.trim(); });

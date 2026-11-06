@@ -257,6 +257,28 @@ html, body { overflow-x: clip; }
 .pw-swap { display: grid; gap: 2px; width: 100%; text-align: left; margin: 4px 0 10px; padding: 10px 12px; border-radius: 10px; border: 1px solid rgba(0,177,234,.55); background: rgba(0,177,234,.12); color: var(--color-fg); cursor: pointer; font: inherit; }
 .pw-swap b { font: 800 12px var(--display); letter-spacing: .1em; text-transform: uppercase; color: #6fd3f5; }
 .pw-swap span { font-size: 13px; }
+.pw-rebal { display: grid; gap: 2px; width: 100%; text-align: left; margin: 4px 0 10px; padding: 10px 12px; border-radius: 10px; border: 1px solid rgba(179,126,44,.6); background: rgba(179,126,44,.14); color: var(--color-fg); cursor: pointer; font: inherit; }
+.pw-rebal b { font: 800 12px var(--display); letter-spacing: .1em; text-transform: uppercase; color: var(--copper-hi); }
+.pw-rebal span { font-size: 13px; }
+.pw-rebal[hidden], .ps-miss[hidden] { display: none; }
+.pw-rb { margin: 4px 0 10px; padding: 12px; border-radius: 10px; border: 1px solid var(--line); border-left: 4px solid var(--copper); background: rgba(255,255,255,.03); display: grid; gap: 8px; }
+.pw-rb-h { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.pw-rb-h b { font: 800 13px var(--display); letter-spacing: .1em; text-transform: uppercase; color: var(--copper-hi); }
+.pw-rb-h span { font: 600 12px var(--font-anthropic-sans); color: var(--color-fg-muted); font-variant-numeric: tabular-nums; }
+.pw-rb ul { margin: 0; padding-left: 18px; display: grid; gap: 4px; font-size: 13.5px; }
+.pw-rb li::marker { color: var(--copper-hi); }
+.pw-rb li b { font-weight: 700; }
+.pw-rb-f { margin: 0; font-size: 12.5px; color: var(--color-fg-muted); }
+.pw-rb-b { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.pw-rb-b button { height: 40px; border-radius: 10px; border: 1px solid var(--line); background: var(--color-bg); color: var(--color-fg); font: 700 14px var(--font-anthropic-sans); cursor: pointer; }
+.pw-rb-b button:last-child { background: var(--copper); border-color: var(--copper); color: #fff; }
+.pw-day.skipped .pw-s { text-decoration: line-through; text-decoration-color: var(--color-fg-muted); color: var(--color-fg-muted); }
+.pw-day.skipped .pw-s::after { content: " · missed"; text-decoration: none; display: inline-block; font-size: 12px; }
+.ps-miss { display: grid; gap: 8px; padding: 10px 12px; border-radius: 10px; border: 1px solid rgba(179,126,44,.55); background: rgba(179,126,44,.12); }
+.ps-miss span { font-size: 13px; color: var(--color-fg); }
+.ps-miss div { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+.ps-miss button { height: 40px; border-radius: 8px; border: 1px solid rgba(179,126,44,.6); background: transparent; color: var(--copper-hi); font: 800 13px var(--display); letter-spacing: .08em; text-transform: uppercase; cursor: pointer; }
+.ps-miss button:active { background: var(--copper); color: #fff; }
 .ra-toggle { display: inline-flex; align-items: center; gap: 6px; padding: 5px 10px; border-radius: 999px; border: 1px solid var(--line); background: transparent; color: var(--color-fg-muted); font: 700 11px var(--display); letter-spacing: .08em; text-transform: uppercase; cursor: pointer; }
 .ra-toggle svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2; }
 .ra-toggle[aria-pressed="true"] { border-color: rgba(0,177,234,.6); color: #6fd3f5; background: rgba(0,177,234,.12); }
@@ -339,7 +361,7 @@ html, body { overflow-x: clip; }
 .grow .ring-arc { animation: ring-in 1.1s cubic-bezier(.2,.8,.2,1) both; }
 .grow .ring-arc.lap2 { animation-delay: .7s; }
 @keyframes ring-in { from { stroke-dashoffset: var(--len, 0); } }
-.motion .pw-swap, .motion .tr-when.now { animation: pop-in .45s cubic-bezier(.2,.9,.3,1.3) both; }
+.motion .pw-swap, .motion .pw-rebal, .motion .pw-rb, .motion .tr-when.now { animation: pop-in .45s cubic-bezier(.2,.9,.3,1.3) both; }
 @keyframes pop-in { from { opacity: 0; transform: scale(.96); } }
 .sheet:not([hidden]) .sheet-in { animation: sheet-up .32s cubic-bezier(.2,.8,.2,1) both; }
 @keyframes sheet-up { from { transform: translateY(40px); opacity: 0; } }

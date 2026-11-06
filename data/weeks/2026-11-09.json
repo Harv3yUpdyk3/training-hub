@@ -1,6 +1,6 @@
 {
  "week_start": "2026-11-09",
- "updated_at": "2026-11-06T18:45:48Z",
+ "updated_at": "2026-11-06T18:46:27Z",
  "updated_by": "Claude",
  "days": [
   {
@@ -8,11 +8,41 @@
    "day": "Mon",
    "date": "2026-11-09",
    "session": "Strength A (no ride)",
-   "details": "No ride after the weekend long ride. Strength A, about 25 min: goblet squats 3 × 10, Bulgarian split squats 3 × 8 each leg, Romanian deadlifts 3 × 10, plank 3 × 40 s, side plank 2 × 30 s each side. Use a dumbbell or kettlebell, or bodyweight. Stop 2 reps short of failure.",
+   "details": "No ride after the weekend long ride. Strength A, about 25 min: tick each exercise off on Today. Use a dumbbell or kettlebell, or bodyweight; stop 2 reps short of failure.",
    "target_hr": "—",
    "target_miles": "0",
    "status": "Planned",
-   "intensity": "Rest"
+   "intensity": "Rest",
+   "strength": {
+    "name": "Strength A",
+    "minutes": 25,
+    "items": [
+     {
+      "ex": "Goblet squats",
+      "dose": "3 × 10"
+     },
+     {
+      "ex": "Bulgarian split squats",
+      "dose": "3 × 8 each leg"
+     },
+     {
+      "ex": "Romanian deadlifts",
+      "dose": "3 × 10"
+     },
+     {
+      "ex": "Push-ups",
+      "dose": "3 × 10"
+     },
+     {
+      "ex": "Plank",
+      "dose": "3 × 40 s"
+     },
+     {
+      "ex": "Side plank",
+      "dose": "2 × 30 s each side"
+     }
+    ]
+   }
   },
   {
    "order": 2,
@@ -29,12 +59,39 @@
    "order": 3,
    "day": "Wed",
    "date": "2026-11-11",
-   "session": "Easy Zone 2 + Strength B",
-   "details": "Conversational pace. Flat route, keep the HR strap on. After the ride, Strength B, about 20 min: step-ups 3 × 10 each leg, single-leg glute bridges 3 × 12 each leg, calf raises 3 × 15, dead bugs 3 × 10. Light, so Thursday's hill repeats stay fresh.",
+   "session": "Easy Zone 2",
+   "details": "Conversational pace. Flat route, keep the HR strap on.",
    "target_hr": "125–145",
    "target_miles": "15–18",
    "status": "Planned",
-   "intensity": "Endurance"
+   "intensity": "Endurance",
+   "strength": {
+    "name": "Strength B",
+    "minutes": 20,
+    "when": "after the ride",
+    "items": [
+     {
+      "ex": "Step-ups",
+      "dose": "3 × 10 each leg"
+     },
+     {
+      "ex": "Single-leg glute bridges",
+      "dose": "3 × 12 each leg"
+     },
+     {
+      "ex": "Calf raises",
+      "dose": "3 × 15"
+     },
+     {
+      "ex": "Sit-ups",
+      "dose": "3 × 15"
+     },
+     {
+      "ex": "Dead bugs",
+      "dose": "3 × 10"
+     }
+    ]
+   }
   },
   {
    "order": 4,

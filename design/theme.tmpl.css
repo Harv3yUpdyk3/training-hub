@@ -526,3 +526,16 @@ dialog.story::backdrop { background: var(--page); }
 /* Home Base icon as the Home button */
 .mast .logo.hb { background: none; transform: none; overflow: hidden; border-radius: 8px; }
 .mast .logo.hb svg { width: 100%; height: 100%; transform: none; }
+/* Strength checklist */
+.str-h { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin-bottom: 6px; }
+.str-h b { font: 800 18px var(--display); text-transform: uppercase; letter-spacing: .03em; color: var(--cream); }
+.str-p { font-size: 12.5px; font-weight: 600; color: var(--color-fg-muted); font-variant-numeric: tabular-nums; }
+.str-p.ok { color: #7fd6c9; }
+.str-list { list-style: none; margin: 0; padding: 0; display: grid; }
+.str-i { display: grid; grid-template-columns: 26px minmax(0, 1fr) auto; align-items: center; gap: 10px; min-height: 46px; padding: 4px 2px; border-bottom: 1px solid var(--line); cursor: pointer; }
+.str-list li:last-child .str-i { border-bottom: 0; }
+.str-i input { width: 22px; height: 22px; margin: 0; accent-color: var(--stone-hi); cursor: pointer; }
+.str-x { font-size: 14.5px; font-weight: 500; }
+.str-d { font-size: 13px; color: var(--color-fg-muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.str-i.on .str-x { color: var(--color-fg-muted); text-decoration: line-through; text-decoration-color: rgba(246,238,219,.4); }
+#strength-card.off { display: none; }

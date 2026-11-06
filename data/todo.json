@@ -75,7 +75,7 @@
   "order": 10,
   "group": "Training",
   "item": "Strength, twice a week",
-  "detail": "Now scheduled in the weekly plan: Strength A on Monday, Strength B after Wednesday's easy ride. Never the day before a long ride.",
+  "detail": "In the weekly plan now: tick each exercise off in the Strength card on Today.",
   "cost": "—",
   "status": "In progress",
   "due": "Base, Nov–Feb"
@@ -97,23 +97,5 @@
   "cost": "—",
   "status": "To do",
   "due": "Nov 23"
- },
- {
-  "order": 13,
-  "group": "Trip prep",
-  "item": "Gearing check",
-  "detail": "40 × 52 is fine for 7–8% grades; confirm it before you book a rental or ship the bike, and practice seated climbing in that gear.",
-  "cost": "—",
-  "status": "To do",
-  "due": "Mar 2027"
- },
- {
-  "order": 14,
-  "group": "Trip prep",
-  "item": "Bike fit check",
-  "detail": "Hours in the saddle go up in 2027. A fit check before the climb-specific phase avoids knee or back trouble on long climbs.",
-  "cost": "about $150–300 (estimate)",
-  "status": "To do",
-  "due": "Feb 2027"
  }
 ]

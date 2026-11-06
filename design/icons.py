@@ -54,7 +54,7 @@ CARDS = {
   'hascall-card': ('mountain', 'var(--orange)'), 'most-ridden-card': ('flag', 'var(--cream)'), 'prs-card': ('medal', 'var(--copper-hi)'),
   'colombier-card': ('mountain', 'var(--amethyst)'), 'tourmalet-card': ('mountain', 'var(--amethyst)'), 'climb-ready-card': ('flag', 'var(--cream)'),
   'climb-weeks-card': ('bars', 'var(--amethyst)'), 'phase-card': ('torch', 'var(--orange)'), 'lastweek-card': ('podium', 'var(--sky)'), 'climb-sim-card': ('stopwatch', 'var(--orange)'),
-  'tours-card': ('wheel', 'var(--stone-hi)'), 'year-card': ('crown', 'var(--copper-hi)'), 'phases-card': ('stars', 'var(--copper-hi)'),
+  'tours-card': ('wheel', 'var(--stone-hi)'), 'strength-card': ('medal', 'var(--stone-hi)'), 'year-card': ('crown', 'var(--copper-hi)'), 'phases-card': ('stars', 'var(--copper-hi)'),
 }
 def css():
     out = ["\n/* Card icons: a different Olympic-style pictogram per card (star, flame, wheel, medal...) */", ":root {"]

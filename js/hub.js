@@ -970,6 +970,51 @@ const ED_GOAL_KM = Math.round(ED_GOAL_MI * 1.609344); // the same goal in km (89
     box.onclick = () => box.classList.toggle('open');
   });
 
+  // Strength: the next strength session in the plan, with a box to tick for each exercise.
+  // Ticks are saved on this device only (localStorage), per date and exercise.
+  const STR_KEY = (date, i) => 'hub.str.' + date + '.' + i;
+  const strGet = (k) => { try { return localStorage.getItem(k) === '1'; } catch { return false; } };
+  const strSet = (k, v) => { try { if (v) localStorage.setItem(k, '1'); else localStorage.removeItem(k); } catch {} };
+  dash.draw('strength', (box) => {
+    const card = box.closest('.card');
+    const nx = dash.data('plan_next');
+    const rows = [...(planRows() || []), ...(nx.status === 'ok' ? [...nx.data].sort((a, b) => a.order - b.order) : [])];
+    const today = todayStr();
+    const done = (r) => r.strength.items.every((_, i) => strGet(STR_KEY(r.date, i)));
+    // Today's session (even once finished, so you see it ticked), else the next one not finished.
+    const withStr = rows.filter((r) => r.strength && Array.isArray(r.strength.items) && r.strength.items.length);
+    const r = withStr.find((x) => x.date === today) || withStr.find((x) => x.date > today && !done(x));
+    if (card) card.classList.toggle('off', !r);
+    if (!r) { box.replaceChildren(); return; }
+    const when = r.date === today ? 'Today' : d3.timeFormat('%A, %b %-d')(asDate(r.date));
+    const note = card && card.querySelector('[data-str-when]');
+    if (note) note.textContent = when + (r.strength.when ? ', ' + r.strength.when : '') + (r.strength.minutes ? ' · about ' + r.strength.minutes + ' min' : '');
+    box.replaceChildren();
+    const head = el('div', 'str-h');
+    const prog = el('span', 'str-p');
+    head.append(el('b', null, r.strength.name || 'Strength'), prog);
+    const list = el('ul', 'str-list');
+    const upd = () => {
+      const n = r.strength.items.filter((_, i) => strGet(STR_KEY(r.date, i))).length;
+      prog.textContent = n === r.strength.items.length ? 'All done' : n + ' of ' + r.strength.items.length;
+      prog.classList.toggle('ok', n === r.strength.items.length);
+    };
+    r.strength.items.forEach((it, i) => {
+      const li = el('li');
+      const lab = el('label', 'str-i');
+      const cb = el('input');
+      cb.type = 'checkbox';
+      cb.checked = strGet(STR_KEY(r.date, i));
+      cb.addEventListener('change', () => { strSet(STR_KEY(r.date, i), cb.checked); lab.classList.toggle('on', cb.checked); upd(); });
+      lab.classList.toggle('on', cb.checked);
+      lab.append(cb, el('span', 'str-x', it.ex), el('span', 'str-d', it.dose));
+      li.append(lab);
+      list.append(li);
+    });
+    box.append(head, list);
+    upd();
+  });
+
   // Today's recap: once a ride is logged on a plan day, compare it with what was planned.
   const todayStr = () => d3.timeFormat('%Y-%m-%d')(new Date());
   const recapDay = () => {

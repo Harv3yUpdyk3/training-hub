@@ -1,14 +1,14 @@
 {
  "week_start": "2026-11-09",
- "updated_at": "2026-11-02T15:00:00Z",
+ "updated_at": "2026-11-06T18:45:48Z",
  "updated_by": "Claude",
  "days": [
   {
    "order": 1,
    "day": "Mon",
    "date": "2026-11-09",
-   "session": "Rest",
-   "details": "Full rest after the Sunday long ride.",
+   "session": "Strength A (no ride)",
+   "details": "No ride after the weekend long ride. Strength A, about 25 min: goblet squats 3 × 10, Bulgarian split squats 3 × 8 each leg, Romanian deadlifts 3 × 10, plank 3 × 40 s, side plank 2 × 30 s each side. Use a dumbbell or kettlebell, or bodyweight. Stop 2 reps short of failure.",
    "target_hr": "—",
    "target_miles": "0",
    "status": "Planned",
@@ -29,8 +29,8 @@
    "order": 3,
    "day": "Wed",
    "date": "2026-11-11",
-   "session": "Easy Zone 2",
-   "details": "Conversational pace. Flat route, keep the HR strap on.",
+   "session": "Easy Zone 2 + Strength B",
+   "details": "Conversational pace. Flat route, keep the HR strap on. After the ride, Strength B, about 20 min: step-ups 3 × 10 each leg, single-leg glute bridges 3 × 12 each leg, calf raises 3 × 15, dead bugs 3 × 10. Light, so Thursday's hill repeats stay fresh.",
    "target_hr": "125–145",
    "target_miles": "15–18",
    "status": "Planned",

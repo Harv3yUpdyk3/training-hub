@@ -1,15 +1,119 @@
 [
- {"order": 1, "group": "Goals", "item": "Eddington 55", "detail": "Get to 55 days of 55+ miles (about 30 now). One 55-miler a week gets you there around May 2027. Long rides are set to 55 mi so each one counts.", "cost": "—", "status": "In progress", "due": "May 2027"},
- {"order": 2, "group": "Goals", "item": "Kennesaw Mountain", "detail": "Climb it for the first time someday, as Colombier practice: steady seated efforts up the summit road. Check the park's bike hours first.", "cost": "—", "status": "To do", "due": "Someday"},
- {"order": 3, "group": "Goals", "item": "Brasstown Bald or Hogpen Gap", "detail": "The next step up after Kennesaw: about 400 m of climbing in one go, a third of a Tourmalet. Plan it for a dry weekend in the climb-specific phase.", "cost": "—", "status": "To do", "due": "Mar 2027"},
- {"order": 4, "group": "Gear", "item": "Power meter", "detail": "SRAM Force E1 XPLR power meter crank arm (left side, keeps your 40T). Match your crank length.", "cost": "about $240", "status": "To do", "due": "Nov 2026"},
- {"order": 5, "group": "Gear", "item": "Install", "detail": "Shop fit, or DIY with an 8 mm hex key and a torque wrench. Pair it and run a zero offset.", "cost": "about $20–50 (estimate)", "status": "To do", "due": "Nov 2026"},
- {"order": 6, "group": "Gear", "item": "Indoor trainer", "detail": "Rain cost you three weekend rides in two weeks. A smart trainer or rollers turns rain days into Zone 2 or threshold sessions instead of zero.", "cost": "about $300–700 (estimate)", "status": "To do", "due": "Dec 2026"},
- {"order": 8, "group": "Training", "item": "Heart rate strap", "detail": "Wear it every ride.", "cost": "—", "status": "In progress", "due": "Every ride"},
- {"order": 9, "group": "Training", "item": "FTP test", "detail": "20-minute test in the first week with the meter, then power targets get redone.", "cost": "—", "status": "To do", "due": "After the meter"},
- {"order": 10, "group": "Training", "item": "Strength, twice a week", "detail": "20–30 min: squats, split squats, step-ups, core. It pays off on 1,300 m climbs. Keep it on easy or rest days.", "cost": "—", "status": "To do", "due": "Base, Nov–Feb"},
- {"order": 11, "group": "Training", "item": "Fuel practice", "detail": "On every 55-miler, eat every 30–45 min and drink about a bottle an hour, the same routine the 3–4 hour Alpine days need.", "cost": "—", "status": "To do", "due": "Each long ride"},
- {"order": 12, "group": "Training", "item": "Recovery week", "detail": "Every fourth week, cut volume by a third. Next one: Thanksgiving week, Nov 23–29.", "cost": "—", "status": "To do", "due": "Nov 23"},
- {"order": 13, "group": "Trip prep", "item": "Gearing check", "detail": "40 × 52 is fine for 7–8% grades; confirm it before you book a rental or ship the bike, and practice seated climbing in that gear.", "cost": "—", "status": "To do", "due": "Mar 2027"},
- {"order": 14, "group": "Trip prep", "item": "Bike fit check", "detail": "Hours in the saddle go up in 2027. A fit check before the climb-specific phase avoids knee or back trouble on long climbs.", "cost": "about $150–300 (estimate)", "status": "To do", "due": "Feb 2027"}
+ {
+  "order": 1,
+  "group": "Goals",
+  "item": "Eddington 55",
+  "detail": "Get to 55 days of 55+ miles (about 30 now). One 55-miler a week gets you there around May 2027. Long rides are set to 55 mi so each one counts.",
+  "cost": "—",
+  "status": "In progress",
+  "due": "May 2027"
+ },
+ {
+  "order": 2,
+  "group": "Goals",
+  "item": "Kennesaw Mountain",
+  "detail": "Climb it for the first time someday, as Colombier practice: steady seated efforts up the summit road. Check the park's bike hours first.",
+  "cost": "—",
+  "status": "To do",
+  "due": "Someday"
+ },
+ {
+  "order": 3,
+  "group": "Goals",
+  "item": "Brasstown Bald or Hogpen Gap",
+  "detail": "The next step up after Kennesaw: about 400 m of climbing in one go, a third of a Tourmalet. Plan it for a dry weekend in the climb-specific phase.",
+  "cost": "—",
+  "status": "To do",
+  "due": "Mar 2027"
+ },
+ {
+  "order": 4,
+  "group": "Gear",
+  "item": "Power meter",
+  "detail": "SRAM Force E1 XPLR power meter crank arm (left side, keeps your 40T). Match your crank length.",
+  "cost": "about $240",
+  "status": "To do",
+  "due": "Nov 2026"
+ },
+ {
+  "order": 5,
+  "group": "Gear",
+  "item": "Install",
+  "detail": "Shop fit, or DIY with an 8 mm hex key and a torque wrench. Pair it and run a zero offset.",
+  "cost": "about $20–50 (estimate)",
+  "status": "To do",
+  "due": "Nov 2026"
+ },
+ {
+  "order": 6,
+  "group": "Gear",
+  "item": "Indoor trainer",
+  "detail": "Rain cost you three weekend rides in two weeks. A smart trainer or rollers turns rain days into Zone 2 or threshold sessions instead of zero.",
+  "cost": "about $300–700 (estimate)",
+  "status": "To do",
+  "due": "Dec 2026"
+ },
+ {
+  "order": 8,
+  "group": "Training",
+  "item": "Heart rate strap",
+  "detail": "Wear it every ride.",
+  "cost": "—",
+  "status": "In progress",
+  "due": "Every ride"
+ },
+ {
+  "order": 9,
+  "group": "Training",
+  "item": "FTP test",
+  "detail": "20-minute test in the first week with the meter, then power targets get redone.",
+  "cost": "—",
+  "status": "To do",
+  "due": "After the meter"
+ },
+ {
+  "order": 10,
+  "group": "Training",
+  "item": "Strength, twice a week",
+  "detail": "Now scheduled in the weekly plan: Strength A on Monday, Strength B after Wednesday's easy ride. Never the day before a long ride.",
+  "cost": "—",
+  "status": "In progress",
+  "due": "Base, Nov–Feb"
+ },
+ {
+  "order": 11,
+  "group": "Training",
+  "item": "Fuel practice",
+  "detail": "On every 55-miler, eat every 30–45 min and drink about a bottle an hour, the same routine the 3–4 hour Alpine days need.",
+  "cost": "—",
+  "status": "To do",
+  "due": "Each long ride"
+ },
+ {
+  "order": 12,
+  "group": "Training",
+  "item": "Recovery week",
+  "detail": "Every fourth week, cut volume by a third. Next one: Thanksgiving week, Nov 23–29.",
+  "cost": "—",
+  "status": "To do",
+  "due": "Nov 23"
+ },
+ {
+  "order": 13,
+  "group": "Trip prep",
+  "item": "Gearing check",
+  "detail": "40 × 52 is fine for 7–8% grades; confirm it before you book a rental or ship the bike, and practice seated climbing in that gear.",
+  "cost": "—",
+  "status": "To do",
+  "due": "Mar 2027"
+ },
+ {
+  "order": 14,
+  "group": "Trip prep",
+  "item": "Bike fit check",
+  "detail": "Hours in the saddle go up in 2027. A fit check before the climb-specific phase avoids knee or back trouble on long climbs.",
+  "cost": "about $150–300 (estimate)",
+  "status": "To do",
+  "due": "Feb 2027"
+ }
 ]

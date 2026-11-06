@@ -1,6 +1,6 @@
 {
  "week_start": "2026-11-02",
- "updated_at": "2026-11-06T13:28:04Z",
+ "updated_at": "2026-11-06T23:50:41Z",
  "updated_by": "Claude",
  "days": [
   {
@@ -61,8 +61,10 @@
    "details": "The 26-mile Beltline loop, steady Zone 2. Hascall repeats skipped this week after the rain-out; they return next week.",
    "target_hr": "130–150, cap 153",
    "target_miles": "26",
-   "status": "Planned",
-   "intensity": "Endurance"
+   "status": "Done",
+   "intensity": "Endurance",
+   "actual": "25.2 mi Beltline loop, 1:42 moving, 1,312 ft, 14.8 mph, Relative Effort 129, 22 PRs",
+   "actual_short": "25 mi"
   },
   {
    "order": 6,

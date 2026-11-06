@@ -1,6 +1,6 @@
 {
  "week_start": "2026-11-02",
- "updated_at": "2026-11-03T12:48:02Z",
+ "updated_at": "2026-11-06T13:28:04Z",
  "updated_by": "Claude",
  "days": [
   {
@@ -19,44 +19,50 @@
    "day": "Tue",
    "date": "2026-11-03",
    "session": "Threshold 3 × 10 min",
-   "details": "20 min easy warm-up, then 3 × 10 min at threshold with 5 min easy between. Steady and seated, like a long climb. Easy spin home. Moved from Monday.",
+   "details": "20 min easy warm-up, then 3 × 10 min at threshold with 5 min easy between. Steady and seated, like a long climb. Easy spin home. Moved from Monday. Not ridden.",
    "target_hr": "169–178 in the efforts",
    "target_miles": "18–22",
-   "status": "Planned",
-   "intensity": "Threshold"
+   "status": "Skipped",
+   "intensity": "Threshold",
+   "actual": "No ride",
+   "actual_short": "—"
   },
   {
    "order": 3,
    "day": "Wed",
    "date": "2026-11-04",
    "session": "Zone 2 endurance",
-   "details": "75–90 min steady. Keep it conversational.",
+   "details": "75–90 min steady. Keep it conversational. Rained out all day.",
    "target_hr": "130–150, cap 153",
    "target_miles": "17–21",
-   "status": "Planned",
-   "intensity": "Endurance"
+   "status": "Skipped",
+   "intensity": "Endurance",
+   "actual": "Rained out",
+   "actual_short": "Rain"
   },
   {
    "order": 4,
    "day": "Thu",
    "date": "2026-11-05",
-   "session": "Rest or easy spin",
-   "details": "Off, or a 30-minute spin.",
+   "session": "Easy ride home on the Bombtrack",
+   "details": "Off, or a 30-minute spin. Picked up the Bombtrack from the bike shop and rode it home.",
    "target_hr": "under 125",
    "target_miles": "0–6",
-   "status": "Planned",
-   "intensity": "Rest"
+   "status": "Done",
+   "intensity": "Rest",
+   "actual": "11.2 mi, 55 min moving, 699 ft: picked up the Bombtrack from the shop and rode it home",
+   "actual_short": "11 mi"
   },
   {
    "order": 5,
    "day": "Fri",
    "date": "2026-11-06",
-   "session": "Hascall hill repeats",
-   "details": "4–5 mi easy warm-up, 4 × Full Hascall Hill at 8/10 effort, 4–5 min easy between. Push the first rep: aim to reach 175 by the top. Stop if a rep is 15+ s slower than the first.",
-   "target_hr": "175–183 by end of each rep",
-   "target_miles": "12–15",
+   "session": "Beltline loop",
+   "details": "The 26-mile Beltline loop, steady Zone 2. Hascall repeats skipped this week after the rain-out; they return next week.",
+   "target_hr": "130–150, cap 153",
+   "target_miles": "26",
    "status": "Planned",
-   "intensity": "VO2"
+   "intensity": "Endurance"
   },
   {
    "order": 6,

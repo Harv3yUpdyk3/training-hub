@@ -1,6 +1,8 @@
 // The hub's own charts and calculations, ported unchanged from the dashboard.
 const ED_GOAL_MI = 55; // Will's Eddington goal, in miles
 const ED_GOAL_KM = Math.round(ED_GOAL_MI * 1.609344); // the same goal in km (89)
+// Eddington counts bike rides but not e-bike rides (Will's call, Nov 3 2026).
+const edRide = (r) => /Ride/.test(r.sport_type || 'Ride') && !/^E(Bike|MountainBike)Ride$/.test(r.sport_type || '');
 {
   const ridesLoader = {
     description: 'Strava returns activities a page at a time; this follows the pages and makes one row per activity.',
@@ -551,8 +553,6 @@ const ED_GOAL_KM = Math.round(ED_GOAL_MI * 1.609344); // the same goal in km (89
 
 
 
-  // Eddington counts bike rides but not e-bike rides (Will's call, Nov 3 2026).
-  const edRide = (r) => /Ride/.test(r.sport_type || 'Ride') && !/^E(Bike|MountainBike)Ride$/.test(r.sport_type || '');
   dash.calc('eddington', {
     inputs: ['rides_all', 'rides'],
     title: 'Eddington number, all time',
@@ -2527,6 +2527,11 @@ const ED_GOAL_KM = Math.round(ED_GOAL_MI * 1.609344); // the same goal in km (89
     if (isImp()) cell('55+ mi days', fmt(big), 'toward Eddington 55');
     else cell('100+ km days', fmt(days.filter((d) => d[1] * KM_MI >= 100).length));
     if (e1 != null) cell('Eddington (mi)', String(e1), e0 != null ? (e1 - e0 >= 0 ? '+' : '') + (e1 - e0) + ' this year, from ' + e0 : null);
+    // 2026-only Eddington: rides on the same day are added together; e-bike rides don't count.
+    const yrDays = d3.rollups(rg.data.filter(edRide), (v) => d3.sum(v, (r) => r.miles), (r) => r.date).map((d) => (isImp() ? d[1] : d[1] * KM_MI)).sort((a, b) => b - a);
+    let ey = 0; while (ey < yrDays.length && yrDays[ey] >= ey + 1) ey++;
+    const eyNeed = ey + 1 - yrDays.filter((v) => v >= ey + 1).length;
+    cell('2026 Eddington (' + distU() + ')', String(ey), eyNeed + ' more ' + (eyNeed === 1 ? 'day' : 'days') + ' of ' + (ey + 1) + '+ ' + distU() + ' for ' + (ey + 1));
     if (ll != null) cell('Local Legends', String(ll), 'as of the last update');
     if (eg.status === 'ok' && eg.data.length) cell('Longest streak', eg.data[0].longest_run + ' ' + (eg.data[0].longest_run === 1 ? 'day' : 'days'));
     box.append(grid);

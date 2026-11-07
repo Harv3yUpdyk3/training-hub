@@ -67,6 +67,15 @@ Rules:
   - Hover tooltips on days and stats.
   - Drag-to-fling day strip.
   - Stage-profile cursor trail on the hero.
+- Motion rules (Will, 7 Nov 2026, `fx6` block):
+  - Entrances ease out; moves (tab pill, tooltip hops, tab bar) ease in-out; exits ease in and run about 20% shorter.
+  - Dropdowns and popovers take 150 to 250ms and start at scale 0.95, growing from what you tapped (lightbox, share card, next-up pill, tooltips from their arrow).
+  - No bounce or overshoot on everyday UI. Only the one-off hero letters and route-map stops keep a pop.
+  - Buttons press to 0.97 at once and ease back on release.
+  - Rows settle in 30ms apart when you switch tab or day (only what is on screen, at most 14).
+  - Swapped content (pill text and Today card, fold +/–) crossfades with a little blur and overlaps.
+  - A ticked box gives a small green pulse; the jersey sparks fly in arcs.
+  - The desktop day strip rubber-bands past its ends.
 - Everything is off under reduced motion. Don't add a new effect without asking Will. Ideas go to the enhancement plan, and Will picks.
 
 ## 8. Do and don't
@@ -101,6 +110,7 @@ Don't:
   - `fx3`: desktop layer.
   - `fx4`: pill, drag strip, tooltips, trail.
   - `fx5`: polish pass and app rules.
+  - `fx6`: motion rules (timings, press, stagger, crossfades, rubber band).
 
   Class names that already exist (`.ch`, `.open`) collide, so prefix new ones.
 - Don't bump `sw.js` for Road Book changes.

@@ -36,6 +36,7 @@
       if (!animate || reduce) pill.style.transition = 'none';
       pill.style.width = t.offsetWidth + 'px';
       pill.style.height = t.offsetHeight + 'px';
+      if (animate && !reduce && pill.style.transform && pill.style.transform !== `translate(${t.offsetLeft}px, ${t.offsetTop}px)`) pill.animate([{ scale: '1 1' }, { scale: '1.12 1' }, { scale: '1 1' }], { duration: 340, easing: 'ease-in-out' });
       pill.style.transform = `translate(${t.offsetLeft}px, ${t.offsetTop}px)`;
       pill.dataset.tab = t.dataset.tab;
       if (!animate || reduce) { pill.offsetWidth; pill.style.transition = ''; }
@@ -61,6 +62,7 @@
       if (was) { pill.style.transition = 'none'; Object.assign(pill.style, was); pill.offsetWidth; pill.style.transition = ''; animate = true; }
     }
     if (!on) { pill.style.opacity = '0'; return; }
+    if (animate && !reduce && pill.style.transform && pill.style.transform !== `translate(${on.offsetLeft}px, ${on.offsetTop}px)`) pill.animate([{ scale: '1 1' }, { scale: '1.12 1' }, { scale: '1 1' }], { duration: 300, easing: 'ease-in-out' });
     if (!animate || reduce) pill.style.transition = 'none';
     const pos = { opacity: '1', width: on.offsetWidth + 'px', height: on.offsetHeight + 'px', transform: `translate(${on.offsetLeft}px, ${on.offsetTop}px)` };
     Object.assign(pill.style, pos);

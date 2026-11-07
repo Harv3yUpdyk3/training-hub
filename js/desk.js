@@ -83,18 +83,28 @@
     }));
     if (!shown.length) list.append(el('li', 'pal-none', 'No matches'));
   };
-  const choose = (i) => { const it = shown[i]; if (!it) return; pal.close(); it.run(); };
-  const openPal = () => { all = items(); input.value = ''; sel = 0; render(); pal.showModal(); input.focus(); };
+  const closePal = (then) => {
+    if (!pal.open) return;
+    if (reduce) { pal.close(); if (then) then(); return; }
+    const a = pal.animate([{ opacity: 1, transform: 'none' }, { opacity: 0, transform: 'scale(.95)' }], { duration: 160, easing: 'ease-in' });
+    a.onfinish = () => { pal.close(); if (then) then(); };
+  };
+  const choose = (i) => { const it = shown[i]; if (!it) return; closePal(() => it.run()); };
+  const openPal = () => {
+    all = items(); input.value = ''; sel = 0; render(); pal.showModal(); input.focus();
+    if (!reduce) pal.animate([{ opacity: 0, transform: 'scale(.95)' }, { opacity: 1, transform: 'none' }], { duration: 200, easing: 'cubic-bezier(.2,.8,.2,1)' });
+  };
   input.addEventListener('input', () => { sel = 0; render(); });
   input.addEventListener('keydown', (e) => {
     if (e.key === 'ArrowDown') { e.preventDefault(); sel = Math.min(shown.length - 1, sel + 1); render(); }
     else if (e.key === 'ArrowUp') { e.preventDefault(); sel = Math.max(0, sel - 1); render(); }
     else if (e.key === 'Enter') { e.preventDefault(); choose(sel); }
-    else if (e.key === 'Escape') { e.preventDefault(); pal.close(); }
+    else if (e.key === 'Escape') { e.preventDefault(); closePal(); }
   });
-  pal.addEventListener('click', (e) => { if (e.target === pal) pal.close(); });
+  pal.addEventListener('click', (e) => { if (e.target === pal) closePal(); });
+  pal.addEventListener('cancel', (e) => { e.preventDefault(); closePal(); });
   addEventListener('keydown', (e) => {
-    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); if (pal.open) pal.close(); else openPal(); }
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); if (pal.open) closePal(); else openPal(); }
     else if (e.key === '/' && !/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName) && !document.querySelector('dialog[open]')) { e.preventDefault(); openPal(); }
   });
   // A small hint button in the masthead.
@@ -199,10 +209,15 @@
   dlg.append(close);
   root.append(dlg);
   const putBack = () => { if (card.parentNode === dlg) home.after(card); };
+  let lastFrom = null;
+  // Exit back into the row it came from, 20% quicker than the entrance (380 ms in, 300 ms out).
   const shut = () => {
     if (!dlg.open) return;
     if (reduce) { dlg.close(); return; }
-    const a = dlg.animate([{ opacity: 1, transform: 'none' }, { opacity: 0, transform: 'scale(.96)' }], { duration: 160, easing: 'ease-in' });
+    const d = dlg.getBoundingClientRect();
+    const r = lastFrom && lastFrom.isConnected ? lastFrom.getBoundingClientRect() : null;
+    const to = r && r.height ? `translate(${r.left - d.left}px, ${r.top - d.top}px) scale(${r.width / d.width}, ${Math.max(0.06, r.height / d.height)})` : 'scale(.96)';
+    const a = dlg.animate([{ transformOrigin: 'top left', opacity: 1, transform: 'none' }, { transformOrigin: 'top left', opacity: 0, transform: to }], { duration: 300, easing: 'cubic-bezier(.4,0,.2,1)' });
     a.onfinish = () => dlg.close();
   };
   dlg.addEventListener('close', putBack);
@@ -212,6 +227,7 @@
 
   window.hubRideDialog = (from) => {
     if (!document.documentElement.classList.contains('desk')) return false;
+    lastFrom = from || null;
     if (card.parentNode !== dlg) dlg.append(card);
     if (!dlg.open) dlg.showModal();
     dlg.scrollTop = 0;

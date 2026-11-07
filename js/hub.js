@@ -997,15 +997,18 @@ const edRide = (r) => /Ride/.test(r.sport_type || 'Ride') && !/^E(Bike|MountainB
     const upd = () => {
       const n = r.strength.items.filter((_, i) => strGet(STR_KEY(r.date, i))).length;
       prog.textContent = n === r.strength.items.length ? 'All done' : n + ' of ' + r.strength.items.length;
-      prog.classList.toggle('ok', n === r.strength.items.length);
+      const all = n === r.strength.items.length;
+      if (all && !prog.classList.contains('ok') && upd.ready) { prog.classList.remove('pulse'); prog.offsetWidth; prog.classList.add('pulse'); }
+      prog.classList.toggle('ok', all);
     };
     r.strength.items.forEach((it, i) => {
       const li = el('li');
+      li.style.setProperty('--i', i);
       const lab = el('label', 'str-i');
       const cb = el('input');
       cb.type = 'checkbox';
       cb.checked = strGet(STR_KEY(r.date, i));
-      cb.addEventListener('change', () => { strSet(STR_KEY(r.date, i), cb.checked); lab.classList.toggle('on', cb.checked); upd(); });
+      cb.addEventListener('change', () => { strSet(STR_KEY(r.date, i), cb.checked); lab.classList.toggle('on', cb.checked); if (cb.checked) { cb.classList.remove('pulse'); cb.offsetWidth; cb.classList.add('pulse'); } upd(); });
       lab.classList.toggle('on', cb.checked);
       lab.append(cb, el('span', 'str-x', it.ex), el('span', 'str-d', it.dose));
       li.append(lab);
@@ -1013,6 +1016,7 @@ const edRide = (r) => /Ride/.test(r.sport_type || 'Ride') && !/^E(Bike|MountainB
     });
     box.append(head, list);
     upd();
+    upd.ready = true;
   });
 
   // Today's recap: once a ride is logged on a plan day, compare it with what was planned.

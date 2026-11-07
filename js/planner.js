@@ -110,7 +110,11 @@
     $('.pw-rel').textContent = rel;
     $('.pw-dates').textContent = fmtDay(asDate(start)) + ' – ' + fmtDay(asDate(end));
   };
-  const status = (text, kind) => { const s = $('.pw-status'); s.textContent = text || ''; s.dataset.kind = kind || ''; };
+  const status = (text, kind) => {
+    const s = $('.pw-status'); s.textContent = text || ''; s.dataset.kind = kind || '';
+    // A short pulse confirms a save.
+    if (/^Saved/.test(text || '')) { s.classList.remove('pulse'); s.offsetWidth; s.classList.add('pulse'); }
+  };
 
   const render = () => {
     label();
@@ -125,6 +129,7 @@
       const row = el('button', 'pw-day' + (String(d.status).toLowerCase() === 'done' ? ' done' : String(d.status).toLowerCase() === 'skipped' ? ' skipped' : ''));
       row.type = 'button';
       row.style.setProperty('--int', `var(${INT_COLOR[d.intensity] || '--cds-chart-muted'})`);
+      row.style.setProperty('--i', i);
       const left = el('span', 'pw-when');
       left.append(el('b', null, d.day), el('small', null, fmtDay(asDate(d.date))));
       const mid = el('span', 'pw-mid');
@@ -384,7 +389,14 @@
     sheet.hidden = false;
     f('session').focus();
   };
-  const closeEditor = () => { sheet.hidden = true; editing = -1; };
+  // Exit is shorter than the entrance (240 ms in, about 190 ms out).
+  const closeEditor = () => {
+    editing = -1;
+    const inner = sheet.querySelector('.sheet-in');
+    if (!inner || sheet.hidden || !document.documentElement.classList.contains('motion')) { sheet.hidden = true; return; }
+    sheet.classList.add('closing');
+    setTimeout(() => { sheet.hidden = true; sheet.classList.remove('closing'); }, 190);
+  };
   sheet.querySelector('.ps-cancel').addEventListener('click', closeEditor);
   sheet.addEventListener('click', (e) => { if (e.target === sheet) closeEditor(); });
   sheet.querySelector('.ps-rest').addEventListener('click', () => {

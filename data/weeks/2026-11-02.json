@@ -1,6 +1,6 @@
 {
  "week_start": "2026-11-02",
- "updated_at": "2026-11-07T17:07:16Z",
+ "updated_at": "2026-11-07T21:40:41Z",
  "updated_by": "Claude",
  "days": [
   {
@@ -74,8 +74,10 @@
    "details": "55+ mi (Eddington 55 goal: every 55-mile day counts). Eat every 30–45 min, drink a bottle an hour. Moved from Sunday.",
    "target_hr": "130–150, cap 153",
    "target_miles": "55",
-   "status": "Planned",
-   "intensity": "Endurance"
+   "status": "Done",
+   "intensity": "Endurance",
+   "actual": "56.6 mi on the Silver Comet, 3:40 moving, 1,539 ft, 15.4 mph, Relative Effort 143. An Eddington 55 day.",
+   "actual_short": "57 mi"
   },
   {
    "order": 7,

@@ -1,6 +1,6 @@
 {
  "week_start": "2026-11-09",
- "updated_at": "2026-11-06T18:46:27Z",
+ "updated_at": "2026-11-10T16:00:00Z",
  "updated_by": "Claude",
  "days": [
   {
@@ -11,8 +11,32 @@
    "details": "No ride after the weekend long ride. Strength A, about 25 min: tick each exercise off on Today. Use a dumbbell or kettlebell, or bodyweight; stop 2 reps short of failure.",
    "target_hr": "—",
    "target_miles": "0",
-   "status": "Planned",
+   "status": "Done",
    "intensity": "Rest",
+   "actual": "3.3 mi ride to the store. Strength A not done: moved to Wednesday.",
+   "actual_short": "3 mi"
+  },
+  {
+   "order": 2,
+   "day": "Tue",
+   "date": "2026-11-10",
+   "session": "Sweet spot 2 × 20 min",
+   "details": "15 min easy, then 2 × 20 min at the top of Zone 3 with 5 min easy between. Seated, steady cadence 85–95.",
+   "target_hr": "160–168 in the efforts",
+   "target_miles": "20–24",
+   "status": "Planned",
+   "intensity": "Tempo"
+  },
+  {
+   "order": 3,
+   "day": "Wed",
+   "date": "2026-11-11",
+   "session": "Easy Zone 2 + Strength A",
+   "details": "Day off work. Ride first: conversational pace on a flat route, HR strap on, stretch it out if you feel good. Then Strength A (about 25 min, moved from Monday): tick each exercise off on Today. Stop 2 reps short of failure, since hills are tomorrow.",
+   "target_hr": "125–145",
+   "target_miles": "18–25",
+   "status": "Planned",
+   "intensity": "Endurance",
    "strength": {
     "name": "Strength A",
     "minutes": 25,
@@ -41,34 +65,34 @@
       "ex": "Side plank",
       "dose": "2 × 30 s each side"
      }
-    ]
+    ],
+    "when": "after the ride"
    }
   },
   {
-   "order": 2,
-   "day": "Tue",
-   "date": "2026-11-10",
-   "session": "Sweet spot 2 × 20 min",
-   "details": "15 min easy, then 2 × 20 min at the top of Zone 3 with 5 min easy between. Seated, steady cadence 85–95.",
-   "target_hr": "160–168 in the efforts",
-   "target_miles": "20–24",
+   "order": 4,
+   "day": "Thu",
+   "date": "2026-11-12",
+   "session": "Hill repeats 5 × 3 min",
+   "details": "Warm up 20 min, then 5 × 3 min hard on a steady climb, roll back down to recover. Kennesaw prep. If the legs are heavy from Wednesday's squats, do 4 repeats instead of 5.",
+   "target_hr": "170–180 on the climbs",
+   "target_miles": "16–20",
    "status": "Planned",
-   "intensity": "Tempo"
+   "intensity": "Threshold"
   },
   {
-   "order": 3,
-   "day": "Wed",
-   "date": "2026-11-11",
-   "session": "Easy Zone 2",
-   "details": "Conversational pace. Flat route, keep the HR strap on.",
-   "target_hr": "125–145",
-   "target_miles": "15–18",
+   "order": 5,
+   "day": "Fri",
+   "date": "2026-11-13",
+   "session": "Strength B + optional easy spin",
+   "details": "Strength B, about 20 min (moved from Wednesday so it isn't two sessions in one day). Add 30–40 min very easy on the bike only if the legs want it. Keep it light before Saturday's long ride.",
+   "target_hr": "under 130",
+   "target_miles": "0–8",
    "status": "Planned",
-   "intensity": "Endurance",
+   "intensity": "Rest",
    "strength": {
     "name": "Strength B",
     "minutes": 20,
-    "when": "after the ride",
     "items": [
      {
       "ex": "Step-ups",
@@ -92,28 +116,6 @@
      }
     ]
    }
-  },
-  {
-   "order": 4,
-   "day": "Thu",
-   "date": "2026-11-12",
-   "session": "Hill repeats 5 × 3 min",
-   "details": "Warm up 20 min, then 5 × 3 min hard on a steady climb, roll back down to recover. Kennesaw prep.",
-   "target_hr": "170–180 on the climbs",
-   "target_miles": "16–20",
-   "status": "Planned",
-   "intensity": "Threshold"
-  },
-  {
-   "order": 5,
-   "day": "Fri",
-   "date": "2026-11-13",
-   "session": "Rest or easy spin",
-   "details": "Off, or 30–40 min very easy if the legs want it.",
-   "target_hr": "under 130",
-   "target_miles": "0–8",
-   "status": "Planned",
-   "intensity": "Rest"
   },
   {
    "order": 6,

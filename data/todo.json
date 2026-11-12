@@ -97,5 +97,14 @@
   "cost": "—",
   "status": "To do",
   "due": "Nov 23"
+ },
+ {
+  "order": 13,
+  "group": "Trip prep",
+  "item": "Scan passport",
+  "detail": "Scan or photograph the photo page and save a copy offline on your phone and in Google Drive. While it's out, check it's valid until at least late October 2027.",
+  "cost": "—",
+  "status": "To do",
+  "due": "Soon"
  }
 ]

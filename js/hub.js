@@ -2225,10 +2225,10 @@ const edRide = (r) => /Ride/.test(r.sport_type || 'Ride') && !/^E(Bike|MountainB
     const cl = (() => { const g = dash.data('climbs'); return g.status === 'ok' ? g.data.find((d) => d && /single/.test(d.what)) : null; })();
     const goal = ed && (ed.ladder_mi || []).find((l) => l.level === ED_GOAL_MI);
     const wDone = wk ? (isImp() ? wk.ridden_mi : wk.ridden_km) : 0;
-    const need = yr ? dist(Math.max(yr.km_per_week, GOAL_KM / 52)) : 0;
+    const need = yr ? dist(yr.km_per_week) : 0;
     box.replaceChildren(
       ring(mo ? mo.pct / 100 : null, 'var(--amethyst)', mo ? fmt(isImp() ? mo.mi : mo.km) : '—', mo ? 'of ' + fmt(isImp() ? mo.target_mi : mo.target_km) + ' ' + distU() : '', mo ? mo.month : 'This month'),
-      // Week: miles so far against what the season goal needs per week (never below an even 1/52 share).
+      // Week: miles so far against what the season goal needs per week (what is left of the goal spread over the weeks to Dec 31).
       ring(wk && need ? wDone / need : null, 'var(--stone-hi)', wk ? fmt(Math.round(wDone)) : '—', 'of ' + fmt(Math.round(need)) + ' ' + distU() + ' needed', 'Week'),
       // In km the Eddington ring shows the km number against 89 km (55 mi), and the big-day ring counts 100 km days.
       isImp()

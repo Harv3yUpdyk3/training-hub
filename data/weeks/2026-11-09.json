@@ -1,7 +1,8 @@
 {
  "week_start": "2026-11-09",
- "updated_at": "2026-11-10T16:00:00Z",
+ "updated_at": "2026-11-13T01:45:00Z",
  "updated_by": "Claude",
+ "base_mi": 45,
  "days": [
   {
    "order": 1,
@@ -21,11 +22,13 @@
    "day": "Tue",
    "date": "2026-11-10",
    "session": "Sweet spot 2 × 20 min",
-   "details": "15 min easy, then 2 × 20 min at the top of Zone 3 with 5 min easy between. Seated, steady cadence 85–95.",
+   "details": "15 min easy, then 2 × 20 min at the top of Zone 3 with 5 min easy between. Seated, steady cadence 85–95. Dropped: easy riding only until the 5,000 km goal is in the bag.",
    "target_hr": "160–168 in the efforts",
    "target_miles": "20–24",
-   "status": "Planned",
-   "intensity": "Tempo"
+   "status": "Skipped",
+   "intensity": "Tempo",
+   "actual": "No ride on Strava",
+   "actual_short": "—"
   },
   {
    "order": 3,
@@ -35,7 +38,7 @@
    "details": "Day off work. Ride first: conversational pace on a flat route, HR strap on, stretch it out if you feel good. Then Strength A (about 25 min, moved from Monday): tick each exercise off on Today. Stop 2 reps short of failure, since hills are tomorrow.",
    "target_hr": "125–145",
    "target_miles": "18–25",
-   "status": "Planned",
+   "status": "Skipped",
    "intensity": "Endurance",
    "strength": {
     "name": "Strength A",
@@ -67,29 +70,33 @@
      }
     ],
     "when": "after the ride"
-   }
+   },
+   "actual": "No ride on Strava",
+   "actual_short": "—"
   },
   {
    "order": 4,
    "day": "Thu",
    "date": "2026-11-12",
    "session": "Hill repeats 5 × 3 min",
-   "details": "Warm up 20 min, then 5 × 3 min hard on a steady climb, roll back down to recover. Kennesaw prep. If the legs are heavy from Wednesday's squats, do 4 repeats instead of 5.",
+   "details": "Warm up 20 min, then 5 × 3 min hard on a steady climb, roll back down to recover. Kennesaw prep. If the legs are heavy from Wednesday's squats, do 4 repeats instead of 5. Dropped: easy riding only until year end.",
    "target_hr": "170–180 on the climbs",
    "target_miles": "16–20",
-   "status": "Planned",
-   "intensity": "Threshold"
+   "status": "Skipped",
+   "intensity": "Threshold",
+   "actual": "No ride on Strava",
+   "actual_short": "—"
   },
   {
    "order": 5,
    "day": "Fri",
    "date": "2026-11-13",
-   "session": "Strength B + optional easy spin",
-   "details": "Strength B, about 20 min (moved from Wednesday so it isn't two sessions in one day). Add 30–40 min very easy on the bike only if the legs want it. Keep it light before Saturday's long ride.",
-   "target_hr": "under 130",
-   "target_miles": "0–8",
+   "session": "Easy Zone 2 (+ Strength B if you like)",
+   "details": "Easy, conversational, flat route. Strength B after only if you feel like it.",
+   "target_hr": "125–145",
+   "target_miles": "12–18",
    "status": "Planned",
-   "intensity": "Rest",
+   "intensity": "Endurance",
    "strength": {
     "name": "Strength B",
     "minutes": 20,
@@ -121,10 +128,10 @@
    "order": 6,
    "day": "Sat",
    "date": "2026-11-14",
-   "session": "Long Zone 2",
-   "details": "55+ mi for the Eddington count. Eat every 45 min, drink a bottle an hour. Moved to Saturday so Sunday is a rain backup.",
-   "target_hr": "130–150",
-   "target_miles": "55",
+   "session": "Long easy ride",
+   "details": "All easy, no efforts. 30 mi is plenty for the season goal; go to 55+ only if you feel good, since every 55-mile day counts for Eddington. Eat every 45 min.",
+   "target_hr": "125–145",
+   "target_miles": "30–55",
    "status": "Planned",
    "intensity": "Endurance"
   },
@@ -133,8 +140,8 @@
    "day": "Sun",
    "date": "2026-11-15",
    "session": "Easy spin or rain backup",
-   "details": "If Saturday rains out, ride the long ride today. Otherwise 45–60 min easy or off.",
-   "target_hr": "under 135",
+   "details": "If Saturday rains out, ride the long easy ride today. Otherwise an easy spin or off.",
+   "target_hr": "125–145",
    "target_miles": "0–12",
    "status": "Planned",
    "intensity": "Endurance"

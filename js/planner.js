@@ -178,7 +178,7 @@
   // ---- Missed-day rebalance -------------------------------------------
   // When a day is missed (rain, errands, tired), spread the lost miles over the days
   // still to come so the week still fills the Week ring (what the 5,000 km goal needs
-  // this week, never below an even 1/52 share). Coaching rules:
+  // this week: what is left of the goal spread over the weeks to Dec 31). Coaching rules:
   //  - a missed hard session moves to one open day with no hard day either side,
   //    never onto the long ride or the day before it; if none fits, it waits for next week;
   //  - extra miles go first to Zone 2 days (up to 35 mi), then the long ride (55+ mi
@@ -201,7 +201,7 @@
     const byDate = g && g.status === 'ok' ? d3.rollup(g.data, (v) => d3.sum(v, (r) => r.miles), (r) => r.date) : null;
     const y = D && D.data('ytd');
     const yr = y && y.status === 'ok' && y.data.length ? y.data[0] : null;
-    const need = yr ? Math.round(Math.max(yr.km_per_week, 5000 / 52) / 1.609344) : null;
+    const need = yr ? Math.round(yr.km_per_week / 1.609344) : null;
     return { byDate, need };
   };
 

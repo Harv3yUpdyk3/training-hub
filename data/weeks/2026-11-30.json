@@ -1,0 +1,84 @@
+{
+ "week_start": "2026-11-30",
+ "updated_at": "2026-11-13T01:45:00Z",
+ "updated_by": "Claude",
+ "days": [
+  {
+   "order": 1,
+   "day": "Mon",
+   "date": "2026-11-30",
+   "session": "Rest",
+   "details": "Off.",
+   "target_hr": "—",
+   "target_miles": "0",
+   "status": "Planned",
+   "intensity": "Rest"
+  },
+  {
+   "order": 2,
+   "day": "Tue",
+   "date": "2026-12-01",
+   "session": "Easy Zone 2",
+   "details": "Conversational pace, no efforts. Every mile counts toward 5,000 km.",
+   "target_hr": "125–145",
+   "target_miles": "12–18",
+   "status": "Planned",
+   "intensity": "Endurance"
+  },
+  {
+   "order": 3,
+   "day": "Wed",
+   "date": "2026-12-02",
+   "session": "Rest",
+   "details": "Off, or Strength A if you feel like it.",
+   "target_hr": "—",
+   "target_miles": "0",
+   "status": "Planned",
+   "intensity": "Rest"
+  },
+  {
+   "order": 4,
+   "day": "Thu",
+   "date": "2026-12-03",
+   "session": "Easy Zone 2",
+   "details": "Conversational pace, no efforts. Every mile counts toward 5,000 km.",
+   "target_hr": "125–145",
+   "target_miles": "12–18",
+   "status": "Planned",
+   "intensity": "Endurance"
+  },
+  {
+   "order": 5,
+   "day": "Fri",
+   "date": "2026-12-04",
+   "session": "Rest",
+   "details": "Off.",
+   "target_hr": "—",
+   "target_miles": "0",
+   "status": "Planned",
+   "intensity": "Rest"
+  },
+  {
+   "order": 6,
+   "day": "Sat",
+   "date": "2026-12-05",
+   "session": "Weekend easy ride",
+   "details": "All easy. 25–35 mi covers the goal; stretch to 55+ only if you feel good (Eddington).",
+   "target_hr": "125–145",
+   "target_miles": "25–35",
+   "status": "Planned",
+   "intensity": "Endurance"
+  },
+  {
+   "order": 7,
+   "day": "Sun",
+   "date": "2026-12-06",
+   "session": "Easy spin or rain backup",
+   "details": "If Saturday rains out, ride the weekend ride today. Otherwise an easy spin or off.",
+   "target_hr": "125–145",
+   "target_miles": "0–10",
+   "status": "Planned",
+   "intensity": "Endurance"
+  }
+ ]
+}

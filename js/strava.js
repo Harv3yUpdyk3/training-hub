@@ -259,7 +259,21 @@
     return { length, start_date: start, streak_status: ongoing ? 'Ongoing' : 'Pending' };
   };
 
+  // Route Picker: the last 18 months of rides with Strava's summary line, kept only for
+  // this session (js/routes.js stores the grouped route library, not the raw lines).
+  const routeRides = () => once('routes', async () => {
+    const now = Math.floor(Date.now() / 1000);
+    const out = [];
+    for (let page = 1; page <= 5; page++) {
+      const list = await api(`/athlete/activities?after=${now - 548 * 86400}&before=${now + 86400}&per_page=200&page=${page}`);
+      list.forEach((a) => { const pl = a.map && a.map.summary_polyline; if (pl) out.push({ id: String(a.id), name: a.name, sport_type: a.sport_type || a.type, start_local: String(a.start_date_local || '').replace('Z', ''), d: a.distance, eg: a.total_elevation_gain, pl }); });
+      if (list.length < 200) break;
+    }
+    return out;
+  });
+
   const tools = {
+    route_rides: routeRides,
     list_activities: listActivities,
     get_activity_performance: (a) => performance(String(a.activity_id)),
     get_activity_streams: (a) => streams(String(a.activity_id), a.resolution),

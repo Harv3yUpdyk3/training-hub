@@ -556,6 +556,39 @@ dialog.story::backdrop { background: var(--page); }
 .pw-status.pulse { display: inline-block; transform-origin: left center; }
 @media (prefers-reduced-motion: reduce) { .pulse, .motion .pw-day, .motion .str-list li, .sheet.closing, .sheet.closing .sheet-in { animation: none !important; } :where(button, .pw-day, .str-i, .mchip):active { scale: none; } }
 
+/* ---- Route picker (Today): where to ride, from Will's own routes and the wind ---- */
+.rp-head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 14px; margin: 2px 0 10px; }
+.rp-for, .rp-wx { margin: 0; font-size: 13px; color: var(--color-fg-muted); }
+.rp-for b { color: var(--cream); font-weight: 600; }
+.rp-wdir { font: 800 15px/1 'Saira Condensed', 'Arial Narrow', sans-serif; letter-spacing: .04em; color: var(--sky); }
+.rp-list { display: grid; gap: 8px; }
+.rp-row { display: grid; grid-template-columns: 92px minmax(0, 1fr); gap: 12px; align-items: start; padding: 10px; background: var(--deep); border-radius: 2px; }
+.rp-row.top { outline: 1px solid rgba(179,126,44,.55); outline-offset: -1px; }
+.rp-map { width: 92px; height: 92px; display: block; background: #0d302a; border-radius: 2px; }
+.rp-line { fill: none; stroke-width: 3; stroke-linejoin: round; stroke-linecap: round; }
+.rp-start { fill: var(--copper-hi); stroke: var(--deep); stroke-width: 1.5; }
+.rp-wind path { fill: none; stroke: var(--cream); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; opacity: .85; }
+.rp-body { min-width: 0; display: grid; gap: 5px; }
+.rp-name { margin: 0; font: 800 17px/1.1 'Saira Condensed', 'Arial Narrow', sans-serif; text-transform: uppercase; letter-spacing: .04em; color: var(--cream); overflow-wrap: anywhere; }
+.rp-meta { margin: 0; font-size: 12.5px; color: var(--color-fg-muted); font-variant-numeric: tabular-nums; }
+.rp-chips { margin: 0; display: flex; flex-wrap: wrap; gap: 5px; }
+.rp-chip { font: 600 11px/1 var(--font-anthropic-sans, system-ui); padding: 5px 8px; border-radius: 999px; }
+.rp-chip.good { background: rgba(0,177,234,.16); color: #5fd0f5; }
+.rp-chip.bad { background: rgba(244,70,47,.16); color: #ff8a76; }
+.rp-chip.calm { background: rgba(163,194,189,.14); color: #c7d6cd; }
+.rp-chip.ed { background: rgba(244,70,47,.16); color: #ff8a76; }
+.rp-chip.best { background: rgba(179,126,44,.2); color: var(--copper-hi); }
+.rp-go { justify-self: start; display: inline-flex; align-items: center; min-height: 44px; padding: 0 18px; margin-top: 2px; border-radius: 999px; background: var(--copper); color: var(--deep); font: 700 13px var(--font-anthropic-sans, system-ui); text-decoration: none; }
+.rp-row:not(.top) .rp-go { background: transparent; color: var(--copper-hi); border: 1px solid rgba(179,126,44,.6); }
+.rp-go:active { transform: scale(.97); }
+.rp-foot { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
+.rp-foot .note { margin: 0; }
+@media (min-width: 72rem) {
+  .rp-list { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .rp-row { grid-template-columns: 1fr; }
+  .rp-map { width: 100%; height: auto; aspect-ratio: 1.6; }
+}
+
 /* Card icons: a different Olympic-style pictogram per card (star, flame, wheel, medal...) */
 :root {
   --ic-star: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpolygon points='12.00,1.60 14.91,8.60 22.46,9.20 16.71,14.13 18.47,21.50 12.00,17.55 5.53,21.50 7.29,14.13 1.54,9.20 9.09,8.60'/%3E%3C/svg%3E");
@@ -575,8 +608,10 @@ dialog.story::backdrop { background: var(--page); }
   --ic-bolt: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M14 1 4 13.5h7L9.5 23 20 10h-7z'/%3E%3C/svg%3E");
   --ic-mountain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M0 22 9 6l4.5 7 3-4.4L24 22z'/%3E%3C/svg%3E");
   --ic-bars: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect x='2' y='13' width='4' height='9' rx='1'/%3E%3Crect x='8' y='8' width='4' height='14' rx='1'/%3E%3Crect x='14' y='11' width='4' height='11' rx='1'/%3E%3Crect x='20' y='4' width='3' height='18' rx='1'/%3E%3C/svg%3E");
+  --ic-compass: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cmask id='h'%3E%3Crect width='24' height='24' fill='%23fff'/%3E%3Cpath d='M12 3.5l3.4 8.5H8.6z' fill='%23000'/%3E%3Ccircle cx='12' cy='15.5' r='1.6' fill='%23000'/%3E%3C/mask%3E%3Cg mask='url%28%23h%29'%3E%3Ccircle cx='12' cy='12' r='11'/%3E%3C/g%3E%3C/svg%3E");
   --ic-flag: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cmask id='h'%3E%3Crect width='24' height='24' fill='%23fff'/%3E%3Cpath d='M5.2 2.5h3.75v3.7H5.2zM12.7 2.5h3.75v3.7H12.7zM8.95 6.2h3.75v3.6H8.95zM16.45 6.2h3.75v3.6h-3.75zM5.2 9.8h3.75v3.7H5.2zM12.7 9.8h3.75v3.7H12.7z' fill='%23000'/%3E%3C/mask%3E%3Cg mask='url%28%23h%29'%3E%3Crect x='3' y='1.5' width='2.2' height='21' rx='1'/%3E%3Cpath d='M5.2 2.5h15v11h-15z' fill-opacity='1'/%3E%3C/g%3E%3C/svg%3E");
 }
+#route-card h2::before { -webkit-mask-image: var(--ic-compass); mask-image: var(--ic-compass); background: var(--sky); width: 17px; height: 17px; }
 #recap-card h2::before { -webkit-mask-image: var(--ic-flame); mask-image: var(--ic-flame); background: var(--orange); width: 17px; height: 17px; }
 #weather-card h2::before { -webkit-mask-image: var(--ic-sun); mask-image: var(--ic-sun); background: var(--copper-hi); width: 17px; height: 17px; }
 #cumulative-card h2::before { -webkit-mask-image: var(--ic-road); mask-image: var(--ic-road); background: var(--sky); width: 17px; height: 17px; }

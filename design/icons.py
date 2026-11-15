@@ -29,6 +29,7 @@ ICONS = {
   'bolt': "<path d='M14 1 4 13.5h7L9.5 23 20 10h-7z'/>",
   'mountain': "<path d='M0 22 9 6l4.5 7 3-4.4L24 22z'/>",
   'bars': "<rect x='2' y='13' width='4' height='9' rx='1'/><rect x='8' y='8' width='4' height='14' rx='1'/><rect x='14' y='11' width='4' height='11' rx='1'/><rect x='20' y='4' width='3' height='18' rx='1'/>",
+  'compass': "<circle cx='12' cy='12' r='11'/><path d='M12 3.5l3.4 8.5H8.6z' fill='#fff'/><circle cx='12' cy='15.5' r='1.6' fill='#fff'/>",
   'flag': "<rect x='3' y='1.5' width='2.2' height='21' rx='1'/><path d='M5.2 2.5h15v11h-15z' fill-opacity='1'/><path d='M5.2 2.5h3.75v3.7H5.2zM12.7 2.5h3.75v3.7H12.7zM8.95 6.2h3.75v3.6H8.95zM16.45 6.2h3.75v3.6h-3.75zM5.2 9.8h3.75v3.7H5.2zM12.7 9.8h3.75v3.7H12.7z' fill='#fff'/>",
 }
 # Cut-outs (drawn with fill='#fff') become holes: the solid shapes go through an SVG mask
@@ -43,7 +44,7 @@ for k, v in list(ICONS.items()):
     ICONS[k] = f"<mask id='h'><rect width='24' height='24' fill='#fff'/>{holes}</mask><g mask='url(#h)'>{solid}</g>"
 # card -> (icon, colour)
 CARDS = {
-  'recap-card': ('flame', 'var(--orange)'), 'weather-card': ('sun', 'var(--copper-hi)'), 'cumulative-card': ('road', 'var(--sky)'),
+  'route-card': ('compass', 'var(--sky)'), 'recap-card': ('flame', 'var(--orange)'), 'weather-card': ('sun', 'var(--copper-hi)'), 'cumulative-card': ('road', 'var(--sky)'),
   'calendar-card': ('calendar', 'var(--amethyst)'), 'last4-card': ('stopwatch', 'var(--stone-hi)'), 'week-strip-card': ('wheel', 'var(--sky)'),
   'eddington-card': ('star', 'var(--copper-hi)'), 'season-totals': ('podium', 'var(--copper-hi)'),
   'plan-card': ('torch', 'var(--orange)'), 'zones-card': ('heart', 'var(--cerise)'), 'todo-card': ('cog', 'var(--copper-hi)'),

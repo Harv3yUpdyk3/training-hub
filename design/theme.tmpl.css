@@ -555,3 +555,36 @@ dialog.story::backdrop { background: var(--page); }
 @keyframes pulse { 40% { scale: 1.08; } }
 .pw-status.pulse { display: inline-block; transform-origin: left center; }
 @media (prefers-reduced-motion: reduce) { .pulse, .motion .pw-day, .motion .str-list li, .sheet.closing, .sheet.closing .sheet-in { animation: none !important; } :where(button, .pw-day, .str-i, .mchip):active { scale: none; } }
+
+/* ---- Route picker (Today): where to ride, from Will's own routes and the wind ---- */
+.rp-head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 14px; margin: 2px 0 10px; }
+.rp-for, .rp-wx { margin: 0; font-size: 13px; color: var(--color-fg-muted); }
+.rp-for b { color: var(--cream); font-weight: 600; }
+.rp-wdir { font: 800 15px/1 'Saira Condensed', 'Arial Narrow', sans-serif; letter-spacing: .04em; color: var(--sky); }
+.rp-list { display: grid; gap: 8px; }
+.rp-row { display: grid; grid-template-columns: 92px minmax(0, 1fr); gap: 12px; align-items: start; padding: 10px; background: var(--deep); border-radius: 2px; }
+.rp-row.top { outline: 1px solid rgba(179,126,44,.55); outline-offset: -1px; }
+.rp-map { width: 92px; height: 92px; display: block; background: #0d302a; border-radius: 2px; }
+.rp-line { fill: none; stroke-width: 3; stroke-linejoin: round; stroke-linecap: round; }
+.rp-start { fill: var(--copper-hi); stroke: var(--deep); stroke-width: 1.5; }
+.rp-wind path { fill: none; stroke: var(--cream); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; opacity: .85; }
+.rp-body { min-width: 0; display: grid; gap: 5px; }
+.rp-name { margin: 0; font: 800 17px/1.1 'Saira Condensed', 'Arial Narrow', sans-serif; text-transform: uppercase; letter-spacing: .04em; color: var(--cream); overflow-wrap: anywhere; }
+.rp-meta { margin: 0; font-size: 12.5px; color: var(--color-fg-muted); font-variant-numeric: tabular-nums; }
+.rp-chips { margin: 0; display: flex; flex-wrap: wrap; gap: 5px; }
+.rp-chip { font: 600 11px/1 var(--font-anthropic-sans, system-ui); padding: 5px 8px; border-radius: 999px; }
+.rp-chip.good { background: rgba(0,177,234,.16); color: #5fd0f5; }
+.rp-chip.bad { background: rgba(244,70,47,.16); color: #ff8a76; }
+.rp-chip.calm { background: rgba(163,194,189,.14); color: #c7d6cd; }
+.rp-chip.ed { background: rgba(244,70,47,.16); color: #ff8a76; }
+.rp-chip.best { background: rgba(179,126,44,.2); color: var(--copper-hi); }
+.rp-go { justify-self: start; display: inline-flex; align-items: center; min-height: 44px; padding: 0 18px; margin-top: 2px; border-radius: 999px; background: var(--copper); color: var(--deep); font: 700 13px var(--font-anthropic-sans, system-ui); text-decoration: none; }
+.rp-row:not(.top) .rp-go { background: transparent; color: var(--copper-hi); border: 1px solid rgba(179,126,44,.6); }
+.rp-go:active { transform: scale(.97); }
+.rp-foot { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
+.rp-foot .note { margin: 0; }
+@media (min-width: 72rem) {
+  .rp-list { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .rp-row { grid-template-columns: 1fr; }
+  .rp-map { width: 100%; height: auto; aspect-ratio: 1.6; }
+}

@@ -16,6 +16,8 @@
 
   const iso = (d) => new Date(d.getTime() - d.getTimezoneOffset() * 6e4).toISOString().slice(0, 10);
   const monday = (d = new Date()) => { const x = new Date(d); x.setHours(12, 0, 0, 0); x.setDate(x.getDate() - ((x.getDay() + 6) % 7)); return iso(x); };
+  // A plan's target miles: "12–15" (en dash or hyphen) gives [12, 15], "20" gives [20].
+  const miles = (s) => String(s ?? '').split(/[–-]/).map(Number).filter(Number.isFinite);
   const addDays = (s, n) => { const x = new Date(s + 'T12:00:00'); x.setDate(x.getDate() + n); return iso(x); };
 
   const blankWeek = (start) => ({
@@ -76,7 +78,7 @@
 
   // Weather for Atlanta from Open-Meteo (free, no key): this week from Monday through next Sunday.
   let wx = null;
-  const weather = () => (wx = wx || fetch('https://api.open-meteo.com/v1/forecast?latitude=33.75&longitude=-84.39'
+  const weather = () => (wx = wx || fetch('https://api.open-meteo.com/v1/forecast?latitude=' + window.HUB_CONFIG.home.lat + '&longitude=' + window.HUB_CONFIG.home.lng
     + '&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,precipitation_sum,wind_speed_10m_max'
     + '&timezone=America%2FNew_York&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch&past_days=7&forecast_days=16')
     .then((r) => { if (!r.ok) throw new Error('Weather service said ' + r.status); return r.json(); })
@@ -87,7 +89,7 @@
     .catch((e) => { wx = null; throw e; }));
   const wxKind = (c) => (c >= 95 ? 'Storms' : (c >= 71 && c <= 77) || c === 85 || c === 86 ? 'Snow' : (c >= 51 && c <= 67) || (c >= 80 && c <= 82) ? 'Rain' : c === 45 || c === 48 ? 'Fog' : c === 3 ? 'Cloudy' : c === 2 ? 'Partly cloudy' : 'Sunny');
 
-  window.planner = { monday, addDays, loadWeek, saveWeek, blankWeek, INTENSITIES, weather, wxKind, hasGitHub: () => !!token(), setGitHub: (t) => (t ? put(GH_KEY, { token: t.trim() }) : del(GH_KEY)) };
+  window.planner = { monday, addDays, miles, loadWeek, saveWeek, blankWeek, INTENSITIES, weather, wxKind, hasGitHub: () => !!token(), setGitHub: (t) => (t ? put(GH_KEY, { token: t.trim() }) : del(GH_KEY)) };
 
   // ---- The Training tab's plan card -----------------------------------
   const card = document.querySelector('#plan-card');
@@ -123,7 +125,7 @@
     $('.pw-save').hidden = !dirty;
     $('.pw-start').hidden = !!week;
     if (!week) { status('No plan for this week yet.', ''); return; }
-    const total = week.days.reduce((a, d) => { const n = String(d.target_miles).split('–').map(Number).filter(Number.isFinite); return [a[0] + (n[0] || 0), a[1] + (n[n.length - 1] || 0)]; }, [0, 0]);
+    const total = week.days.reduce((a, d) => { const n = miles(d.target_miles); return [a[0] + (n[0] || 0), a[1] + (n[n.length - 1] || 0)]; }, [0, 0]);
     status((week._local ? 'Saved on this device only. ' : '') + 'Planned ' + total[0] + (total[1] !== total[0] ? '–' + total[1] : '') + ' mi', week._local ? 'warn' : '');
     week.days.forEach((d, i) => {
       const row = el('button', 'pw-day' + (String(d.status).toLowerCase() === 'done' ? ' done' : String(d.status).toLowerCase() === 'skipped' ? ' skipped' : ''));
@@ -148,7 +150,7 @@
 
   // Rain swap: when the long ride sits on a wet day and a drier day is left this week, one tap trades the two days and saves.
   const SWAP_FIELDS = ['session', 'details', 'target_miles', 'target_hr', 'intensity', 'status', 'actual', 'actual_short'];
-  const isLong = (d) => /long/i.test(d.session || '') || Math.max(...String(d.target_miles).split('–').map(Number).filter(Number.isFinite), 0) >= 40;
+  const isLong = (d) => /long/i.test(d.session || '') || Math.max(...miles(d.target_miles), 0) >= 40;
   const open = (d) => !/^(done|skipped)$/i.test(String(d.status || '')) && d.date >= iso(new Date());
   const rainSwap = () => {
     let b = $('.pw-swap');
@@ -188,9 +190,8 @@
   //  - anything still short is reported, not crammed in.
   const HARD = /^(Tempo|Threshold|VO2)$/;
   const CAP = { endurance: 35, longSoft: 62, long: 70, restToRide: 30, preLong: 15, longMin: 55 };
-  const nums = (s) => String(s ?? '').split(/[–-]/).map(Number).filter(Number.isFinite);
-  const lo = (d) => (nums(d.target_miles)[0] || 0);
-  const hi = (d) => { const n = nums(d.target_miles); return n.length ? n[n.length - 1] : 0; };
+  const lo = (d) => (miles(d.target_miles)[0] || 0);
+  const hi = (d) => { const n = miles(d.target_miles); return n.length ? n[n.length - 1] : 0; };
   const isDone = (d) => /^done$/i.test(String(d.status || ''));
   const isSkipped = (d) => /^skipped$/i.test(String(d.status || ''));
 

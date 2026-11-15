@@ -2,6 +2,8 @@
 // "query" asks Strava live from the phone; "file" reads a JSON file in this repo
 // that Claude keeps up to date (the weekly plan, zones, Local Legends, best efforts).
 window.HUB_CONFIG = {
+  // Home, for the forecast (Atlanta). sw.js keeps its own copy: the background worker can't read this file.
+  home: { lat: 33.75, lng: -84.39 },
   params: { units: 'metric', ride: null, recap_ride: null },
   colors: ['var(--series-1)', 'var(--series-2)', 'var(--series-3)', 'var(--series-4)', 'var(--series-5)', 'var(--series-6)', 'var(--series-7)', 'var(--series-8)'],
   datasets: {

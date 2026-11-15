@@ -1,8 +1,16 @@
 // The hub's own charts and calculations, ported unchanged from the dashboard.
+const KM_MI = 1.609344, M_FT = 0.3048; // km per mile, m per foot
+const GOAL_KM = 5000; // the 2026 season goal
 const ED_GOAL_MI = 55; // Will's Eddington goal, in miles
-const ED_GOAL_KM = Math.round(ED_GOAL_MI * 1.609344); // the same goal in km (89)
+const ED_GOAL_KM = Math.round(ED_GOAL_MI * KM_MI); // the same goal in km (89)
+// The 2027 goal climbs (elevation gain from the usual start, per cols-cyclisme.com).
+const COLOMBIER_M = 1255, TOURMALET_M = 1404;
 // Eddington counts bike rides but not e-bike rides (Will's call, Nov 3 2026).
 const edRide = (r) => /Ride/.test(r.sport_type || 'Ride') && !/^E(Bike|MountainBike)Ride$/.test(r.sport_type || '');
+// Eddington inputs: miles per day, rides on the same day added together.
+const edDays = (rides) => d3.rollups(rides.filter(edRide), (v) => d3.sum(v, (r) => r.miles), (r) => r.date).map((d) => d[1]);
+// Eddington number: the largest E with at least E days of E or more.
+const eddington = (vals) => { const s = [...vals].sort((a, b) => b - a); let e = 0; while (e < s.length && s[e] >= e + 1) e++; return e; };
 {
   const ridesLoader = {
     description: 'Makes one row per activity from the list Strava returns.',
@@ -54,7 +62,7 @@ const edRide = (r) => /Ride/.test(r.sport_type || 'Ride') && !/^E(Bike|MountainB
       const by = d3.rollup(rides_2025.filter((r) => r.date.slice(5) !== '02-29'), (v) => d3.sum(v, (r) => r.miles), (r) => r.date);
       let total = 0;
       return [...by].sort((a, b) => d3.ascending(a[0], b[0])).map(([date, mi]) => {
-        total += mi * 1.609344;
+        total += mi * KM_MI;
         return { date: '2026' + date.slice(4), km_total: Math.round(total) };
       });
     },
@@ -66,9 +74,9 @@ const edRide = (r) => /Ride/.test(r.sport_type || 'Ride') && !/^E(Bike|MountainB
     description: 'Km ridden from Jan 1 to today\'s month and day, this year and last (miles × 1.609344), and the difference.',
     fn: (rides, rides_2025) => {
       const md = d3.timeFormat('%m-%d')(new Date());
-      const km = (v) => Math.round(d3.sum(v.filter((r) => r.date.slice(5) <= md), (r) => r.miles) * 1.609344);
+      const km = (v) => Math.round(d3.sum(v.filter((r) => r.date.slice(5) <= md), (r) => r.miles) * KM_MI);
       const a = km(rides), b = km(rides_2025);
-      return [{ km_2026: a, km_2025: b, diff_km: a - b, diff_mi: Math.round((a - b) / 1.609344) }];
+      return [{ km_2026: a, km_2025: b, diff_km: a - b, diff_mi: Math.round((a - b) / KM_MI) }];
     },
   });
 
@@ -80,8 +88,8 @@ const edRide = (r) => /Ride/.test(r.sport_type || 'Ride') && !/^E(Bike|MountainB
       const top = (t) => bests.find((b) => b.type === t && b.rank === 1);
       const c = top('BiggestClimb'), d = top('MostElevationGain');
       return [
-        c && { what: 'Biggest single climb', m: Math.round(c.value_m), date: c.date, pct_colombier: Math.round(c.value_m / 1250 * 100) },
-        d && { what: 'Most climbing in one ride', m: Math.round(d.value_m), date: d.date, pct_colombier: Math.round(d.value_m / 1250 * 100) },
+        c && { what: 'Biggest single climb', m: Math.round(c.value_m), date: c.date, pct_colombier: Math.round(c.value_m / COLOMBIER_M * 100) },
+        d && { what: 'Most climbing in one ride', m: Math.round(d.value_m), date: d.date, pct_colombier: Math.round(d.value_m / COLOMBIER_M * 100) },
       ].filter(Boolean);
     },
   });
@@ -165,28 +173,28 @@ const edRide = (r) => /Ride/.test(r.sport_type || 'Ride') && !/^E(Bike|MountainB
     description: 'Adds up every 2026 activity (miles × 1.609344 = km), spreads what is left of the goal over the weeks to Dec 31, and compares the total with even pace (goal × share of the year gone).',
     fn: (rides) => {
       const miles = d3.sum(rides, (r) => r.miles);
-      const km = miles * 1.609344;
-      const kmLeft = Math.max(0, 5000 - km);
+      const km = miles * KM_MI;
+      const kmLeft = Math.max(0, GOAL_KM - km);
       const now = Date.now();
       const y0 = Date.UTC(2026, 0, 1), y1 = Date.UTC(2027, 0, 1);
       const weeksLeft = Math.max(0, (y1 - now) / (7 * 864e5));
       const perWeek = weeksLeft > 0 ? kmLeft / weeksLeft : 0;
-      const pace = 5000 * Math.min(1, Math.max(0, (now - y0) / (y1 - y0)));
+      const pace = GOAL_KM * Math.min(1, Math.max(0, (now - y0) / (y1 - y0)));
       return [{
         rides: rides.length,
         miles: Math.round(miles),
         km: Math.round(km),
-        pct_goal: Math.round(km / 5000 * 100),
+        pct_goal: Math.round(km / GOAL_KM * 100),
         km_left: Math.round(kmLeft),
-        km_over: Math.max(0, Math.round(km - 5000)),
-        mi_over: Math.max(0, Math.round((km - 5000) / 1.609344)),
-        mi_left: Math.round(kmLeft / 1.609344),
+        km_over: Math.max(0, Math.round(km - GOAL_KM)),
+        mi_over: Math.max(0, Math.round((km - GOAL_KM) / KM_MI)),
+        mi_left: Math.round(kmLeft / KM_MI),
         weeks_left: Math.round(weeksLeft * 10) / 10,
         km_per_week: Math.round(perWeek),
-        mi_per_week: Math.round(perWeek / 1.609344),
+        mi_per_week: Math.round(perWeek / KM_MI),
         pace_km: Math.round(pace),
         pace_gap_km: Math.round(km - pace),
-        pace_gap_mi: Math.round((km - pace) / 1.609344),
+        pace_gap_mi: Math.round((km - pace) / KM_MI),
         elev_ft: Math.round(d3.sum(rides, (r) => r.elev_ft)),
         elev_m: Math.round(d3.sum(rides, (r) => r.elev_ft) * 0.3048),
         hours: Math.round(d3.sum(rides, (r) => r.moving_s) / 3600),
@@ -254,7 +262,7 @@ const edRide = (r) => /Ride/.test(r.sport_type || 'Ride') && !/^E(Bike|MountainB
       const pEnd = new Date(now.getFullYear(), now.getMonth() - 1, Math.min(now.getDate(), new Date(now.getFullYear(), now.getMonth(), 0).getDate()));
       const cur = rides.filter((r) => r.date >= f(m0) && r.date <= f(now));
       const prev = rides.filter((r) => r.date >= f(p0) && r.date <= f(pEnd));
-      const tot = (v) => ({ km: d3.sum(v, (r) => r.miles) * 1.609344, ft: d3.sum(v, (r) => r.elev_ft), h: d3.sum(v, (r) => r.moving_s) / 3600, n: v.length });
+      const tot = (v) => ({ km: d3.sum(v, (r) => r.miles) * KM_MI, ft: d3.sum(v, (r) => r.elev_ft), h: d3.sum(v, (r) => r.moving_s) / 3600, n: v.length });
       const c = tot(cur), p = tot(prev);
       const pct = (x, y) => (y > 0 ? Math.round((x / y - 1) * 100) : null);
       return [
@@ -271,9 +279,7 @@ const edRide = (r) => /Ride/.test(r.sport_type || 'Ride') && !/^E(Bike|MountainB
     title: 'This week so far',
     description: 'Activities since the most recent Monday (local date), with their total miles.',
     fn: (rides) => {
-      const now = new Date();
-      const monday = new Date(now.getFullYear(), now.getMonth(), now.getDate() - ((now.getDay() + 6) % 7));
-      const iso = d3.timeFormat('%Y-%m-%d')(monday);
+      const iso = window.planner.monday();
       const wk = rides.filter((r) => r.date >= iso);
       return [{ week_of: iso, rides: wk.length, miles: Math.round(d3.sum(wk, (r) => r.miles) * 10) / 10, km: Math.round(d3.sum(wk, (r) => r.miles) * 16.09344) / 10 }];
     },
@@ -294,7 +300,7 @@ const edRide = (r) => /Ride/.test(r.sport_type || 'Ride') && !/^E(Bike|MountainB
       return [{
         rides_4w: cur.length, rides_prev: prev.length, rides_delta_pct: pct(cur.length, prev.length),
         mi_4w: Math.round(c.mi), mi_prev: Math.round(p.mi), mi_delta_pct: pct(c.mi, p.mi),
-        km_4w: Math.round(c.mi * 1.609344), km_prev: Math.round(p.mi * 1.609344),
+        km_4w: Math.round(c.mi * KM_MI), km_prev: Math.round(p.mi * KM_MI),
         elev_4w: Math.round(c.elev), elev_prev: Math.round(p.elev), elev_delta_pct: pct(c.elev, p.elev),
         elev_4w_m: Math.round(c.elev * 0.3048), elev_prev_m: Math.round(p.elev * 0.3048),
         hours_4w: Math.round(c.hours * 10) / 10, hours_prev: Math.round(p.hours * 10) / 10, hours_delta_pct: pct(c.hours, p.hours),
@@ -306,7 +312,7 @@ const edRide = (r) => /Ride/.test(r.sport_type || 'Ride') && !/^E(Bike|MountainB
     inputs: ['rides'],
     title: 'Km per day, 2026',
     description: 'Miles per calendar day converted to km (× 1.609344), with the number of activities.',
-    fn: (rides) => d3.rollups(rides, (v) => ({ km: Math.round(d3.sum(v, (r) => r.miles) * 1.609344 * 10) / 10, rides: v.length }), (r) => r.date)
+    fn: (rides) => d3.rollups(rides, (v) => ({ km: Math.round(d3.sum(v, (r) => r.miles) * KM_MI * 10) / 10, rides: v.length }), (r) => r.date)
       .sort((a, b) => d3.ascending(a[0], b[0])).map(([date, v]) => ({ date, km: v.km, rides: v.rides })),
   });
 
@@ -324,14 +330,14 @@ const edRide = (r) => /Ride/.test(r.sport_type || 'Ride') && !/^E(Bike|MountainB
         const mi = d3.sum(v, (r) => r.miles);
         return {
           week_of: w,
-          km: Math.round(mi * 1.609344),
+          km: Math.round(mi * KM_MI),
           miles: Math.round(mi),
           elev_ft: Math.round(d3.sum(v, (r) => r.elev_ft)),
           hours: Math.round(d3.sum(v, (r) => r.moving_s) / 360) / 10,
           rides: v.length,
           effort: Math.round(d3.sum(v, (r) => r.relative_effort || 0)),
           mph: d3.sum(v, (r) => r.moving_s) > 0 ? Math.round(mi / (d3.sum(v, (r) => r.moving_s) / 3600) * 10) / 10 : null,
-          kmh: d3.sum(v, (r) => r.moving_s) > 0 ? Math.round(mi * 1.609344 / (d3.sum(v, (r) => r.moving_s) / 3600) * 10) / 10 : null,
+          kmh: d3.sum(v, (r) => r.moving_s) > 0 ? Math.round(mi * KM_MI / (d3.sum(v, (r) => r.moving_s) / 3600) * 10) / 10 : null,
         };
       });
     },
@@ -350,7 +356,7 @@ const edRide = (r) => /Ride/.test(r.sport_type || 'Ride') && !/^E(Bike|MountainB
         v.miles += r.miles;
         v.rides += 1;
       }
-      return [...by].map(([month, v]) => ({ month, rides: v.rides, km: Math.round(v.miles * 1.609344) }));
+      return [...by].map(([month, v]) => ({ month, rides: v.rides, km: Math.round(v.miles * KM_MI) }));
     },
   });
 
@@ -362,7 +368,7 @@ const edRide = (r) => /Ride/.test(r.sport_type || 'Ride') && !/^E(Bike|MountainB
       const by = d3.rollup(rides, (v) => d3.sum(v, (r) => r.miles), (r) => r.date);
       let total = 0;
       return [...by].sort((a, b) => d3.ascending(a[0], b[0])).map(([date, mi]) => {
-        total += mi * 1.609344;
+        total += mi * KM_MI;
         return { date, km_total: Math.round(total) };
       });
     },
@@ -377,7 +383,7 @@ const edRide = (r) => /Ride/.test(r.sport_type || 'Ride') && !/^E(Bike|MountainB
       return [...byYear].sort((a, b) => d3.ascending(a[0], b[0])).map(([year, v]) => {
         let total = 0;
         const pts = [...d3.rollup(v, (x) => d3.sum(x, (r) => r.miles), (r) => r.date)].sort((a, b) => d3.ascending(a[0], b[0]))
-          .map(([date, mi]) => { total += mi * 1.609344; return { date, km_total: Math.round(total) }; });
+          .map(([date, mi]) => { total += mi * KM_MI; return { date, km_total: Math.round(total) }; });
         return { year: +year, km: Math.round(total), pts };
       });
     },
@@ -399,8 +405,8 @@ const edRide = (r) => /Ride/.test(r.sport_type || 'Ride') && !/^E(Bike|MountainB
       return [{
         long_mi: Math.round(long.miles * 10) / 10, long_km: Math.round(long.miles * 16.09344) / 10, long_name: long.name + ' · ' + long.date,
         climb_ft: Math.round(climb.elev_ft), climb_m: Math.round(climb.elev_ft * 0.3048), climb_name: climb.name + ' · ' + climb.date,
-        week_km: Math.round(wk[1] * 1.609344), week_mi: Math.round(wk[1]), week_of: wk[0],
-        month_km: Math.round(mo[1] * 1.609344), month_mi: Math.round(mo[1]), month: mo[0],
+        week_km: Math.round(wk[1] * KM_MI), week_mi: Math.round(wk[1]), week_of: wk[0],
+        month_km: Math.round(mo[1] * KM_MI), month_mi: Math.round(mo[1]), month: mo[0],
       }];
     },
   });
@@ -508,16 +514,14 @@ const edRide = (r) => /Ride/.test(r.sport_type || 'Ride') && !/^E(Bike|MountainB
     title: 'Eddington number, all time',
     description: 'Ride distance per day over every Strava ride except e-bike rides; Eddington E is the largest number with at least E days of E or more (in miles, and separately in km). For each next level, how many more days of that distance it needs. Also the longest run of consecutive riding days in 2026.',
     fn: (rides_all, rides) => {
-      const days = d3.rollups(rides_all.filter(edRide), (v) => d3.sum(v, (r) => r.miles), (r) => r.date).map((d) => d[1]);
+      const days = edDays(rides_all);
       const ed = (vals, extra = []) => {
-        const s = vals.slice().sort((a, b) => b - a);
-        let e = 0;
-        while (e < s.length && s[e] >= e + 1) e++;
-        const have = (n) => s.filter((v) => v >= n).length;
+        const e = eddington(vals);
+        const have = (n) => vals.filter((v) => v >= n).length;
         const levels = [...new Set([...d3.range(e + 1, e + 6), ...d3.range(Math.ceil((e + 6) / 5) * 5, e + 31, 5), ...extra])].filter((n) => n > e).sort((a, b) => a - b);
         return { e, ladder: levels.map((n) => ({ level: n, have: have(n), need: Math.max(0, n - have(n)) })) };
       };
-      const mi = ed(days, [ED_GOAL_MI]), km = ed(days.map((v) => v * 1.609344), [Math.round(ED_GOAL_MI * 1.609344)]);
+      const mi = ed(days, [ED_GOAL_MI]), km = ed(days.map((v) => v * KM_MI), [ED_GOAL_KM]);
       const dates = new Set(rides.map((r) => r.date));
       let best = 0, run = 0, bestEnd = null;
       d3.timeDay.range(new Date(2026, 0, 1), d3.timeDay.offset(d3.timeDay.floor(new Date()), 1)).forEach((d) => {
@@ -525,7 +529,7 @@ const edRide = (r) => /Ride/.test(r.sport_type || 'Ride') && !/^E(Bike|MountainB
         run = dates.has(k) ? run + 1 : 0;
         if (run > best) { best = run; bestEnd = k; }
       });
-      return [{ e_mi: mi.e, e_km: km.e, next_mi: mi.ladder[0].need, next_km: km.ladder[0].need, ladder_mi: mi.ladder, ladder_km: km.ladder, ride_days: days.length, days_100km: days.filter((v) => v * 1.609344 >= 100).length, longest_run: best, longest_run_end: bestEnd }];
+      return [{ e_mi: mi.e, e_km: km.e, next_mi: mi.ladder[0].need, next_km: km.ladder[0].need, ladder_mi: mi.ladder, ladder_km: km.ladder, ride_days: days.length, days_100km: days.filter((v) => v * KM_MI >= 100).length, longest_run: best, longest_run_end: bestEnd }];
     },
   });
 
@@ -536,10 +540,10 @@ const edRide = (r) => /Ride/.test(r.sport_type || 'Ride') && !/^E(Bike|MountainB
     fn: (rides) => {
       const now = new Date();
       const m0 = d3.timeFormat('%Y-%m')(now);
-      const km = d3.sum(rides.filter((r) => r.date.slice(0, 7) === m0), (r) => r.miles) * 1.609344;
+      const km = d3.sum(rides.filter((r) => r.date.slice(0, 7) === m0), (r) => r.miles) * KM_MI;
       const days = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
-      const target = 5000 / 12;
-      return [{ month: d3.timeFormat('%B')(now), km: Math.round(km), mi: Math.round(km / 1.609344), target_km: Math.round(target), target_mi: Math.round(target / 1.609344), pace_km: Math.round(target * now.getDate() / days), pct: Math.round(km / target * 100) }];
+      const target = GOAL_KM / 12;
+      return [{ month: d3.timeFormat('%B')(now), km: Math.round(km), mi: Math.round(km / KM_MI), target_km: Math.round(target), target_mi: Math.round(target / KM_MI), pace_km: Math.round(target * now.getDate() / days), pct: Math.round(km / target * 100) }];
     },
   });
 
@@ -550,7 +554,7 @@ const edRide = (r) => /Ride/.test(r.sport_type || 'Ride') && !/^E(Bike|MountainB
     fn: (plan, rides) => plan.map((p) => {
       const v = rides.filter((r) => r.date === p.date);
       const mi = d3.sum(v, (r) => r.miles);
-      const nums = String(p.target_miles ?? '').split('–').map(Number).filter(Number.isFinite);
+      const nums = window.planner.miles(p.target_miles);
       return {
         order: p.order, date: p.date,
         plan_lo_mi: nums.length ? nums[0] : 0, plan_hi_mi: nums.length ? nums[nums.length - 1] : 0,
@@ -565,7 +569,7 @@ const edRide = (r) => /Ride/.test(r.sport_type || 'Ride') && !/^E(Bike|MountainB
     description: 'Planned miles for the week (low to high end of each day\'s target) and the miles ridden so far, also in km (× 1.609344).',
     fn: (plan_actual) => {
       const lo = d3.sum(plan_actual, (d) => d.plan_lo_mi), hi = d3.sum(plan_actual, (d) => d.plan_hi_mi), mi = d3.sum(plan_actual, (d) => d.ridden_mi);
-      return [{ plan_lo_mi: Math.round(lo), plan_hi_mi: Math.round(hi), plan_lo_km: Math.round(lo * 1.609344), plan_hi_km: Math.round(hi * 1.609344), ridden_mi: Math.round(mi * 10) / 10, ridden_km: Math.round(mi * 16.09344) / 10 }];
+      return [{ plan_lo_mi: Math.round(lo), plan_hi_mi: Math.round(hi), plan_lo_km: Math.round(lo * KM_MI), plan_hi_km: Math.round(hi * KM_MI), ridden_mi: Math.round(mi * 10) / 10, ridden_km: Math.round(mi * 16.09344) / 10 }];
     },
   });
 
@@ -574,7 +578,7 @@ const edRide = (r) => /Ride/.test(r.sport_type || 'Ride') && !/^E(Bike|MountainB
     title: 'Ride log in both units',
     description: 'Every 2026 activity with distance also in km (miles × 1.609344) and climbing also in meters (ft × 0.3048).',
     fn: (rides) => rides.map((r) => ({ ...r, miles: Math.round(r.miles * 10) / 10, km: Math.round(r.miles * 16.09344) / 10, elev_ft: Math.round(r.elev_ft), elev_m: Math.round(r.elev_ft * 0.3048),
-      mph: r.moving_s > 0 ? Math.round(r.miles / (r.moving_s / 3600) * 10) / 10 : null, kmh: r.moving_s > 0 ? Math.round(r.miles * 1.609344 / (r.moving_s / 3600) * 10) / 10 : null })),
+      mph: r.moving_s > 0 ? Math.round(r.miles / (r.moving_s / 3600) * 10) / 10 : null, kmh: r.moving_s > 0 ? Math.round(r.miles * KM_MI / (r.moving_s / 3600) * 10) / 10 : null })),
   });
 
   dash.calc('crowns', {
@@ -694,7 +698,6 @@ const edRide = (r) => /Ride/.test(r.sport_type || 'Ride') && !/^E(Bike|MountainB
     }
   });
 
-  const GOAL_KM = 5000;
   const fmt = d3.format(',');
   const f1 = d3.format('.1f');
   const css = (v) => `var(${v})`;
@@ -710,7 +713,6 @@ const edRide = (r) => /Ride/.test(r.sport_type || 'Ride') && !/^E(Bike|MountainB
   const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
 
   // Units: metric (km, m) by default, imperial (mi, ft) on request. A page setting, not a query filter.
-  const KM_MI = 1.609344, M_FT = 0.3048;
   const isImp = () => dash.params().units === 'imperial';
   const dist = (km) => (isImp() ? km / KM_MI : km);
   const fromMi = (mi) => (isImp() ? mi : mi * KM_MI);
@@ -991,7 +993,7 @@ const edRide = (r) => /Ride/.test(r.sport_type || 'Ride') && !/^E(Bike|MountainB
     const det = dash.data('recap_detail');
     const p = det.status === 'ok' ? det.data : null;
     const mi = d3.sum(rides, (r) => r.miles), secs = d3.sum(rides, (r) => r.moving_s), ft = d3.sum(rides, (r) => r.elev_ft);
-    const nums = String(plan.target_miles ?? '').split('–').map(Number).filter(Number.isFinite);
+    const nums = window.planner.miles(plan.target_miles);
     const distV = nums.length ? verdictOf(mi, nums[0] * 0.9, nums[nums.length - 1] * 1.1) : null;
     const hrT = hrTarget(plan.target_hr);
     const hrVal = p && p.has_heartrate ? Math.round(hard ? p.max_heartrate : p.average_heartrate) : null;
@@ -1559,7 +1561,7 @@ const edRide = (r) => /Ride/.test(r.sport_type || 'Ride') && !/^E(Bike|MountainB
     box.replaceChildren();
     if (failed(box, 'eddington') || g.status !== 'ok' || !g.data.length) return;
     const all = isImp() ? g.data[0].ladder_mi : g.data[0].ladder_km;
-    const goalLvl = isImp() ? ED_GOAL_MI : Math.round(ED_GOAL_MI * 1.609344);
+    const goalLvl = isImp() ? ED_GOAL_MI : ED_GOAL_KM;
     const rows = box.dataset.all === '1' ? all : all.filter((r, i) => i < 4 || r.level === goalLvl);
     box.append(...rows.map((r) => {
       const row = el('div', 'ed-step');
@@ -1567,7 +1569,7 @@ const edRide = (r) => /Ride/.test(r.sport_type || 'Ride') && !/^E(Bike|MountainB
       bar.style.width = Math.min(100, (r.have / r.level) * 100) + '%';
       const track = el('span', 'ed-track');
       track.append(bar);
-      const goal = r.level === (isImp() ? ED_GOAL_MI : Math.round(ED_GOAL_MI * 1.609344));
+      const goal = r.level === (isImp() ? ED_GOAL_MI : ED_GOAL_KM);
       if (goal) row.classList.add('goal');
       row.append(el('b', 'ed-lvl', String(r.level)), el('span', 'ed-need', fmt(r.need) + ' more ' + (r.need === 1 ? 'day' : 'days') + ' of ' + r.level + '+ ' + distU()), track, el('span', 'ed-have', (goal ? 'Goal · ' : '') + r.have + ' / ' + r.level));
       return row;
@@ -1830,7 +1832,7 @@ const edRide = (r) => /Ride/.test(r.sport_type || 'Ride') && !/^E(Bike|MountainB
     const g = dash.data('climb_weeks');
     box.replaceChildren();
     if (failed(box, 'climb_weeks') || g.status !== 'ok' || !g.data.length) return;
-    const ref = Math.round(elevM(1400));
+    const ref = Math.round(elevM(TOURMALET_M));
     barChart(box, g.data, {
       h: 180, key: (d) => d.week_of, val: (d) => (isImp() ? d.elev_ft : d.elev_m), label: 'Climbing per week, last 16 weeks',
       tick: (v) => dayFmt(asDate(v)), hi: (d) => (isImp() ? d.elev_ft : d.elev_m) >= ref, color: css('--cds-chart-status-warning'),
@@ -1854,7 +1856,7 @@ const edRide = (r) => /Ride/.test(r.sport_type || 'Ride') && !/^E(Bike|MountainB
     const today = f(new Date());
     // Each day takes a colour from the palette by distance (bands in miles); 55+ is an Eddington day.
     const BANDS = [[0, 'var(--band-1)', 'Spin'], [15, 'var(--band-2)', 'Ride'], [30, 'var(--band-3)', 'Long'], [45, 'var(--band-4)', 'Big'], [ED_GOAL_MI, 'var(--band-5)', 'Eddington'], [100, 'var(--band-6)', 'Century']];
-    const band = (km) => { const mi = km / 1.609344; let c = BANDS[0][1]; BANDS.forEach(([m, col]) => { if (mi >= m) c = col; }); return c; };
+    const band = (km) => { const mi = km / KM_MI; let c = BANDS[0][1]; BANDS.forEach(([m, col]) => { if (mi >= m) c = col; }); return c; };
     const tip = el('div', 'tip'); tip.hidden = true; box.append(tip);
     svg.append('g').selectAll('rect').data(days).join('rect')
       .attr('x', (d) => l + d3.timeMonday.count(start, d) * step)
@@ -1878,7 +1880,7 @@ const edRide = (r) => /Ride/.test(r.sport_type || 'Ride') && !/^E(Bike|MountainB
     const key = el('div', 'legend heat-key');
     BANDS.forEach(([m, col, name], i) => {
       const next = BANDS[i + 1];
-      const u = (v) => (isImp() ? v : Math.round(v * 1.609344));
+      const u = (v) => (isImp() ? v : Math.round(v * KM_MI));
       const range = !m ? 'under ' + u(next[0]) : next ? u(m) + '–' + u(next[0]) : u(m) + '+';
       const s = el('span'); const sw = el('i'); sw.style.background = col;
       s.append(sw, el('b', null, name), document.createTextNode(' ' + range + ' ' + distU())); key.append(s);
@@ -1906,7 +1908,7 @@ const edRide = (r) => /Ride/.test(r.sport_type || 'Ride') && !/^E(Bike|MountainB
   });
 
   // Climb readiness: bests against the two climbs
-  const CLIMBS = [{ name: 'Colombier', m: 1250 }, { name: 'Tourmalet', m: 1400 }];
+  const CLIMBS = [{ name: 'Colombier', m: COLOMBIER_M }, { name: 'Tourmalet', m: TOURMALET_M }];
   dash.draw('climb-pct', (e) => {
     const g = dash.data('climbs');
     const r = g.status === 'ok' ? g.data.find((d) => d.what === 'Biggest single climb') : null;
@@ -2075,7 +2077,7 @@ const edRide = (r) => /Ride/.test(r.sport_type || 'Ride') && !/^E(Bike|MountainB
         c.append(el('span', 'wx-pop', w && w.pop != null ? w.pop + '%' : ''));
         if (p && /skipped/i.test(String(p.status))) c.append(el('span', 'wx-plan', 'Skipped'));
         else if (p && p.intensity !== 'Rest' && p.target_miles && p.target_miles !== '0') c.append(el('span', 'wx-plan', p.target_miles + ' mi'));
-        c.title = d3.timeFormat('%A %b %-d')(day) + (w ? ': ' + kind + ', ' + w.pop + '% chance of rain, wind ' + Math.round(isImp() ? w.wind_mph : w.wind_mph * 1.609344) + (isImp() ? ' mph' : ' km/h') : '') + (p ? ' · Plan: ' + p.session : '');
+        c.title = d3.timeFormat('%A %b %-d')(day) + (w ? ': ' + kind + ', ' + w.pop + '% chance of rain, wind ' + Math.round(isImp() ? w.wind_mph : w.wind_mph * KM_MI) + (isImp() ? ' mph' : ' km/h') : '') + (p ? ' · Plan: ' + p.session : '');
         row.append(c);
       });
       box.append(row);
@@ -2086,7 +2088,7 @@ const edRide = (r) => /Ride/.test(r.sport_type || 'Ride') && !/^E(Bike|MountainB
 
   // ---- Monday recap: last week's plan against what was ridden --------------
   const isoD = d3.timeFormat('%Y-%m-%d');
-  const nums = (s) => String(s ?? '').split('–').map(Number).filter(Number.isFinite);
+  const nums = window.planner.miles;
   dash.draw('lastweek', (box) => {
     const pg = dash.data('plan_prev'), rg = dash.data('rides'), zg = dash.data('zone_time');
     box.replaceChildren();
@@ -2150,8 +2152,8 @@ const edRide = (r) => /Ride/.test(r.sport_type || 'Ride') && !/^E(Bike|MountainB
     { name: 'Kennesaw Mountain', km: 2.3, m: 165, approx: true },
     { name: 'Brasstown Bald', km: 4.3, m: 340, approx: true },
     { name: 'Hogpen Gap', km: 11.6, m: 480, approx: true },
-    { name: 'Grand Colombier', km: 18.3, m: 1255, goal: true },
-    { name: 'Col du Tourmalet', km: 18.8, m: 1404, goal: true },
+    { name: 'Grand Colombier', km: 18.3, m: COLOMBIER_M, goal: true },
+    { name: 'Col du Tourmalet', km: 19.0, m: TOURMALET_M, goal: true },
   ];
   // Sustainable climbing speed drops with duration (about power ∝ time^-0.12), and gentle grades lose some to drag.
   const simTime = (c, vam1h) => {
@@ -2303,8 +2305,7 @@ const edRide = (r) => /Ride/.test(r.sport_type || 'Ride') && !/^E(Bike|MountainB
     const big = days.filter((d) => d[1] >= ED_GOAL_MI).length;
     let e0 = null;
     if (ag.status === 'ok') {
-      const prior = d3.rollups(ag.data.filter((r) => r.date < '2026-01-01' && edRide(r)), (v) => d3.sum(v, (r) => r.miles), (r) => r.date).map((d) => d[1]).sort((a, b) => b - a);
-      e0 = 0; while (e0 < prior.length && prior[e0] >= e0 + 1) e0++;
+      e0 = eddington(edDays(ag.data.filter((r) => r.date < '2026-01-01')));
     }
     const e1 = eg.status === 'ok' && eg.data.length ? eg.data[0].e_mi : null;
     const ll = lg.status === 'ok' ? lg.data.filter((l) => l.title === 'Local Legend').length : null;
@@ -2327,8 +2328,8 @@ const edRide = (r) => /Ride/.test(r.sport_type || 'Ride') && !/^E(Bike|MountainB
     else cell('100+ km days', fmt(days.filter((d) => d[1] * KM_MI >= 100).length));
     if (e1 != null) cell('Eddington (mi)', String(e1), e0 != null ? (e1 - e0 >= 0 ? '+' : '') + (e1 - e0) + ' this year, from ' + e0 : null);
     // 2026-only Eddington: rides on the same day are added together; e-bike rides don't count.
-    const yrDays = d3.rollups(rg.data.filter(edRide), (v) => d3.sum(v, (r) => r.miles), (r) => r.date).map((d) => (isImp() ? d[1] : d[1] * KM_MI)).sort((a, b) => b - a);
-    let ey = 0; while (ey < yrDays.length && yrDays[ey] >= ey + 1) ey++;
+    const yrDays = edDays(rg.data).map((v) => (isImp() ? v : v * KM_MI));
+    const ey = eddington(yrDays);
     const eyNeed = ey + 1 - yrDays.filter((v) => v >= ey + 1).length;
     cell('2026 Eddington (' + distU() + ')', String(ey), eyNeed + ' more ' + (eyNeed === 1 ? 'day' : 'days') + ' of ' + (ey + 1) + '+ ' + distU() + ' for ' + (ey + 1));
     if (ll != null) cell('Local Legends', String(ll), 'as of the last update');

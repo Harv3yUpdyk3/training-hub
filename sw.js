@@ -26,6 +26,7 @@ self.addEventListener('fetch', (e) => {
 // Rain alerts: Chrome wakes the installed app a few times a day; if tomorrow is a planned
 // ride day with a 50%+ chance of rain, show one notification for that date.
 const ymd = (d) => new Date(d.getTime() - d.getTimezoneOffset() * 6e4).toISOString().slice(0, 10);
+// Home (Atlanta), the same as `home` in js/config.js.
 const rainCheck = async () => {
   const prefs = await caches.open('hub-prefs');
   const on = await prefs.match('/prefs/rain-alerts').then((r) => (r ? r.json() : { on: false })).catch(() => ({ on: false }));

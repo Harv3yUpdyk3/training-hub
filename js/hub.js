@@ -5,41 +5,28 @@ const ED_GOAL_KM = Math.round(ED_GOAL_MI * 1.609344); // the same goal in km (89
 const edRide = (r) => /Ride/.test(r.sport_type || 'Ride') && !/^E(Bike|MountainBike)Ride$/.test(r.sport_type || '');
 {
   const ridesLoader = {
-    description: 'Strava returns activities a page at a time; this follows the pages and makes one row per activity.',
-    fn: async ({ answer, call, args }) => {
-      const parse = (a) => (typeof a === 'string' ? JSON.parse(a) : a);
-      let page = parse(answer);
-      const rows = [];
-      let pages = 0;
-      for (;;) {
-        if (!page || !Array.isArray(page.activities)) {
-          throw new Error('Strava answer had no activities list. Keys: ' + Object.keys(page || {}).join(', '));
-        }
-        for (const a of page.activities) {
-          const s = a.summary || {};
-          rows.push({
-            id: String(a.id),
-            date: String(a.start_local || '').slice(0, 10),
-            start_time: String(a.start_local || '').slice(11, 16) || null,
-            name: a.name,
-            sport_type: a.sport_type,
-            miles: Number(s.distance) || 0,
-            moving_s: Number(s.moving_time) || 0,
-            elev_ft: Number(s.elevation_gain) || 0,
-            relative_effort: s.relative_effort == null ? null : Number(s.relative_effort),
-            weather: a.weather && a.weather.condition ? a.weather.condition : null,
-            gear_id: a.gear_id == null ? null : String(typeof a.gear_id === 'object' ? a.gear_id.id : a.gear_id),
-          });
-        }
-        pages += 1;
-        if (!page.has_next_page || pages >= 5) break;
-        page = parse(await call('list_activities', { ...args, after: page.end_cursor }));
+    description: 'Makes one row per activity from the list Strava returns.',
+    fn: ({ answer }) => {
+      const page = typeof answer === 'string' ? JSON.parse(answer) : answer;
+      if (!page || !Array.isArray(page.activities)) {
+        throw new Error('Strava answer had no activities list. Keys: ' + Object.keys(page || {}).join(', '));
       }
-      return {
-        columns: ['id', 'date', 'start_time', 'name', 'sport_type', 'miles', 'moving_s', 'elev_ft', 'relative_effort', 'weather', 'gear_id'],
-        rows,
-        cut: pages >= 5 && !!page.has_next_page,
-      };
+      const rows = page.activities.map((a) => {
+        const s = a.summary || {};
+        return {
+          id: String(a.id),
+          date: String(a.start_local || '').slice(0, 10),
+          start_time: String(a.start_local || '').slice(11, 16) || null,
+          name: a.name,
+          sport_type: a.sport_type,
+          miles: Number(s.distance) || 0,
+          moving_s: Number(s.moving_time) || 0,
+          elev_ft: Number(s.elevation_gain) || 0,
+          relative_effort: s.relative_effort == null ? null : Number(s.relative_effort),
+          gear_id: a.gear_id == null ? null : String(typeof a.gear_id === 'object' ? a.gear_id.id : a.gear_id),
+        };
+      });
+      return { columns: ['id', 'date', 'start_time', 'name', 'sport_type', 'miles', 'moving_s', 'elev_ft', 'relative_effort', 'gear_id'], rows };
     },
   };
   dash.loader('rides', ridesLoader);
@@ -203,7 +190,6 @@ const edRide = (r) => /Ride/.test(r.sport_type || 'Ride') && !/^E(Bike|MountainB
         elev_ft: Math.round(d3.sum(rides, (r) => r.elev_ft)),
         elev_m: Math.round(d3.sum(rides, (r) => r.elev_ft) * 0.3048),
         hours: Math.round(d3.sum(rides, (r) => r.moving_s) / 3600),
-        rainy_rides: rides.filter((r) => /rain|drizzle|storm|shower/i.test(r.weather || '')).length,
       }];
     },
   });
@@ -280,31 +266,6 @@ const edRide = (r) => /Ride/.test(r.sport_type || 'Ride') && !/^E(Bike|MountainB
     },
   });
 
-  dash.calc('dow', {
-    inputs: ['rides'],
-    title: 'Rides by day of week, 2026',
-    description: 'Each 2026 activity counted by its local weekday (Monday first), with total and average miles.',
-    fn: (rides) => ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day, i) => {
-      const v = rides.filter((r) => (new Date(r.date + 'T12:00:00').getDay() + 6) % 7 === i);
-      const mi = d3.sum(v, (r) => r.miles);
-      return { day, rides: v.length, miles: Math.round(mi), avg_mi: v.length ? Math.round(mi / v.length * 10) / 10 : 0 };
-    }),
-  });
-
-  dash.calc('form', {
-    inputs: ['weekly'],
-    title: 'Weekly target hit or missed, last 8 weeks',
-    description: 'The 8 full Monday-start weeks before this one; a week is a hit at 96 km or more (5,000 km ÷ 52 weeks).',
-    fn: (weekly) => weekly.slice(-9, -1).map((w) => ({ week_of: w.week_of, km: w.km, hit: w.km >= 96 })),
-  });
-
-  dash.calc('form_sum', {
-    inputs: ['form'],
-    title: 'Weeks on target',
-    description: 'How many of the last 8 full weeks hit the weekly target.',
-    fn: (form) => [{ hits: form.filter((w) => w.hit).length, weeks: form.length }],
-  });
-
   dash.calc('week', {
     inputs: ['rides'],
     title: 'This week so far',
@@ -345,8 +306,8 @@ const edRide = (r) => /Ride/.test(r.sport_type || 'Ride') && !/^E(Bike|MountainB
     inputs: ['rides'],
     title: 'Km per day, 2026',
     description: 'Miles per calendar day converted to km (× 1.609344), with the number of activities.',
-    fn: (rides) => d3.rollups(rides, (v) => ({ km: Math.round(d3.sum(v, (r) => r.miles) * 1.609344 * 10) / 10, rides: v.length, rain: v.some((r) => /rain|drizzle|storm|shower/i.test(r.weather || '')) }), (r) => r.date)
-      .sort((a, b) => d3.ascending(a[0], b[0])).map(([date, v]) => ({ date, km: v.km, rides: v.rides, rain: v.rain })),
+    fn: (rides) => d3.rollups(rides, (v) => ({ km: Math.round(d3.sum(v, (r) => r.miles) * 1.609344 * 10) / 10, rides: v.length }), (r) => r.date)
+      .sort((a, b) => d3.ascending(a[0], b[0])).map(([date, v]) => ({ date, km: v.km, rides: v.rides })),
   });
 
   dash.calc('weekly', {
@@ -533,17 +494,6 @@ const edRide = (r) => /Ride/.test(r.sport_type || 'Ride') && !/^E(Bike|MountainB
     },
   });
 
-  dash.calc('by_hour', {
-    inputs: ['rides'],
-    title: 'Rides by start hour, 2026',
-    description: 'Each 2026 activity counted by the local hour it started, with total miles (and km, × 1.609344).',
-    fn: (rides) => d3.range(5, 23).map((h) => {
-      const v = rides.filter((r) => r.start_time && Number(r.start_time.slice(0, 2)) === h);
-      const mi = d3.sum(v, (r) => r.miles);
-      return { hour: h, rides: v.length, miles: Math.round(mi), km: Math.round(mi * 1.609344) };
-    }),
-  });
-
   dash.calc('climb_weeks', {
     inputs: ['weekly'],
     title: 'Climbing per week, last 16 weeks',
@@ -718,14 +668,6 @@ const edRide = (r) => /Ride/.test(r.sport_type || 'Ride') && !/^E(Bike|MountainB
     document.querySelectorAll('#ride-detail-card').forEach((c) => c.scrollIntoView({ block: 'start' }));
   };
   window.hubPickRide = pickRide;
-  document.querySelectorAll('.rstrip').forEach((s) => s.addEventListener('click', (ev) => {
-    const card = ev.target.closest('.rcard');
-    if (card) pickRide(card.dataset.key, card);
-  }));
-  document.querySelectorAll('.rstrip').forEach((s) => s.addEventListener('keydown', (ev) => {
-    const card = ev.target.closest('.rcard');
-    if (card && (ev.key === 'Enter' || ev.key === ' ')) { ev.preventDefault(); pickRide(card.dataset.key, card); }
-  }));
   document.querySelectorAll('tbody[data-draw="ride-rows"]').forEach((tb) => tb.addEventListener('click', (ev) => {
     const tr = ev.target.closest('tr[data-key]');
     if (tr) pickRide(tr.dataset.key, tr);
@@ -753,7 +695,6 @@ const edRide = (r) => /Ride/.test(r.sport_type || 'Ride') && !/^E(Bike|MountainB
   });
 
   const GOAL_KM = 5000;
-  const WEEK_KM = 96;
   const fmt = d3.format(',');
   const f1 = d3.format('.1f');
   const css = (v) => `var(${v})`;
@@ -824,17 +765,12 @@ const edRide = (r) => /Ride/.test(r.sport_type || 'Ride') && !/^E(Bike|MountainB
 
   const goalText = (e) => { e.textContent = fmt(Math.round(dist(GOAL_KM))); };
   dash.draw('goal', goalText);
-  dash.draw('goal-2', goalText);
   dash.draw('km-done', oneU('ytd', 'km', 'miles'));
-  dash.draw('km-done-2', oneU('ytd', 'km', 'miles'));
-  dash.draw('pct-goal', one('ytd', 'pct_goal', (v) => v + '%'));
   dash.draw('mi-done', oneU('ytd', 'km', 'miles'));
   dash.draw('ride-count', one('ytd', 'rides'));
   dash.draw('km-left', oneU('ytd', 'km_left', 'mi_left'));
   dash.draw('per-week', oneU('ytd', 'km_per_week', 'mi_per_week'));
-  dash.draw('per-week-mi', oneU('ytd', 'mi_per_week', 'km_per_week'));
   dash.draw('ft-done', oneU('ytd', 'elev_m', 'elev_ft'));
-  dash.draw('rainy', one('ytd', 'rainy_rides'));
   dash.draw('yoy', oneU('yoy', 'diff_km', 'diff_mi', signed));
   dash.draw('hours-done', one('ytd', 'hours'));
   dash.draw('pace-gap', oneU('ytd', 'pace_gap_km', 'pace_gap_mi', (v) => fmt(Math.abs(v))));
@@ -856,7 +792,6 @@ const edRide = (r) => /Ride/.test(r.sport_type || 'Ride') && !/^E(Bike|MountainB
   dash.draw('d-mi', delta('mi_delta_pct'));
   dash.draw('d-elev', delta('elev_delta_pct'));
   dash.draw('d-hours', delta('hours_delta_pct'));
-  dash.draw('wk-mi', oneU('week', 'km', 'miles', f1));
   dash.draw('wk-rides', one('week', 'rides'));
   dash.draw('pw-lo', oneU('plan_week', 'plan_lo_km', 'plan_lo_mi'));
   dash.draw('pw-hi', oneU('plan_week', 'plan_hi_km', 'plan_hi_mi'));
@@ -907,7 +842,6 @@ const edRide = (r) => /Ride/.test(r.sport_type || 'Ride') && !/^E(Bike|MountainB
     t.attr('x', Math.min(Math.max(0, px - tw / 2), w - tw));
   };
   dash.draw('goal-bar', (box) => bullet(box, true));
-  dash.draw('mini-goal', (box) => bullet(box, false));
 
   // Sparklines: last 8 weeks of a weekly field
   const spark = (field) => (box) => {
@@ -1135,26 +1069,6 @@ const edRide = (r) => /Ride/.test(r.sport_type || 'Ride') && !/^E(Bike|MountainB
       return c;
     }));
   });
-  dash.draw('plan-sessions', (box) => {
-    const rows = planRows();
-    box.replaceChildren();
-    if (failed(box, 'plan') || !rows) return;
-    box.append(...rows.map((r) => {
-      const done = String(r.status).toLowerCase() === 'done';
-      const c = el('div', 'session');
-      c.dataset.key = String(r.order);
-      c.style.setProperty('--int', css(INT[r.intensity] || '--cds-chart-muted'));
-      const mid = el('div');
-      mid.append(el('span', 'day-d', r.day + ' · ' + dayFmt(asDate(r.date)) + ' · ' + r.intensity), el('h3', null, r.session));
-      if (done && r.actual) mid.append(el('p', 'did', 'Did: ' + r.actual), el('p', 'was', 'Planned: ' + r.details));
-      else mid.append(el('p', null, r.details));
-      const right = el('div', 'session-r');
-      right.append(el('b', null, rangeU(r.target_miles) + ' ' + distU()), el('span', null, 'HR ' + r.target_hr), el('span', 'tag ' + (done ? 'ok' : ''), r.status));
-      c.append(el('div', 'session-bar'), mid, right);
-      return c;
-    }));
-  });
-
   // Table helper
   const rowsDraw = (id, spec) => (tbody) => {
     const g = dash.data(id);
@@ -1176,7 +1090,6 @@ const edRide = (r) => /Ride/.test(r.sport_type || 'Ride') && !/^E(Bike|MountainB
   const medalNode = (m) => (m == null ? document.createTextNode('') : el('span', 'medal m' + m, String(m)));
 
   dash.draw('zone-rows', rowsDraw('zones', { key: 'zone', list: (d) => d, cols: [{ f: 'zone', cls: 'strong' }, { f: 'name' }, { f: 'bpm', cls: 'num' }, { f: 'use', cls: 'wide-only muted' }] }));
-  dash.draw('roadmap-rows', rowsDraw('roadmap', { key: 'order', list: (d) => [...d].sort((a, b) => a.order - b.order), cols: [{ f: 'phase', cls: 'strong' }, { f: 'months' }, { f: 'focus' }, { f: 'milestone', cls: 'muted' }] }));
 
   // Ride log: sort and search
   const rideState = { key: 'date', dir: -1, q: '' };
@@ -1185,7 +1098,7 @@ const edRide = (r) => /Ride/.test(r.sport_type || 'Ride') && !/^E(Bike|MountainB
     list: (d) => {
       const q = rideState.q.trim().toLowerCase();
       const k = rideState.key;
-      return d.filter((r) => !q || (String(r.name) + ' ' + (r.weather || '') + ' ' + r.date).toLowerCase().includes(q))
+      return d.filter((r) => !q || (String(r.name) + ' ' + r.date).toLowerCase().includes(q))
         .sort((a, b) => {
           const x = a[k], y = b[k];
           if (x == null && y == null) return 0;
@@ -1202,13 +1115,12 @@ const edRide = (r) => /Ride/.test(r.sport_type || 'Ride') && !/^E(Bike|MountainB
       { f: isImp() ? 'elev_ft' : 'elev_m', cls: 'num wide-only', fmt: (v) => fmt(Math.round(v)) },
       { f: isImp() ? 'mph' : 'kmh', cls: 'num wide-only', fmt: (v) => (v == null ? '' : f1(v)) },
       { f: 'relative_effort', cls: 'num', fmt: (v) => (v == null ? '' : fmt(v)) },
-      { f: 'weather', cls: 'wide-only muted', fmt: (v) => v ?? '' },
     ],
   }));
   document.querySelectorAll('.search').forEach((inp) => inp.addEventListener('input', () => { rideState.q = inp.value; dash.draw('ride-rows'); }));
   document.querySelectorAll('.sort').forEach((b) => b.addEventListener('click', () => {
     const k = b.dataset.sort;
-    rideState.dir = rideState.key === k ? -rideState.dir : (k === 'name' || k === 'weather' ? 1 : -1);
+    rideState.dir = rideState.key === k ? -rideState.dir : (k === 'name' ? 1 : -1);
     rideState.key = k;
     document.querySelectorAll('.sort').forEach((o) => {
       const th = o.closest('th');
@@ -1454,49 +1366,6 @@ const edRide = (r) => /Ride/.test(r.sport_type || 'Ride') && !/^E(Bike|MountainB
     ul.replaceChildren(...out);
   });
 
-  // Recent rides strip
-  const isRain = (w) => /rain|drizzle|storm|shower/i.test(w || '');
-  dash.draw('ride-strip', (box) => {
-    const g = dash.data('rides');
-    box.replaceChildren();
-    if (failed(box, 'rides') || g.status !== 'ok') return;
-    box.append(...[...g.data].sort((a, b) => d3.descending(a.date, b.date)).slice(0, 14).map((r) => {
-      const c = el('div', 'rcard');
-      c.dataset.key = r.id;
-      c.dataset.q = r.date;
-      c.tabIndex = 0;
-      c.setAttribute('role', 'button');
-      c.setAttribute('aria-label', r.name + ', ' + r.date + ': show ride detail');
-      const top = el('div', 'rc-top');
-      top.append(el('span', null, d3.timeFormat('%a %b %-d')(asDate(r.date))), el('span', 'rc-w' + (isRain(r.weather) ? ' rain' : ''), r.weather || ''));
-      const st = el('div', 'rc-st');
-      st.append(el('span', null, f1(fromMi(r.miles)) + ' ' + distU()), el('span', null, hm(r.moving_s)), el('span', null, fmt(Math.round(elevFt(r.elev_ft))) + ' ' + elevU()));
-      c.append(top, el('b', 'rc-n', r.name), st);
-      if (r.relative_effort != null) {
-        const e = el('div', 'rc-e');
-        const bar = el('i');
-        bar.style.width = Math.min(100, r.relative_effort / 2) + '%';
-        e.append(bar, el('span', null, 'Effort ' + r.relative_effort));
-        c.append(e);
-      }
-      return c;
-    }));
-  });
-
-  // Form chips: hit or miss the weekly target, last 8 full weeks
-  dash.draw('form-chips', (box) => {
-    const g = dash.data('form');
-    box.replaceChildren();
-    if (failed(box, 'form') || g.status !== 'ok') return;
-    box.append(...g.data.map((r) => {
-      const c = el('div', 'fchip ' + (r.hit ? 'hit' : 'miss'));
-      c.dataset.key = r.week_of;
-      c.append(el('b', null, r.hit ? 'H' : 'M'), el('span', null, dayFmt(asDate(r.week_of))), el('em', null, fmt(Math.round(dist(r.km))) + ' ' + distU()));
-      return c;
-    }));
-  });
-  dash.draw('form-hits', one('form_sum', 'hits'));
-  dash.draw('week-target', (e) => { e.textContent = fmt(Math.round(dist(WEEK_KM))); });
 
   // Garage
   dash.draw('garage-rows', rowsDraw('garage', {
@@ -1676,7 +1545,6 @@ const edRide = (r) => /Ride/.test(r.sport_type || 'Ride') && !/^E(Bike|MountainB
 
   // Eddington
   dash.draw('ed-e', oneU('eddington', 'e_km', 'e_mi'));
-  dash.draw('ed-next', oneU('eddington', 'next_km', 'next_mi'));
   dash.draw('ed-days', one('eddington', 'ride_days'));
   dash.draw('ed-run', one('eddington', 'longest_run', (v) => v + (v === 1 ? ' day' : ' days')));
   dash.draw('ed-goal', (e) => {
@@ -1793,7 +1661,7 @@ const edRide = (r) => /Ride/.test(r.sport_type || 'Ride') && !/^E(Bike|MountainB
     if (!r) return;
     box.dataset.key = r.id;
     const t = el('div', 'rd-title');
-    t.append(el('b', null, r.name), el('span', null, d3.timeFormat('%A, %B %-d')(asDate(r.date)) + (r.weather ? ' · ' + r.weather : '')));
+    t.append(el('b', null, r.name), el('span', null, d3.timeFormat('%A, %B %-d')(asDate(r.date))));
     const stats = el('div', 'rd-stats');
     const stat = (label, v, u) => { const s = el('div'); s.append(el('span', null, label), el('b', null, v + (u ? ' ' + u : ''))); return s; };
     stats.append(
@@ -1958,19 +1826,6 @@ const edRide = (r) => /Ride/.test(r.sport_type || 'Ride') && !/^E(Bike|MountainB
     svg.append('line').attr('x1', m.l).attr('x2', w - m.r).attr('y1', y(EASY_TARGET)).attr('y2', y(EASY_TARGET)).attr('stroke', css('--color-fg')).attr('stroke-dasharray', '4 4').attr('pointer-events', 'none');
   });
 
-  dash.draw('hour-chart', (box) => {
-    const g = dash.data('by_hour');
-    box.replaceChildren();
-    if (failed(box, 'by_hour') || g.status !== 'ok' || !g.data.length) return;
-    const top = d3.greatest(g.data, (d) => d.rides);
-    const lbl = (hr) => (hr % 12 || 12) + (hr < 12 ? 'a' : 'p');
-    barChart(box, g.data, {
-      h: 180, key: (d) => d.hour, val: (d) => d.rides, label: '2026 rides by start hour',
-      tick: lbl, hi: (d) => d === top, color: dash.colors[2],
-      tipLines: (d) => [el('div', 'k', lbl(d.hour) + 'm start'), el('div', null, d.rides + ' rides · ' + fmt(isImp() ? d.miles : d.km) + ' ' + distU())],
-    });
-  });
-
   dash.draw('climb-weeks-chart', (box) => {
     const g = dash.data('climb_weeks');
     box.replaceChildren();
@@ -1981,62 +1836,6 @@ const edRide = (r) => /Ride/.test(r.sport_type || 'Ride') && !/^E(Bike|MountainB
       tick: (v) => dayFmt(asDate(v)), hi: (d) => (isImp() ? d.elev_ft : d.elev_m) >= ref, color: css('--cds-chart-status-warning'),
       ref, refLabel: 'Tourmalet ' + fmt(ref) + ' ' + elevU(),
       tipLines: (d) => [el('div', 'k', 'Week of ' + dayFmt(asDate(d.week_of))), el('div', null, fmt(isImp() ? d.elev_ft : d.elev_m) + ' ' + elevU() + ' climbed')],
-    });
-  });
-
-  dash.draw('speed-chart', (box) => {
-    const g = dash.data('weekly');
-    box.replaceChildren();
-    if (failed(box, 'weekly') || g.status !== 'ok') return;
-    const k = isImp() ? 'mph' : 'kmh', U = isImp() ? 'mph' : 'km/h';
-    const pts = g.data.filter((d) => d[k] != null).map((d) => ({ ...d, dt: asDate(d.week_of) }));
-    if (pts.length < 2) return;
-    const w = box.clientWidth || 600, h = 180, m = { t: 14, r: 16, b: 24, l: 40 };
-    const x = d3.scaleTime(d3.extent(pts, (d) => d.dt), [m.l, w - m.r]);
-    const ext = d3.extent(pts, (d) => d[k]);
-    const y = d3.scaleLinear([Math.floor(ext[0] - 1), Math.ceil(ext[1] + 1)], [h - m.b, m.t]).nice();
-    const avg = d3.mean(pts, (d) => d[k]);
-    const svg = d3.select(box).append('svg').attr('viewBox', `0 0 ${w} ${h}`).attr('width', '100%').attr('role', 'img').attr('aria-label', 'Average moving speed per week');
-    svg.append('g').selectAll('line').data(y.ticks(4)).join('line').attr('x1', m.l).attr('x2', w - m.r).attr('y1', y).attr('y2', y).attr('stroke', css('--cds-chart-grid'));
-    svg.append('g').attr('transform', `translate(${m.l - 6},0)`).call(d3.axisLeft(y).ticks(4).tickSize(0)).call((a) => axisStyle(a, false));
-    svg.append('g').attr('transform', `translate(0,${h - m.b})`).call(d3.axisBottom(x).ticks(w < 500 ? 4 : 8).tickSize(0).tickPadding(8).tickFormat(d3.timeFormat('%b %-d'))).call((a) => axisStyle(a, true));
-    svg.append('line').attr('x1', m.l).attr('x2', w - m.r).attr('y1', y(avg)).attr('y2', y(avg)).attr('stroke', css('--cds-chart-reference')).attr('stroke-dasharray', '4 4');
-    svg.append('path').datum(pts).attr('fill', 'none').attr('stroke', css('--acc')).attr('stroke-width', 2).attr('stroke-linejoin', 'round').attr('stroke-linecap', 'round').attr('d', d3.line().x((d) => x(d.dt)).y((d) => y(d[k])));
-    const tip = el('div', 'tip'); tip.hidden = true; box.append(tip);
-    svg.append('g').selectAll('circle').data(pts).join('circle').attr('cx', (d) => x(d.dt)).attr('cy', (d) => y(d[k])).attr('r', 3.5).attr('fill', css('--acc'))
-      .on('pointermove', (ev, d) => { const [px, py] = d3.pointer(ev, box); tipShow(box, tip, px, py, [el('div', 'k', 'Week of ' + dayFmt(d.dt)), el('div', null, f1(d[k]) + ' ' + U + ' · ' + d.rides + (d.rides === 1 ? ' ride' : ' rides'))]); })
-      .on('pointerleave', () => { tip.hidden = true; });
-  });
-
-  dash.draw('dow-chart', (box) => {
-    const g = dash.data('dow');
-    box.replaceChildren();
-    if (failed(box, 'dow') || g.status !== 'ok' || !g.data.length) return;
-    const most = d3.greatest(g.data, (d) => d.rides);
-    barChart(box, g.data, {
-      h: 180, key: (d) => d.day, val: (d) => d.rides, label: '2026 rides by day of week',
-      tick: (v) => v, hi: (d) => d === most, color: dash.colors[2],
-      tipLines: (d) => [el('div', 'k', d.day), el('div', null, d.rides + ' rides · ' + fmt(Math.round(fromMi(d.miles))) + ' ' + distU() + ' · avg ' + f1(fromMi(d.avg_mi)))],
-    });
-    const svg = d3.select(box).select('svg');
-    const w = box.clientWidth || 600, h = 180, m = { t: 16, r: 8, b: 24, l: 40 };
-    const x = d3.scaleBand(g.data.map((d) => d.day), [m.l, w - m.r]).padding(0.3);
-    const y = d3.scaleLinear([0, d3.max(g.data, (d) => d.rides) || 1], [h - m.b, m.t]).nice();
-    svg.append('g').attr('pointer-events', 'none').selectAll('text').data(g.data.filter((d) => d.rides)).join('text')
-      .attr('x', (d) => x(d.day) + x.bandwidth() / 2).attr('y', (d) => y(d.rides) - 5).attr('text-anchor', 'middle')
-      .attr('fill', css('--color-fg-muted')).style('font-size', '11px').style('font-family', MONO).text((d) => f1(fromMi(d.avg_mi)));
-  });
-
-  dash.draw('month-chart', (box) => {
-    const g = dash.data('monthly');
-    box.replaceChildren();
-    if (failed(box, 'monthly') || g.status !== 'ok' || !g.data.length) return;
-    const narrow = (box.clientWidth || 600) < 420;
-    const best = d3.greatest(g.data, (d) => d.km);
-    barChart(box, g.data, {
-      h: 180, key: (d) => d.month, val: (d) => dist(d.km), label: 'Distance ridden per month in 2026',
-      tick: (v) => d3.timeFormat('%b')(asDate(v + '-15')).slice(0, narrow ? 1 : 3), hi: (d) => d === best,
-      tipLines: (d) => [el('div', 'k', d3.timeFormat('%B')(asDate(d.month + '-15'))), el('div', null, fmt(Math.round(dist(d.km))) + ' ' + distU() + ' · ' + d.rides + ' rides')],
     });
   });
 
@@ -2067,13 +1866,9 @@ const edRide = (r) => /Ride/.test(r.sport_type || 'Ride') && !/^E(Bike|MountainB
       .on('pointermove', (ev, d) => {
         const v = by.get(f(d));
         const [px, py] = d3.pointer(ev, box);
-        tipShow(box, tip, px, py, [el('div', 'k', d3.timeFormat('%a %b %-d')(d)), el('div', null, v ? f1(dist(v.km)) + ' ' + distU() + ' · ' + v.rides + (v.rides === 1 ? ' ride' : ' rides') + (v.rain ? ' · rain' : '') : 'No ride')]);
+        tipShow(box, tip, px, py, [el('div', 'k', d3.timeFormat('%a %b %-d')(d)), el('div', null, v ? f1(dist(v.km)) + ' ' + distU() + ' · ' + v.rides + (v.rides === 1 ? ' ride' : ' rides') : 'No ride')]);
       })
       .on('pointerleave', () => { tip.hidden = true; });
-    svg.append('g').attr('pointer-events', 'none').selectAll('circle').data(g.data.filter((d) => d.rain)).join('circle')
-      .attr('cx', (d) => l + d3.timeMonday.count(start, asDate(d.date)) * step + cell / 2)
-      .attr('cy', (d) => t + ((asDate(d.date).getDay() + 6) % 7) * step + cell / 2)
-      .attr('r', 2.2).attr('fill', css('--color-bg'));
     const months = d3.timeMonth.range(new Date(2026, 0, 1), new Date(2027, 0, 1));
     svg.append('g').selectAll('text').data(months).join('text')
       .attr('x', (d) => l + d3.timeMonday.count(start, d3.timeMonday.ceil(d)) * step).attr('y', 11)

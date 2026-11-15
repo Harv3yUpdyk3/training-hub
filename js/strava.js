@@ -96,8 +96,6 @@
   };
 
   // ---- Activities -------------------------------------------------------
-  const weather = fetch('data/weather.json', { cache: 'no-cache' }).then((r) => (r.ok ? r.json() : {})).catch(() => ({}));
-
   const toSummary = (a) => ({
     id: String(a.id),
     name: a.name,
@@ -108,7 +106,7 @@
     re: a.suffer_score ?? null, cal: a.calories ?? null, cad: a.average_cadence ?? null,
     as: a.average_speed, ms: a.max_speed, k: a.kudos_count, ac: a.achievement_count, pr: a.pr_count,
   });
-  const toMcp = (s, w, imperial) => ({
+  const toMcp = (s, imperial) => ({
     id: s.id, name: s.name, sport_type: s.sport_type, start_local: s.start_local, gear_id: s.gear_id,
     summary: {
       distance: imperial ? s.d / MI : s.d,
@@ -119,7 +117,6 @@
       relative_effort: s.re, avg_cadence: s.cad,
       kudos_count: s.k, achievement_count: s.ac, pr_count: s.pr,
     },
-    weather: w[s.id] ? (typeof w[s.id] === 'string' ? { condition: w[s.id] } : w[s.id]) : null,
   });
 
   const memo = new Map();
@@ -161,7 +158,6 @@
   };
 
   const listActivities = async (args) => {
-    const w = await weather;
     const imperial = !!args.use_preferred_units;
     let rows;
     if (args.range_start) {
@@ -176,7 +172,7 @@
     } else {
       rows = await recent(args.first || 30);
     }
-    return { activities: rows.map((s) => toMcp(s, w, imperial)), has_next_page: false, end_cursor: null };
+    return { activities: rows.map((s) => toMcp(s, imperial)), has_next_page: false, end_cursor: null };
   };
 
   // ---- One activity -----------------------------------------------------

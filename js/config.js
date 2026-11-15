@@ -5,8 +5,8 @@ window.HUB_CONFIG = {
   params: { units: 'metric', ride: null, recap_ride: null },
   colors: ['var(--series-1)', 'var(--series-2)', 'var(--series-3)', 'var(--series-4)', 'var(--series-5)', 'var(--series-6)', 'var(--series-7)', 'var(--series-8)'],
   datasets: {
-    rides: { kind: 'query', tool: 'list_activities', args: { first: 100, range_start: '2026-01-01T00:00:00', range_end: '2026-12-31T23:59:59', use_preferred_units: true } },
-    rides_2025: { kind: 'query', tool: 'list_activities', args: { first: 100, range_start: '2025-01-01T00:00:00', range_end: '2025-12-31T23:59:59', use_preferred_units: true } },
+    rides: { kind: 'query', tool: 'list_activities', args: { range_start: '2026-01-01T00:00:00', range_end: '2026-12-31T23:59:59', use_preferred_units: true } },
+    rides_2025: { kind: 'query', tool: 'list_activities', args: { range_start: '2025-01-01T00:00:00', range_end: '2025-12-31T23:59:59', use_preferred_units: true } },
     rides_all: { kind: 'query', tool: 'list_activities', args: { range_start: '2000-01-01T00:00:00', range_end: '2099-12-31T23:59:59', use_preferred_units: true } },
     efforts: { kind: 'query', tool: 'list_activities', args: { first: 10 } },
     efforts30: { kind: 'query', tool: 'list_activities', args: { first: 30 } },

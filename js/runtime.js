@@ -34,7 +34,7 @@
 
   const shape = (out) => {
     if (Array.isArray(out)) return { data: out, columns: out.length ? Object.keys(out[0]) : [], meta: [] };
-    if (out && Array.isArray(out.rows)) return { data: out.rows, columns: out.columns || [], meta: out.meta || [], cut: !!out.cut, extra: out.extra || null };
+    if (out && Array.isArray(out.rows)) return { data: out.rows, columns: out.columns || [], meta: out.meta || [], extra: out.extra || null };
     if (out && Array.isArray(out.data)) return { data: out.data, columns: out.columns || [], meta: out.meta || [] };
     return { data: out, columns: [], meta: [] };
   };
@@ -72,7 +72,7 @@
         answer = await window.strava.call(ds.tool, fill(ds.args));
       }
       const loader = loaders.get(id);
-      const out = loader ? await loader.fn({ answer, args: fill(ds.args), call: (t, a) => window.strava.call(t, a), read: {} }) : answer;
+      const out = loader ? await loader.fn({ answer, args: fill(ds.args), call: (t, a) => window.strava.call(t, a) }) : answer;
       state.set(key, { status: 'ok', refreshing: false, ...shape(out) });
     } catch (err) {
       console.error('Dataset ' + id + ' failed:', err);
@@ -205,7 +205,6 @@
       try { localStorage.setItem(PKEY, JSON.stringify({ units: params.units })); } catch {}
       changed();
     },
-    resetParams: () => { params = { ...CFG.params }; changed(); },
     setLink: (name) => { try { history.replaceState(null, '', '#' + name); } catch {} },
     refresh: (id) => { const key = keyOf(id); load(id, key, state.get(key)); },
     refreshAll: () => {
@@ -215,6 +214,5 @@
       });
     },
     reloadAll: () => { state.clear(); calcCache.clear(); changed(); },
-    _rerender: changed,
   };
 })();

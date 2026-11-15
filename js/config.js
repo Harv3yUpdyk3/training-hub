@@ -23,7 +23,7 @@ window.HUB_CONFIG = {
     plan_next: { kind: 'week', offset: 7 },
     plan_prev: { kind: 'week', offset: -7 },
     tours: { kind: 'file', url: 'data/tours.json' },
-    plan: { kind: 'week', fallback: 'data/plan.json' },
+    plan: { kind: 'week' },
     roadmap: { kind: 'file', url: 'data/roadmap.json' },
     todo: { kind: 'file', url: 'data/todo.json' },
     zones: { kind: 'file', url: 'data/zones.json' },

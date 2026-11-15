@@ -42,8 +42,6 @@
     }
     const r = await fetch(ghPath(start), { cache: 'no-cache' });
     if (r.ok) return r.json();
-    // The week before week files existed lives in plan.json.
-    if (start === '2026-10-26') { const p = await fetch('data/plan.json', { cache: 'no-cache' }); if (p.ok) return { week_start: start, updated_at: null, days: await p.json() }; }
     return null;
   };
 

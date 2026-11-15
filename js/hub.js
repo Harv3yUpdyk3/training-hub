@@ -5,21 +5,22 @@ const ED_GOAL_MI = 55; // Will's Eddington goal, in miles
 const ED_GOAL_KM = Math.round(ED_GOAL_MI * KM_MI); // the same goal in km (89)
 // The 2027 goal climbs (elevation gain from the usual start, per cols-cyclisme.com).
 const COLOMBIER_M = 1255, TOURMALET_M = 1404;
-// Eddington counts bike rides but not e-bike rides (Will's call, Nov 3 2026).
-const edRide = (r) => /Ride/.test(r.sport_type || 'Ride') && !/^E(Bike|MountainBike)Ride$/.test(r.sport_type || '');
+// Only bike rides count anywhere in the hub: not e-bike rides (Will, Nov 3 and Nov 15 2026),
+// runs or walks. The rides loader drops everything else, so every total starts from rides.
+const isRide = (r) => /Ride/.test(r.sport_type || 'Ride') && !/^E(Bike|MountainBike)Ride$/.test(r.sport_type || '');
 // Eddington inputs: miles per day, rides on the same day added together.
-const edDays = (rides) => d3.rollups(rides.filter(edRide), (v) => d3.sum(v, (r) => r.miles), (r) => r.date).map((d) => d[1]);
+const edDays = (rides) => d3.rollups(rides, (v) => d3.sum(v, (r) => r.miles), (r) => r.date).map((d) => d[1]);
 // Eddington number: the largest E with at least E days of E or more.
 const eddington = (vals) => { const s = [...vals].sort((a, b) => b - a); let e = 0; while (e < s.length && s[e] >= e + 1) e++; return e; };
 {
   const ridesLoader = {
-    description: 'Makes one row per activity from the list Strava returns.',
+    description: 'Makes one row per bike ride from the list Strava returns (e-bike rides and other sports left out).',
     fn: ({ answer }) => {
       const page = typeof answer === 'string' ? JSON.parse(answer) : answer;
       if (!page || !Array.isArray(page.activities)) {
         throw new Error('Strava answer had no activities list. Keys: ' + Object.keys(page || {}).join(', '));
       }
-      const rows = page.activities.map((a) => {
+      const rows = page.activities.filter(isRide).map((a) => {
         const s = a.summary || {};
         return {
           id: String(a.id),
@@ -379,7 +380,7 @@ const eddington = (vals) => { const s = [...vals].sort((a, b) => b - a); let e =
     title: 'Running total by year, all time',
     description: 'For every year on Strava, km added up day by day through that year (miles × 1.609344).',
     fn: (rides) => {
-      const byYear = d3.group(rides.filter((r) => /Ride/.test(r.sport_type || 'Ride')), (r) => r.date.slice(0, 4));
+      const byYear = d3.group(rides, (r) => r.date.slice(0, 4));
       return [...byYear].sort((a, b) => d3.ascending(a[0], b[0])).map(([year, v]) => {
         let total = 0;
         const pts = [...d3.rollup(v, (x) => d3.sum(x, (r) => r.miles), (r) => r.date)].sort((a, b) => d3.ascending(a[0], b[0]))
@@ -962,7 +963,7 @@ const eddington = (vals) => { const s = [...vals].sort((a, b) => b - a); let e =
     if (!rows || g.status !== 'ok') return null;
     const today = todayStr();
     const plan = rows.find((p) => p.date === today);
-    const rides = g.data.filter((r) => r.date === today && /Ride/.test(r.sport_type || 'Ride'));
+    const rides = g.data.filter((r) => r.date === today);
     return plan && rides.length ? { plan, rides, main: d3.greatest(rides, (r) => r.miles) } : null;
   };
   dash.onData(() => {
@@ -2100,7 +2101,7 @@ const eddington = (vals) => { const s = [...vals].sort((a, b) => b - a); let e =
     const note = card && card.querySelector('[data-lw-dates]');
     if (note) note.textContent = d3.timeFormat('%b %-d')(mon) + ' – ' + d3.timeFormat('%b %-d')(sun);
     const plan = pg.status === 'ok' ? pg.data : [];
-    const rides = rg.data.filter((r) => r.date >= a && r.date <= b && /Ride/.test(r.sport_type || 'Ride'));
+    const rides = rg.data.filter((r) => r.date >= a && r.date <= b);
     const byDay = d3.rollup(rides, (v) => d3.sum(v, (r) => r.miles), (r) => r.date);
     const ridden = d3.sum(rides, (r) => r.miles);
     const lo = d3.sum(plan, (p) => nums(p.target_miles)[0] || 0), hi = d3.sum(plan, (p) => { const n = nums(p.target_miles); return n[n.length - 1] || 0; });
@@ -2295,7 +2296,7 @@ const eddington = (vals) => { const s = [...vals].sort((a, b) => b - a); let e =
     const done = new Date() >= new Date(2026, 11, 31);
     const card = box.closest('.card'), h = card && card.querySelector('h2');
     if (h) h.textContent = done ? '2026 in review' : '2026 so far';
-    const rides = rg.data.filter((r) => /Ride/.test(r.sport_type || 'Ride'));
+    const rides = rg.data;
     const mi = d3.sum(rides, (r) => r.miles), km = mi * KM_MI;
     const days = d3.rollups(rides, (v) => d3.sum(v, (r) => r.miles), (r) => r.date);
     const longest = d3.greatest(rides, (r) => r.miles);
@@ -2309,7 +2310,7 @@ const eddington = (vals) => { const s = [...vals].sort((a, b) => b - a); let e =
     }
     const e1 = eg.status === 'ok' && eg.data.length ? eg.data[0].e_mi : null;
     const ll = lg.status === 'ok' ? lg.data.filter((l) => l.title === 'Local Legend').length : null;
-    const prev = ag.status === 'ok' ? d3.sum(ag.data.filter((r) => r.date.slice(0, 4) === '2025' && /Ride/.test(r.sport_type || 'Ride')), (r) => r.miles) : null;
+    const prev = ag.status === 'ok' ? d3.sum(ag.data.filter((r) => r.date.slice(0, 4) === '2025'), (r) => r.miles) : null;
     const hero = el('div', 'yr-hero');
     const big1 = el('b', null, fmt(Math.round(isImp() ? mi : km)));
     big1.append(el('small', null, ' ' + distU()));
@@ -2394,7 +2395,7 @@ const eddington = (vals) => { const s = [...vals].sort((a, b) => b - a); let e =
     if (g.status !== 'ok') return;
     const mon = asDate(window.planner.monday(new Date()));
     const days = d3.range(7).map((i) => isoD(d3.timeDay.offset(mon, i)));
-    const rides = g.data.filter((r) => days.includes(r.date) && /Ride/.test(r.sport_type || 'Ride'));
+    const rides = g.data.filter((r) => days.includes(r.date));
     const mi = d3.sum(rides, (r) => r.miles);
     const longest = d3.max(rides, (r) => r.miles) || 0;
     window.hubShare.share({

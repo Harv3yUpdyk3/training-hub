@@ -56,11 +56,7 @@
         const w = window.planner ? await window.planner.loadWeek(window.planner.addDays(window.planner.monday(), ds.offset || 0)) : null;
         if (w) answer = w.days;
         else if (ds.offset) answer = [];
-        else {
-          const r = await fetch(ds.fallback, { cache: 'no-cache' });
-          if (!r.ok) throw new Error('No plan for this week yet');
-          answer = await r.json();
-        }
+        else throw new Error('No plan for this week yet');
       } else if (ds.kind === 'weather') {
         answer = await window.planner.weather();
       } else if (ds.kind === 'file') {
